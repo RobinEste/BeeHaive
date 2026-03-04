@@ -107,6 +107,7 @@ BeeHaive/
 │   │   ├── models/        # Pydantic models + DB schemas
 │   │   ├── graph/         # Neo4j knowledge graph queries
 │   │   └── config/        # Settings en configuratie
+│   ├── scripts/       # CLI scripts (seed, migraties)
 │   ├── tests/
 │   ├── pyproject.toml
 │   └── Dockerfile
@@ -145,6 +146,8 @@ Beschikbare Claude Code slash commands:
 | `/sessie-eind` | Einde-sessie checklist: changes, docs, make check, werklog bijwerken |
 | `/status` | Lichtgewicht statusoverzicht: git + roadmap + changelog |
 | `/review` | Start AI code review met gespecialiseerde agents |
+| `/audit` | Volledige codebase audit met agent teams |
+| `/qa-gate` | Quality gate: make check + review in één stap |
 | `/compound [finding-id]` | Leg opgelost review issue vast als solution document |
 | `/sessie-reflectie` | Analyseer sessie en extraheer inzichten naar docs/knowledge/ |
 | `/changelog [type: beschrijving]` | Voeg een entry toe aan CHANGELOG.md |
