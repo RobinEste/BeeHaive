@@ -1,22 +1,6 @@
-# Sessie-kennisbank — Index
+# Knowledge Index
 
-> **Versie:** 1.0
-> **Laatst bijgewerkt:** 2026-03-04
-
-Dit is de centrale index van alle kennisdocumenten die zijn aangemaakt via `/sessie-reflectie`. Elke entry beschrijft een inzicht dat tijdens een werksessie is opgedaan en relevant is voor toekomstige sessies.
-
-## Hoe dit werkt
-
-1. Tijdens een werksessie doet Claude of Robin inzichten op
-2. Aan het einde (of tussendoor) wordt `/sessie-reflectie` gedraaid
-3. De skill analyseert de sessie per categorie en extraheert breder toepasbare inzichten
-4. Inzichten worden opgeslagen als kennisdocumenten in de juiste categorie-folder
-5. Bij `/sessie-start` wordt deze index geladen voor context
-
-## Knowledge Entries
-
-| ID | Titel | Categorie | Datum |
-|----|-------|-----------|-------|
+Overzicht van alle vastgelegde sessie-inzichten.
 
 ## Statistieken
 
@@ -24,8 +8,17 @@ Dit is de centrale index van alle kennisdocumenten die zijn aangemaakt via `/ses
 |-----------|--------|
 | security | 0 |
 | avg-privacy | 0 |
-| architectuur | 0 |
-| development | 0 |
+| architectuur | 2 |
+| development | 1 |
 | infrastructure | 0 |
-| testing | 0 |
-| **Totaal** | **0** |
+| testing | 1 |
+| **Totaal** | **4** |
+
+## Inzichten
+
+| ID | Titel | Categorie | Datum | Relevantie |
+|----|-------|-----------|-------|------------|
+| KNW-2026-001 | Cartesian product preventie met WITH+collect() in Neo4j | architectuur | 2026-03-04 | hoog |
+| KNW-2026-002 | Neo4j tx.run() parameter naam 'query' is gereserveerd | development | 2026-03-04 | hoog |
+| KNW-2026-003 | Efficiënt navigatiepatroon voor gerelateerde items in Neo4j | architectuur | 2026-03-04 | hoog |
+| KNW-2026-004 | Pytest marker registratie bij afwijkende rootdir | testing | 2026-03-04 | midden |
