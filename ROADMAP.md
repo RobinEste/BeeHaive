@@ -9,7 +9,7 @@
 | Fase | Status | Beschrijving |
 |------|--------|--------------|
 | **Fase 1: Project Foundation** | 🟡 In progress | Projectstructuur, repo, basis tooling |
-| **Fase 2: Knowledge Graph** | 🔴 Te doen | Neo4j opzetten, knowledge items modelleren, ingestion pipeline |
+| **Fase 2: Knowledge Graph** | 🟡 In progress | Neo4j opzetten, knowledge items modelleren, ingestion pipeline |
 | **Fase 3: Frontend Website** | 🔴 Te doen | Astro site, framework pagina's, blog systeem |
 | **Fase 4: Backend API** | 🔴 Te doen | FastAPI, Neo4j integratie, AI content generatie |
 | **Fase 5: Training Portal** | 🔴 Te doen | OAuth, cursusstructuur, voortgang tracking |
@@ -23,8 +23,8 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Project scaffolding afronden, GitHub repo aanmaken
-2. **Daarna:** Neo4j knowledge graph modelleren (bouwstenen, guardrails, knowledge items)
+1. **Eerstvolgende:** FastAPI endpoints bouwen op basis van query-laag (Fase 4 voorwerk)
+2. **Daarna:** RAG pipeline met vector embeddings en full-text search (stap 5)
 3. **Vervolgens:** Astro frontend opzetten met basis pagina's
 
 ---
