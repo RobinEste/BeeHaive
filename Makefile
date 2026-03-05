@@ -1,9 +1,12 @@
-.PHONY: setup graph-up graph-down graph-seed graph-reset test lint check fix
+.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix
 
 setup:
 	python3 -m venv .venv
 	.venv/bin/pip install --upgrade pip
 	.venv/bin/pip install -e "backend/[dev]"
+
+run:
+	.venv/bin/uvicorn app.main:app --app-dir backend --reload --port 8000
 
 lint:
 	.venv/bin/ruff check backend/
