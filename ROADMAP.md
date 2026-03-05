@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-04
+**Laatst bijgewerkt:** 2026-03-05
 
 ---
 
@@ -40,7 +40,7 @@
 
 ### Fase 4: Backend API 🔴
 
-- [ ] Stap 4: FastAPI endpoints op basis van query-laag (#4)
+- [x] Stap 4: FastAPI endpoints op basis van query-laag (#4)
 - [ ] Stap 10: Auth middleware voor API — JWT (#10)
 - [ ] Stap 11: AI content generatie endpoints (#11)
 
@@ -61,8 +61,8 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** FastAPI endpoints bouwen op basis van query-laag (#4)
-2. **Daarna:** RAG pipeline met vector embeddings en full-text search (#5)
+1. **Eerstvolgende:** RAG pipeline met vector embeddings en full-text search (#5)
+2. **Daarna:** Knowledge graph uitbreiden met meer bronnen en items (#6)
 3. **Vervolgens:** Astro frontend opzetten met basis pagina's (#8)
 
 ---
