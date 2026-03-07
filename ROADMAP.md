@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-05
+**Laatst bijgewerkt:** 2026-03-07
 
 ---
 
@@ -29,7 +29,7 @@
 
 ### Fase 2: Knowledge Graph 🟡
 
-- [ ] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
+- [x] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
 - [ ] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
 - [ ] Stap 7: Ingestion pipeline voor knowledge items (#7)
 
@@ -61,8 +61,8 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** RAG pipeline met vector embeddings en full-text search (#5)
-2. **Daarna:** Knowledge graph uitbreiden met meer bronnen en items (#6)
+1. **Eerstvolgende:** Knowledge graph uitbreiden met meer bronnen en items (#6)
+2. **Daarna:** Ingestion pipeline voor knowledge items (#7)
 3. **Vervolgens:** Astro frontend opzetten met basis pagina's (#8)
 
 ---
