@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+vendor/
+.venv/
+__pycache__/
+*.pyc
+
+# Build output
+dist/
+build/
+.next/
+out/
+*.min.js
+*.min.css
+*.map
+
+# Test coverage
+coverage/
+htmlcov/
+.nyc_output/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs & caches
+*.log
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# Lock files (large, not useful for context)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Pipfile.lock
+
+# Generated docs
+docs/api/
+site/
+
+# Large assets
+*.pdf
+*.zip
+*.tar.gz
+*.woff2
+*.ttf
+*.eot
