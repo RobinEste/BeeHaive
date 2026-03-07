@@ -1,6 +1,7 @@
 """API endpoints for RAG pipeline — query and ingest."""
 
 import os
+import re
 import tempfile
 from typing import Literal
 
@@ -83,7 +84,10 @@ async def ingest_document_endpoint(
     _key: str = Depends(require_api_key),
 ):
     """Ingest a document (PDF, DOCX, etc.) into the knowledge graph."""
-    suffix = os.path.splitext(file.filename or "")[1].lower()
+    filename = os.path.basename(file.filename or "")
+    if not filename or not re.match(r"^[\w.\- ]+$", filename):
+        raise HTTPException(status_code=400, detail="Ongeldige bestandsnaam")
+    suffix = os.path.splitext(filename)[1].lower()
     if suffix not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail=f"Bestandstype '{suffix}' niet toegestaan")
 

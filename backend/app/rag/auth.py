@@ -4,6 +4,7 @@ Temporary solution until full auth middleware is implemented (Stap 10, #10).
 Set RAG_API_KEY in .env to enable. Set RAG_DEV_MODE=true to allow open access in dev.
 """
 
+import hmac
 import logging
 import os
 
@@ -25,6 +26,6 @@ async def require_api_key(api_key: str | None = Security(_api_key_header)) -> st
         if _DEV_MODE:
             return "dev-mode"
         raise HTTPException(status_code=503, detail="RAG API key niet geconfigureerd")
-    if api_key != _RAG_API_KEY:
+    if not hmac.compare_digest(api_key or "", _RAG_API_KEY):
         raise HTTPException(status_code=401, detail="Ongeldige of ontbrekende API key")
     return api_key

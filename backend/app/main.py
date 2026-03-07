@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api import building_blocks, guardrails, items, rag
-from app.dependencies import get_neo4j_driver
 
 
 @asynccontextmanager
@@ -13,8 +12,9 @@ async def lifespan(app: FastAPI):
     yield
     from app.rag.engine import shutdown_engine
     await shutdown_engine()
-    driver = get_neo4j_driver()
-    driver.close()
+    from app.dependencies import _driver
+    if _driver is not None:
+        _driver.close()
 
 
 app = FastAPI(
