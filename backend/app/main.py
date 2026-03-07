@@ -4,13 +4,15 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import building_blocks, guardrails, items
+from app.api import building_blocks, guardrails, items, rag
 from app.dependencies import get_neo4j_driver
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
+    from app.rag.engine import shutdown_engine
+    await shutdown_engine()
     driver = get_neo4j_driver()
     driver.close()
 
@@ -25,6 +27,7 @@ app = FastAPI(
 app.include_router(building_blocks.router, prefix="/api")
 app.include_router(guardrails.router, prefix="/api")
 app.include_router(items.router, prefix="/api")
+app.include_router(rag.router, prefix="/api")
 
 
 @app.get("/health")

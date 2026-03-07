@@ -54,6 +54,9 @@ htmlcov/
 # Code review output
 code-review/output/*.json
 
+# RAG storage (runtime data, per-environment)
+rag_storage/
+
 # Temporary files
 *.tmp
 *.bak
