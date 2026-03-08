@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-07
+**Laatst bijgewerkt:** 2026-03-08
 
 ---
 
@@ -14,6 +14,7 @@
 | **Fase 4: Backend API** | 🔴 Te doen | FastAPI, Neo4j integratie, AI content generatie |
 | **Fase 5: Training Portal** | 🔴 Te doen | OAuth, cursusstructuur, voortgang tracking |
 | **Fase 6: Betalingen & Launch** | 🔴 Te doen | Mollie integratie, deployment op Hetzner |
+| **Ops & Kwaliteit** | 🔴 Te doen | Security, testing, architectuur, privacy, API hardening |
 
 **Legenda:** ✅ Compleet | 🟡 In progress | 🔴 Te doen | 📋 Gepland
 
@@ -54,6 +55,14 @@
 
 - [ ] Stap 15: Mollie betalingsintegratie (#15)
 - [ ] Stap 16: Deployment op Hetzner (#16)
+
+### Ops & Kwaliteit 🔴
+
+- [ ] Ops: API hardening — auth, rate limiting, input validatie, file upload limits (#17)
+- [ ] Security hardening fase 2: auth, Cypher validatie, config (#18)
+- [ ] Test suite opzetten: RAG, auth, API endpoints, coverage (#19)
+- [ ] Architectuur consolidatie: dual session, config, paginatie (#20)
+- [ ] Privacy-by-design: AI Act transparantie, retentie, audit trail (#21)
 
 ---
 
