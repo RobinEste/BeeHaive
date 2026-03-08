@@ -1,7 +1,8 @@
 """Seed data for the BeeHaive knowledge graph.
 
-Contains the 7 BuildingBlocks, 7 Guardrails, and 1 example KnowledgeItem
-with related Topic and Author nodes.
+Contains the 7 BuildingBlocks, 7 Guardrails, and 25 KnowledgeItems
+with related Topics and Author nodes sourced from the BeeHaive
+Notion knowledge base.
 """
 
 BUILDING_BLOCKS = [
@@ -171,20 +172,296 @@ GUARDRAILS = [
     },
 ]
 
+# Backwards-compatible aliases for tests
 EXAMPLE_KNOWLEDGE_ITEM = {
     "title": "EU AI Act - Trustworthy AI Framework",
     "content": "The EU AI Act establishes a comprehensive framework for trustworthy artificial intelligence, defining requirements for high-risk AI systems and promoting human-centric AI development across the European Union.",
     "source_url": "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence",
-    "source_type": "whitepaper",
+    "source_type": "regulation",
     "is_current": True,
 }
-
 EXAMPLE_RELATIONS = {
     "building_block": "Knowledge",
     "guardrail": "Transparency",
     "topic": "Trustworthy AI",
     "author": "European Commission",
 }
+
+KNOWLEDGE_ITEMS = [
+    # --- Regulation & Policy ---
+    {
+        "title": "EU AI Act - Trustworthy AI Framework",
+        "content": "The EU AI Act establishes a comprehensive framework for trustworthy artificial intelligence, defining requirements for high-risk AI systems and promoting human-centric AI development across the European Union.",
+        "source_url": "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence",
+        "source_type": "regulation",
+        "is_current": True,
+        "building_blocks": ["Knowledge"],
+        "guardrails": ["Transparency", "Accountability"],
+        "topics": ["Trustworthy AI", "EU AI Act"],
+        "authors": ["European Commission"],
+    },
+    {
+        "title": "Ethics Guidelines for Trustworthy AI (HLEG)",
+        "content": "The High-Level Expert Group on AI defines seven key requirements for trustworthy AI: human agency and oversight, technical robustness and safety, privacy and data governance, transparency, diversity/non-discrimination/fairness, societal and environmental well-being, and accountability.",
+        "source_url": "https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai",
+        "source_type": "regulation",
+        "is_current": True,
+        "building_blocks": ["Knowledge", "Evaluation Loop"],
+        "guardrails": ["Human Agency", "Accountability", "Transparency"],
+        "topics": ["Trustworthy AI", "AI Ethics"],
+        "authors": ["European Commission HLEG"],
+    },
+    {
+        "title": "ALTAI - Assessment List for Trustworthy AI",
+        "content": "The ALTAI is a practical checklist tool for organisations to self-assess the trustworthiness of their AI systems under development. It operationalises the seven requirements of the Ethics Guidelines into concrete assessment questions.",
+        "source_url": "https://digital-strategy.ec.europa.eu/en/library/assessment-list-trustworthy-artificial-intelligence-altai-self-assessment",
+        "source_type": "regulation",
+        "is_current": True,
+        "building_blocks": ["Evaluation Loop", "Knowledge"],
+        "guardrails": ["Accountability", "Human Agency"],
+        "topics": ["AI Assessment", "Trustworthy AI"],
+        "authors": ["European Commission HLEG"],
+    },
+    # --- Prompt Design ---
+    {
+        "title": "Lakera.ai Ultimate Guide to Prompt Engineering 2025",
+        "content": "Comprehensive guide covering advanced prompt engineering techniques with strong emphasis on safety and enterprise applications. Includes adversarial attack prevention, bias detection, evaluation frameworks, and systematic prompt structuring from basics to advanced.",
+        "source_url": "https://www.lakera.ai/blog/prompt-engineering-guide",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Prompt Design"],
+        "guardrails": ["Robustness", "Transparency"],
+        "topics": ["Prompt Engineering", "AI Safety"],
+        "authors": ["Lakera AI"],
+    },
+    {
+        "title": "PARTS Framework for Educational AI Prompting",
+        "content": "Scientific research introducing the PARTS framework (Persona, Aim, Recipients, Theme, Structure) for designing educational AI prompts. Demonstrates how systematic prompt structuring with rubrics and exemplars significantly improves AI feedback quality.",
+        "source_url": "https://www.tandfonline.com/doi/full/10.1080/00405841.2025.2528545",
+        "source_type": "paper",
+        "is_current": True,
+        "building_blocks": ["Prompt Design", "Knowledge"],
+        "guardrails": ["Fairness", "Transparency"],
+        "topics": ["Prompt Engineering", "AI in Education"],
+        "authors": ["Taylor & Francis"],
+    },
+    {
+        "title": "Anthropic Constitutional AI Methodology",
+        "content": "Technical guide on implementing Constitutional AI — a method where AI models use a set of ethical principles (a 'constitution') to self-evaluate and improve their outputs. Covers self-critique mechanisms, two-phase training, and natural language constitutions for responsible AI.",
+        "source_url": "https://www.anthropic.com/constitutional-ai",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Prompt Design", "Evaluation Loop"],
+        "guardrails": ["Human Agency", "Accountability", "Fairness"],
+        "topics": ["Constitutional AI", "AI Ethics"],
+        "authors": ["Anthropic"],
+    },
+    {
+        "title": "IBM Prompt Engineering Best Practices 2025",
+        "content": "Enterprise guide for systematic prompt engineering implementation. Covers progressive disclosure methodology, prompt lifecycle management (design-test-deploy-monitor), version control for prompts, governance structures, compliance monitoring, and scalability strategies.",
+        "source_url": "https://www.ibm.com/think/prompt-engineering",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Prompt Design"],
+        "guardrails": ["Accountability", "Robustness"],
+        "topics": ["Prompt Engineering", "Enterprise AI"],
+        "authors": ["IBM"],
+    },
+    {
+        "title": "Prompt Engineering for Generative AI (O'Reilly)",
+        "content": "Comprehensive handbook covering prompt engineering from theory to practice for GPT-4, Gemini, and Claude. Includes NLP fundamentals, multimodal prompting, code generation, token optimization, context management, few-shot learning, and fine-tuning vs prompting trade-offs.",
+        "source_url": "https://www.oreilly.com/library/view/prompt-engineering-for/9781098153427/",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Prompt Design", "Model Engines"],
+        "guardrails": ["Transparency", "Robustness"],
+        "topics": ["Prompt Engineering"],
+        "authors": ["O'Reilly Media"],
+    },
+    # --- Dynamic Context & RAG ---
+    {
+        "title": "DataNucleus Enterprise RAG Guide 2025",
+        "content": "Enterprise guide for Retrieval Augmented Generation covering hybrid search (lexical + vector), reranking with cross-encoders, security trimming for document-level access control, metadata enrichment, grounding with citations, and continuous update strategies for dynamic knowledge bases.",
+        "source_url": "https://datanucleus.dev/rag-and-agentic-ai/what-is-rag-enterprise-guide-2025",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Knowledge"],
+        "guardrails": ["Privacy", "Accountability"],
+        "topics": ["RAG", "Enterprise AI"],
+        "authors": ["DataNucleus"],
+    },
+    {
+        "title": "DataCamp Context Engineering Guide",
+        "content": "Technical guide introducing context engineering as the evolution beyond prompt engineering. Covers conversational workflows with context retention, memory-building techniques for stateful AI, agentic RAG patterns, multi-agent systems with context retention, and context poisoning prevention.",
+        "source_url": "https://www.datacamp.com/blog/context-engineering",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context"],
+        "guardrails": ["Transparency", "Robustness"],
+        "topics": ["Context Engineering", "RAG"],
+        "authors": ["DataCamp"],
+    },
+    {
+        "title": "Dynamic Context Tuning Research (2025)",
+        "content": "Research introducing Dynamic Context Tuning (DCT) combining attention-based context caching, LoRA-based retrieval for dynamic tool selection, and efficient context compression. Shows how agentic retrieval patterns use conversation history as context-aware input with parallel subquery execution.",
+        "source_url": "https://arxiv.org/html/2506.11092v1",
+        "source_type": "paper",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Model Engines"],
+        "guardrails": ["Robustness"],
+        "topics": ["Context Engineering", "AI Research"],
+        "authors": ["arXiv Research"],
+    },
+    {
+        "title": "EdenAI 2025 RAG Guide — Graph RAG and Self-RAG",
+        "content": "Comprehensive overview of 2025 RAG innovations including Graph RAG integrating knowledge graphs for coherent responses, Golden-Retriever frameworks with reflection-based query augmentation, Self-RAG where models autonomously decide when retrieval is needed, and hybrid architectures.",
+        "source_url": "https://www.edenai.co/post/the-2025-guide-to-retrieval-augmented-generation-rag",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Knowledge"],
+        "guardrails": ["Transparency"],
+        "topics": ["Graph RAG", "RAG"],
+        "authors": ["EdenAI"],
+    },
+    {
+        "title": "Dynamic Knowledge Graphs Research (2025)",
+        "content": "Peer-reviewed research on Dynamic Knowledge Graphs (DKGs) supporting continuous knowledge updates for temporal context management. Covers temporal relationship modeling, event-driven updates, time-aware reasoning, dynamic entity resolution, and predictive relationship modeling.",
+        "source_url": "https://arxiv.org/html/2310.04835v3",
+        "source_type": "paper",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Knowledge"],
+        "guardrails": ["Transparency", "Accountability"],
+        "topics": ["Knowledge Graphs", "AI Research"],
+        "authors": ["arXiv Research"],
+    },
+    {
+        "title": "Graph-Based Memory for Dynamic Context Management (Stanford)",
+        "content": "Stanford research on graph-based memory systems for language models. Covers evolving semantic links, temporal knowledge graph integration, adaptive memory architectures, memory consolidation strategies, forgetting mechanisms, and context retrieval optimization using graph neural networks.",
+        "source_url": "https://cs224r.stanford.edu/projects/pdfs/224r_final_project_report.pdf",
+        "source_type": "paper",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Knowledge"],
+        "guardrails": ["Robustness"],
+        "topics": ["Graph Memory", "Knowledge Graphs"],
+        "authors": ["Stanford University"],
+    },
+    {
+        "title": "Squirro Enterprise RAG Implementations",
+        "content": "Enterprise case studies showing measurable RAG impact: European Bank saving €20M in 3 years through automated compliance, LinkedIn achieving 28.6% faster issue resolution, and Deutsche Telekom realizing 14% improvement in customer recommendations. Includes implementation timelines and ROI calculations.",
+        "source_url": "https://www.compuvate.com/how-retrieval-augmented-generation-rag-systems-transform-enterprise-knowledge-management-in-2025/",
+        "source_type": "best_practice",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context"],
+        "guardrails": ["Well-being", "Accountability"],
+        "topics": ["Enterprise RAG", "AI ROI"],
+        "authors": ["Compuvate"],
+    },
+    # --- Model Engines ---
+    {
+        "title": "Why Language Models Hallucinate (OpenAI)",
+        "content": "OpenAI research analyzing the root causes of LLM hallucinations, distinguishing between training data gaps, reasoning failures, and confidence calibration issues. Provides insights into mitigation strategies including grounding, verification chains, and uncertainty quantification.",
+        "source_url": "https://openai.com/research/language-models-hallucinate",
+        "source_type": "paper",
+        "is_current": True,
+        "building_blocks": ["Model Engines"],
+        "guardrails": ["Accountability", "Transparency"],
+        "topics": ["LLM Hallucinations", "AI Research"],
+        "authors": ["OpenAI"],
+    },
+    # --- Tool Integration ---
+    {
+        "title": "Microsoft PyRIT — Python Risk Identification Toolkit",
+        "content": "Open source toolkit for systematic AI safety testing. Provides automated red-teaming with thousands of adversarial prompts, bias detection across demographic groups, compliance reporting for EU AI Act, pre-built attack scenarios (prompt injection, jailbreaking, data extraction), and CI/CD integration.",
+        "source_url": "https://github.com/Azure/PyRIT",
+        "source_type": "best_practice",
+        "is_current": True,
+        "building_blocks": ["Tool Integration", "Evaluation Loop"],
+        "guardrails": ["Robustness", "Fairness"],
+        "topics": ["AI Safety", "Red Teaming"],
+        "authors": ["Microsoft"],
+    },
+    {
+        "title": "Building AI Agents Safely: PII, Jailbreaks, and Real Guardrails",
+        "content": "Practical guide on securing AI agents in production covering PII detection and prevention, jailbreak mitigation techniques, implementing real guardrails using the Guardrails AI framework, and protecting customer-facing chatbots and agents across industries.",
+        "source_url": "https://jettro.dev/building-ai-agents-safely-pii-jailbreaks-and-real-guardrails-a52245a5c624",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Tool Integration", "Prompt Design"],
+        "guardrails": ["Privacy", "Robustness"],
+        "topics": ["AI Safety", "AI Agents"],
+        "authors": ["Jettro Coenradie"],
+    },
+    # --- Evaluation Loop ---
+    {
+        "title": "LangSmith — Prompt Development Lifecycle Platform",
+        "content": "Professional platform for developing, testing and monitoring prompts in production. Provides version control for prompts, A/B testing for variant comparison, real-time performance monitoring, collaborative workflows, automated evaluation with custom metrics, and full AI workflow tracing.",
+        "source_url": "https://smith.langchain.com/",
+        "source_type": "best_practice",
+        "is_current": True,
+        "building_blocks": ["Evaluation Loop", "Tool Integration"],
+        "guardrails": ["Accountability", "Robustness"],
+        "topics": ["AI Development Tools", "AI Monitoring"],
+        "authors": ["LangChain"],
+    },
+    # --- Knowledge Graph Tools ---
+    {
+        "title": "Qdrant — Privacy-First Vector Database",
+        "content": "Open source, self-hosted vector database prioritizing data sovereignty. Features advanced payload filtering, multi-vector support, distributed clustering, GDPR-compliant data handling, quantization for storage efficiency, fine-grained access controls, audit logging, and EU data residency guarantees.",
+        "source_url": "https://qdrant.tech/",
+        "source_type": "best_practice",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Tool Integration"],
+        "guardrails": ["Privacy"],
+        "topics": ["Vector Databases", "Data Sovereignty"],
+        "authors": ["Qdrant"],
+    },
+    # --- Client Blueprint ---
+    {
+        "title": "Hyacinth AI: 8 Essential Steps of AI Solution Design",
+        "content": "Structured methodology for designing AI solutions covering problem framing, data assessment, architecture selection, prototype development, evaluation criteria definition, deployment planning, monitoring setup, and continuous improvement loops.",
+        "source_url": "https://hyacinth.ai/8-essential-steps-of-ai-solution-design/",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Client Blueprint"],
+        "guardrails": ["Accountability"],
+        "topics": ["AI Solution Design"],
+        "authors": ["Hyacinth AI"],
+    },
+    {
+        "title": "Sparkco AI-Validated Templates Enterprise Blueprint 2025",
+        "content": "Enterprise blueprint templates validated by AI for component identification checklists, stakeholder review processes, value proposition assessment, and implementation decision frameworks (buy vs. build). Provides ready-to-use templates for AI solution design and deployment.",
+        "source_url": "https://sparkco.ai/blog/ai-validated-templates-enterprise-blueprint-2025",
+        "source_type": "best_practice",
+        "is_current": True,
+        "building_blocks": ["Client Blueprint", "Tool Integration"],
+        "guardrails": ["Accountability", "Transparency"],
+        "topics": ["Enterprise AI", "AI Solution Design"],
+        "authors": ["Sparkco AI"],
+    },
+    # --- Cross-cutting ---
+    {
+        "title": "Microsoft Azure Search RAG Overview",
+        "content": "Official Microsoft guide for production-ready RAG on Azure covering document processing pipelines, embedding generation strategies, hybrid search implementations (lexical + semantic), semantic ranking, security integration with Azure AD, monitoring and analytics for production systems.",
+        "source_url": "https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Tool Integration"],
+        "guardrails": ["Robustness", "Privacy"],
+        "topics": ["RAG", "Cloud AI"],
+        "authors": ["Microsoft"],
+    },
+    {
+        "title": "O'Reilly Radar: Context Engineering with Drew Breunig",
+        "content": "Expert podcast with Context Engineering Handbook author Drew Breunig discussing practical context engineering in enterprise environments, subject-matter expertise importance, common implementation challenges, organizational change requirements, human-AI collaboration, and quality assurance at scale.",
+        "source_url": "https://www.oreilly.com/radar/podcast/generative-ai-in-the-real-world-context-engineering-with-drew-breunig/",
+        "source_type": "guideline",
+        "is_current": True,
+        "building_blocks": ["Dynamic Context", "Knowledge"],
+        "guardrails": ["Transparency", "Human Agency"],
+        "topics": ["Context Engineering"],
+        "authors": ["O'Reilly Media", "Drew Breunig"],
+    },
+]
 
 
 def seed_building_blocks(tx):
@@ -215,43 +492,80 @@ def seed_guardrails(tx):
     return len(GUARDRAILS)
 
 
-def seed_example_knowledge_item(tx):
-    """Create the example KnowledgeItem with all relationship types."""
-    ki = EXAMPLE_KNOWLEDGE_ITEM
-    rel = EXAMPLE_RELATIONS
+def seed_knowledge_items(tx):
+    """Create KnowledgeItems with all relationships. Idempotent via MERGE."""
+    topics = set()
+    authors = set()
 
-    tx.run(
-        """
-        MERGE (ki:KnowledgeItem {title: $title})
-        SET ki.content = $content,
-            ki.source_url = $source_url,
-            ki.source_type = $source_type,
-            ki.is_current = $is_current,
-            ki.created_at = datetime()
+    for item in KNOWLEDGE_ITEMS:
+        # Create KnowledgeItem node
+        tx.run(
+            """
+            MERGE (ki:KnowledgeItem {title: $title})
+            SET ki.content = $content,
+                ki.source_url = $source_url,
+                ki.source_type = $source_type,
+                ki.is_current = $is_current,
+                ki.created_at = datetime()
+            """,
+            title=item["title"],
+            content=item["content"],
+            source_url=item["source_url"],
+            source_type=item["source_type"],
+            is_current=item["is_current"],
+        )
 
-        MERGE (t:Topic {name: $topic})
-        MERGE (a:Author {name: $author})
+        # Create Topic nodes and relationships
+        for topic in item["topics"]:
+            topics.add(topic)
+            tx.run(
+                """
+                MATCH (ki:KnowledgeItem {title: $title})
+                MERGE (t:Topic {name: $topic})
+                MERGE (ki)-[:ABOUT]->(t)
+                """,
+                title=item["title"],
+                topic=topic,
+            )
 
-        WITH ki, t, a
-        MATCH (bb:BuildingBlock {name: $building_block})
-        MATCH (gr:Guardrail {name: $guardrail})
+        # Create Author nodes and relationships
+        for author in item["authors"]:
+            authors.add(author)
+            tx.run(
+                """
+                MATCH (ki:KnowledgeItem {title: $title})
+                MERGE (a:Author {name: $author})
+                MERGE (ki)-[:AUTHORED_BY]->(a)
+                """,
+                title=item["title"],
+                author=author,
+            )
 
-        MERGE (ki)-[:RELATES_TO]->(bb)
-        MERGE (ki)-[:ADDRESSES]->(gr)
-        MERGE (ki)-[:ABOUT]->(t)
-        MERGE (ki)-[:AUTHORED_BY]->(a)
-        """,
-        title=ki["title"],
-        content=ki["content"],
-        source_url=ki["source_url"],
-        source_type=ki["source_type"],
-        is_current=ki["is_current"],
-        topic=rel["topic"],
-        author=rel["author"],
-        building_block=rel["building_block"],
-        guardrail=rel["guardrail"],
-    )
-    return 3  # 1 KnowledgeItem + 1 Topic + 1 Author
+        # Create BuildingBlock relationships
+        for bb in item["building_blocks"]:
+            tx.run(
+                """
+                MATCH (ki:KnowledgeItem {title: $title})
+                MATCH (bb:BuildingBlock {name: $bb_name})
+                MERGE (ki)-[:RELATES_TO]->(bb)
+                """,
+                title=item["title"],
+                bb_name=bb,
+            )
+
+        # Create Guardrail relationships
+        for gr in item["guardrails"]:
+            tx.run(
+                """
+                MATCH (ki:KnowledgeItem {title: $title})
+                MATCH (gr:Guardrail {name: $gr_name})
+                MERGE (ki)-[:ADDRESSES]->(gr)
+                """,
+                title=item["title"],
+                gr_name=gr,
+            )
+
+    return len(KNOWLEDGE_ITEMS), len(topics), len(authors)
 
 
 def seed_all(session):
@@ -266,9 +580,11 @@ def seed_all(session):
     print(f"  Guardrails: {count}")
     total += count
 
-    count = session.execute_write(seed_example_knowledge_item)
-    print(f"  KnowledgeItem + Topic + Author: {count}")
-    total += count
+    items, topics, authors = session.execute_write(seed_knowledge_items)
+    print(f"  KnowledgeItems: {items}")
+    print(f"  Topics: {topics}")
+    print(f"  Authors: {authors}")
+    total += items + topics + authors
 
     print(f"\n  Total: {total} nodes seeded")
     return total
