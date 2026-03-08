@@ -9,6 +9,10 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Knowledge graph uitgebreid met 34 KnowledgeItems (#6)
+  - 24 items uit Notion: papers, regulations en best practices per building block
+  - 10 recente papers (maart 2026): agentic RAG, AI governance, evaluatie, robustness
+  - Seed functie herstructureerd voor meerdere relaties per item
 - RAG pipeline met RAG-Anything/LightRAG en vLLM-MLX (#5)
   - Query endpoint (hybrid retrieval + LLM generatie)
   - Text en document ingest endpoints (PDF, DOCX, PPTX, TXT, MD)

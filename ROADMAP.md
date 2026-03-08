@@ -31,7 +31,7 @@
 ### Fase 2: Knowledge Graph 🟡
 
 - [x] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
-- [ ] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
+- [x] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
 - [ ] Stap 7: Ingestion pipeline voor knowledge items (#7)
 
 ### Fase 3: Frontend Website 🔴
@@ -70,9 +70,9 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Knowledge graph uitbreiden met meer bronnen en items (#6)
-2. **Daarna:** Ingestion pipeline voor knowledge items (#7)
-3. **Vervolgens:** Astro frontend opzetten met basis pagina's (#8)
+1. **Eerstvolgende:** Ingestion pipeline voor knowledge items (#7)
+2. **Daarna:** Astro frontend opzetten met basis pagina's (#8)
+3. **Vervolgens:** Blog systeem met content collecties (#9)
 
 ---
 
