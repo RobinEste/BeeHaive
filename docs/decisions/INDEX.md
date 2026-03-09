@@ -1,7 +1,7 @@
 # Architecture Decision Records — Index
 
 > **Versie:** 1.0
-> **Laatst bijgewerkt:** 2026-03-05
+> **Laatst bijgewerkt:** 2026-03-09
 
 Dit is de centrale index van alle Architecture Decision Records (ADRs). Elke entry beschrijft een architectuurbeslissing: welk probleem er was, welke opties zijn overwogen, en waarom voor deze oplossing is gekozen.
 
@@ -18,7 +18,8 @@ Dit is de centrale index van alle Architecture Decision Records (ADRs). Elke ent
 | ID | Titel | Status | Datum |
 |----|-------|--------|-------|
 | ADR-2026-001 | Tech stack keuze: Astro + FastAPI + Neo4j | geaccepteerd | 2026-03-04 |
-| ADR-2026-002 | RAG pipeline: RAG-Anything + vLLM-MLX + Neo4j workspace-isolatie | geaccepteerd | 2026-03-05 |
+| ADR-2026-002 | RAG pipeline: RAG-Anything + vLLM-MLX + Neo4j workspace-isolatie | deels vervangen | 2026-03-05 |
+| ADR-2026-003 | Externe LLM API's in plaats van lokaal LLM | geaccepteerd | 2026-03-09 |
 
 ## Statistieken
 
@@ -27,6 +28,6 @@ Dit is de centrale index van alle Architecture Decision Records (ADRs). Elke ent
 | geaccepteerd | 2 |
 | voorgesteld | 0 |
 | ter bespreking | 0 |
-| vervangen | 0 |
+| deels vervangen | 1 |
 | ingetrokken | 0 |
-| **Totaal** | **2** |
+| **Totaal** | **3** |
