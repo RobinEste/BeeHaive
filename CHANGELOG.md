@@ -9,6 +9,14 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Ingestion pipeline fase 1: fetcher, PII scanner, graph mutations (#7)
+  - Document fetcher met SSRF-preventie (HTTPS-only, private IP blocking, redirect blokkering)
+  - Thread-safe rate limiter (1 req/sec) met retry + exponential backoff
+  - PII scanner (fail-closed, email+phone regex, overlap filter, AVG-conform)
+  - Cache met PII-redactie vóór persistentie (AVG Art. 5(1)(c))
+  - Graph mutations: batched UNWIND, MERGE op source_url, ON MATCH SET voor heringest
+  - Deduplicatie queries: exact source_url match + fuzzy title search
+  - 34 tests, 3 review-rondes (21 findings gefixt)
 - Knowledge graph uitgebreid met 34 KnowledgeItems (#6)
   - 24 items uit Notion: papers, regulations en best practices per building block
   - 10 recente papers (maart 2026): agentic RAG, AI governance, evaluatie, robustness

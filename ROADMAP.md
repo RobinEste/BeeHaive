@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-08
+**Laatst bijgewerkt:** 2026-03-09
 
 ---
 
@@ -32,7 +32,7 @@
 
 - [x] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
 - [x] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
-- [ ] Stap 7: Ingestion pipeline voor knowledge items (#7)
+- [~] Stap 7: Ingestion pipeline voor knowledge items (#7) — Fase 1 klaar (fetcher, PII, mutations)
 
 ### Fase 3: Frontend Website 🔴
 
@@ -70,7 +70,7 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Ingestion pipeline voor knowledge items (#7)
+1. **Eerstvolgende:** Ingestion pipeline fase 2-5: LLM taxonomy mapper, orchestrator, CLI (#7)
 2. **Daarna:** Astro frontend opzetten met basis pagina's (#8)
 3. **Vervolgens:** Blog systeem met content collecties (#9)
 
