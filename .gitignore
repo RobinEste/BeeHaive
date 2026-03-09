@@ -57,6 +57,9 @@ code-review/output/*.json
 # RAG storage (runtime data, per-environment)
 rag_storage/
 
+# Fetched source documents (ingestion cache)
+data/fetched/
+
 # Temporary files
 *.tmp
 *.bak

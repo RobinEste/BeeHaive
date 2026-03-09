@@ -4,6 +4,7 @@ CONSTRAINTS = [
     ("BuildingBlock", "name"),
     ("Guardrail", "name"),
     ("KnowledgeItem", "title"),
+    ("KnowledgeItem", "source_url"),
     ("Topic", "name"),
     ("Author", "name"),
 ]

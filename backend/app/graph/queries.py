@@ -180,6 +180,43 @@ def find_related_items(session, title):
     return session.execute_read(_query)
 
 
+def find_item_by_source_url(session, url):
+    """Find a KnowledgeItem by exact source_url match. Returns dict or None."""
+    def _query(tx):
+        result = tx.run(
+            "MATCH (ki:KnowledgeItem {source_url: $url}) RETURN ki",
+            url=url,
+        )
+        record = result.single()
+        return dict(record["ki"]) if record else None
+    return session.execute_read(_query)
+
+
+def find_items_by_fuzzy_title(session, title, limit=5):
+    """Find KnowledgeItems with similar titles using CONTAINS.
+
+    Returns up to `limit` items where the title contains the search term
+    or vice versa. Used for deduplication checks.
+    """
+    if not title or len(title) < 2:
+        return []
+
+    def _query(tx):
+        result = tx.run(
+            """
+            MATCH (ki:KnowledgeItem)
+            WHERE coalesce(ki.title_lower, toLower(ki.title)) CONTAINS toLower($title)
+               OR toLower($title) CONTAINS coalesce(ki.title_lower, toLower(ki.title))
+            RETURN ki ORDER BY ki.title
+            LIMIT $limit
+            """,
+            title=title,
+            limit=limit,
+        )
+        return [dict(record["ki"]) for record in result]
+    return session.execute_read(_query)
+
+
 def search_items(session, query):
     """Search KnowledgeItems by title or content using CONTAINS.
 

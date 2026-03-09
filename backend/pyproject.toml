@@ -16,6 +16,9 @@ dependencies = [
     "raganything>=1.2.9",
     "openai>=1.0",
     "python-multipart>=0.0.9",
+    "httpx>=0.27",
+    "trafilatura>=2.0",
+    "rapidfuzz>=3.0",
 ]
 
 [project.optional-dependencies]
