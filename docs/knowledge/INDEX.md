@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 1 |
-| architectuur | 3 |
+| architectuur | 4 |
 | development | 4 |
 | infrastructure | 0 |
 | testing | 1 |
-| **Totaal** | **10** |
+| **Totaal** | **11** |
 
 ## Inzichten
 
@@ -28,3 +28,4 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-008 | PII-redactie vóór persistentie, niet erna | avg-privacy | 2026-03-09 | hoog |
 | KNW-2026-009 | SSRF-preventie checklist voor server-side fetchers | security | 2026-03-09 | hoog |
 | KNW-2026-010 | Iteratieve code review-rondes vinden steeds diepere issues | development | 2026-03-09 | midden |
+| KNW-2026-011 | Frontier API boven lokaal LLM voor classificatietaken | architectuur | 2026-03-09 | hoog |
