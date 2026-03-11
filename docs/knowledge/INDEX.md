@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 1 |
-| architectuur | 4 |
+| architectuur | 5 |
 | development | 4 |
 | infrastructure | 0 |
-| testing | 1 |
-| **Totaal** | **11** |
+| testing | 2 |
+| **Totaal** | **13** |
 
 ## Inzichten
 
@@ -29,3 +29,5 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-009 | SSRF-preventie checklist voor server-side fetchers | security | 2026-03-09 | hoog |
 | KNW-2026-010 | Iteratieve code review-rondes vinden steeds diepere issues | development | 2026-03-09 | midden |
 | KNW-2026-011 | Frontier API boven lokaal LLM voor classificatietaken | architectuur | 2026-03-09 | hoog |
+| KNW-2026-012 | Test-isolatie via prefixed dataset in gedeelde database | testing | 2026-03-11 | hoog |
+| KNW-2026-013 | Allowlist-validatie op LLM output voor gestructureerde classificatie | architectuur | 2026-03-11 | hoog |
