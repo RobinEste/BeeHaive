@@ -9,6 +9,12 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Ingestion pipeline fase 2: Gemini taxonomy mapper (#7)
+  - `llm.py` — classificeert tekst naar BuildingBlocks, Guardrails, Topics, Authors via Gemini 2.5 Flash
+  - Structured output met response_schema (altijd parseerbare JSON)
+  - Confidence filtering (>= 0.7) en allowlist-validatie op taxonomy namen
+  - Retry met exponential backoff, graceful degradation bij API failure
+  - 23 unit tests met mocked Gemini responses
 - Ingestion pipeline fase 1: fetcher, PII scanner, graph mutations (#7)
   - Document fetcher met SSRF-preventie (HTTPS-only, private IP blocking, redirect blokkering)
   - Thread-safe rate limiter (1 req/sec) met retry + exponential backoff
@@ -44,4 +50,7 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 - 21 integration tests voor alle query functies
 - Makefile targets: lint, test, check, fix
 - Pytest marker registratie voor integration tests
+
+### Gewijzigd
+- Integration tests gebruiken nu geïsoleerd _TEST_ dataset (onafhankelijk van productie seed)
 
