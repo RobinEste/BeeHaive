@@ -181,13 +181,18 @@ def fetch_html(url: str) -> FetchResult:
 
             # AVG Art. 5(1)(c): redact PII before caching to disk
             pii_report = scan_pii(text)
+            pii_clean = True
             if not pii_report.error:
                 text = redact_pii(text, pii_report)
+            else:
+                pii_clean = False
+                logger.warning("PII scan failed for %s: %s", url, pii_report.error)
 
             result = FetchResult(
                 text=text,
                 source_url=url,
                 fetch_status="ok",
+                pii_clean=pii_clean,
                 metadata={
                     "content_length": len(text),
                     "status_code": response.status_code,

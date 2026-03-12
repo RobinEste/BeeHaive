@@ -31,3 +31,8 @@ graph-seed:
 graph-reset:
 	docker compose exec neo4j cypher-shell -u neo4j -p "$${NEO4J_PASSWORD:-beehaive-dev}" "MATCH (n) DETACH DELETE n"
 	$(MAKE) graph-seed
+
+ingest-item:
+	.venv/bin/python backend/scripts/ingest_item.py \
+		--url "$(URL)" --title "$(TITLE)" --type "$(TYPE)" \
+		$(if $(COMMIT),--commit,)

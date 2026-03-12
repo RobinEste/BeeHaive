@@ -2,7 +2,7 @@
 
 **Issue:** #7
 **Fase:** 2 — Knowledge Graph
-**Status:** Draft v5 (Gemini API pivot, Fase 1 done)
+**Status:** Draft v6 (Fase 1-3 done, kalibratie open)
 **Datum:** 2026-03-09
 
 ---
@@ -19,12 +19,12 @@ CLI-first ingestion pipeline die nieuwe knowledge items automatisch toevoegt aan
 
 ### Acceptatiecriteria (issue #7)
 
-- [ ] CLI script voor ingestion van nieuwe KnowledgeItems (`make ingest-item`)
-- [ ] Automatische relatie-detectie (BuildingBlock, Guardrail, Topic mapping)
-- [ ] Author-node PII-validatie (AVG Art. 6(1)(f) check bij natuurlijke personen)
-- [ ] Deduplicatie op source_url en titel
-- [ ] Logging en error handling
-- [ ] Preview/dry-run modus voor taxonomy mappings
+- [x] CLI script voor ingestion van nieuwe KnowledgeItems (`make ingest-item`)
+- [x] Automatische relatie-detectie (BuildingBlock, Guardrail, Topic mapping)
+- [x] Author-node PII-validatie (AVG Art. 6(1)(f) check bij natuurlijke personen)
+- [x] Deduplicatie op source_url en titel
+- [x] Logging en error handling
+- [x] Preview/dry-run modus voor taxonomy mappings
 
 ### Definition of Done
 
@@ -108,58 +108,21 @@ Eenmalig script: `backend/scripts/calibrate_mapper.py`
 
 ---
 
-## Fase 3: Pipeline Orchestrator + CLI
+## Fase 3: Pipeline Orchestrator + CLI ✅
 
-**Doel:** Alles aan elkaar knopen: URL → KnowledgeItem met relaties.
+**Status:** Done (2026-03-12). 11 tests, lint clean.
 
-### 3.1 Deduplicatie ✅ (gebouwd in Fase 1)
-
-Al aanwezig in `graph/queries.py` en `graph/mutations.py`:
-- `find_item_by_source_url()` — exacte match, blokkeert re-insert
-- `find_items_by_fuzzy_title()` — similarity check, markeert als `needs_review`
-- `create_knowledge_item_with_relations()` — batched UNWIND, MERGE op source_url
-
-### 3.2 Pipeline orchestrator
-
-Nieuw bestand: `backend/app/ingestion/pipeline.py`
-
-```python
-def ingest(source: IngestionSource, dry_run: bool = False) -> IngestionResult:
-    # 1. Fetch document content
-    fetch_result = fetch_source(str(source.url), source.source_type)
-    if fetch_result.fetch_status != "ok":
-        return IngestionResult(status="fetch_failed", error=fetch_result.metadata.get("error"))
-
-    # 2. Deduplication check
-    existing = find_item_by_source_url(session, str(source.url))
-    if existing:
-        return IngestionResult(status="duplicate", existing=existing["title"])
-
-    # 3. Taxonomy mapping via Gemini
-    mappings = classify_text(fetch_result.text, source.source_type)
-    if not mappings:
-        return IngestionResult(status="no_mappings_found",
-                               suggestion="Handmatig mappen of bron opnieuw proberen")
-
-    # 4. Preview mode — toon voorgestelde mappings
-    if dry_run:
-        return IngestionResult(status="preview", mappings=mappings)
-
-    # 5. Create KnowledgeItem + relations
-    create_knowledge_item_with_relations(session, source, mappings)
-    return IngestionResult(status="ingested", mappings=mappings)
-```
-
-**Opmerking:** De pipeline is sync (geen async nodig). De fetcher, PII scanner en graph mutations zijn allemaal sync. Gemini API call is de enige externe call — `google-genai` SDK is sync-first. Geen `asyncio.to_thread()` overhead.
-
-### 3.3 CLI script
-
-Nieuw bestand: `backend/scripts/ingest_item.py`
+Gebouwd:
+- `ingestion/pipeline.py` — orchestrator: dedup → fetch → classify → preview/commit
+  - Dedup check vóór fetch (bespaart bandbreedte)
+  - Fuzzy title match waarschuwt maar blokkeert niet
+  - Dry-run is default (veilige standaard)
+- `scripts/ingest_item.py` — CLI entry point met argparse
+- `tests/test_pipeline.py` — 11 unit tests (alle mocked)
 
 ```bash
-make ingest-item URL="https://arxiv.org/abs/..." TITLE="Paper Title" TYPE=paper
-# Standaard: dry-run (preview). Bevestig met --commit
-make ingest-item URL="..." TITLE="..." TYPE=paper COMMIT=1
+make ingest-item URL="https://..." TITLE="Paper Title" TYPE=regulation           # dry-run
+make ingest-item URL="https://..." TITLE="Paper Title" TYPE=regulation COMMIT=1   # schrijf naar Neo4j
 ```
 
 ---
@@ -173,16 +136,9 @@ Reeds gebouwd (Fase 1):
 - ✅ `tests/test_fetcher.py`: 12 unit tests SSRF/fetcher
 - ✅ `tests/test_dedup.py`: 5 integration tests deduplicatie
 
-Nog te bouwen:
-- `tests/test_llm.py`: unit tests Gemini taxonomy mapper (>= 10 testcases)
-  - Mock Gemini responses
-  - Confidence drempel filtering
-  - Fallback bij API error
-  - Structured output parsing
-- `tests/test_pipeline.py`: integration test met mock Gemini + Neo4j
-  - End-to-end flow: URL → KnowledgeItem
-  - Deduplicatie blokkering
-  - Dry-run modus
+Gebouwd (Fase 2-3):
+- ✅ `tests/test_llm.py`: 23 unit tests Gemini taxonomy mapper
+- ✅ `tests/test_pipeline.py`: 11 unit tests pipeline orchestrator
 
 ### 4.2 Verwerkingsregister
 
@@ -211,8 +167,8 @@ backend/app/ingestion/
   __init__.py
   fetcher.py        # ✅ URL fetching + SSRF-preventie + PII-redactie vóór cache
   pii.py            # ✅ PII scanner + redactie (fail-closed)
-  llm.py            # Gemini taxonomy classifier (Fase 2)
-  pipeline.py       # Pipeline orchestrator (Fase 3)
+  llm.py            # ✅ Gemini taxonomy classifier (Fase 2)
+  pipeline.py       # ✅ Pipeline orchestrator (Fase 3)
 
 backend/app/graph/
   queries.py        # ✅ Read-only queries + dedup (find_item_by_source_url, fuzzy_title)
@@ -237,9 +193,9 @@ backend/scripts/
 
 ```
 Fase 1 (Fetcher + PII + Mutations + Dedup) ✅ DONE
-  └─→ Fase 2 (Gemini Taxonomy Mapper + Kalibratie)
-        └─→ Fase 3 (Pipeline Orchestrator + CLI)
-Fase 4 (Tests) ── parallel met Fase 2-3
+  └─→ Fase 2 (Gemini Taxonomy Mapper) ✅ DONE (23 tests)
+        └─→ Fase 3 (Pipeline Orchestrator + CLI) ✅ DONE (11 tests)
+Fase 4 (Tests + Docs) ── kalibratie + verwerkingsregister nog open
 ```
 
 API endpoint out-of-scope.

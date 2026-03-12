@@ -13,6 +13,7 @@ IngestionStatus = Literal[
     "ingested",
     "duplicate",
     "preview",
+    "fetch_failed",
     "pii_scan_failed",
     "engine_unavailable",
     "no_mappings_found",
@@ -34,6 +35,7 @@ class FetchResult(BaseModel):
     text: str
     source_url: str
     fetch_status: FetchStatus
+    pii_clean: bool = True
     metadata: dict = Field(default_factory=dict)
 
 
