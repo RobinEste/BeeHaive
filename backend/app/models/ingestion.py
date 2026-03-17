@@ -82,3 +82,4 @@ class IngestionResult(BaseModel):
     pii_report: PIIReport | None = None
     entities: list[dict] = []
     suggestion: str | None = None
+    rag_synced: bool = True

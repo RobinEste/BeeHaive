@@ -135,16 +135,16 @@ class TestPipelineHappyPath:
 
 
 class TestPipelineDeduplication:
-    @patch("app.ingestion.pipeline.find_item_by_source_url")
     @patch("app.ingestion.pipeline.fetch_source")
-    def test_exact_url_duplicate_blocked(self, mock_fetch, mock_dedup_url):
-        mock_fetch.return_value = _fetch_ok()
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    def test_exact_url_duplicate_blocked(self, mock_dedup_url, mock_fetch):
         mock_dedup_url.return_value = {"title": "Existing Paper"}
 
         result = ingest(_source(), MagicMock())
 
         assert result.status == "duplicate"
         assert result.existing == "Existing Paper"
+        mock_fetch.assert_not_called()  # Dedup check is before fetch
 
     @patch("app.ingestion.pipeline.classify_text")
     @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
@@ -165,8 +165,9 @@ class TestPipelineDeduplication:
 
 
 class TestPipelineErrors:
+    @patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
     @patch("app.ingestion.pipeline.fetch_source")
-    def test_fetch_failure(self, mock_fetch):
+    def test_fetch_failure(self, mock_fetch, mock_dedup):
         mock_fetch.return_value = _fetch_failed()
 
         result = ingest(_source(), MagicMock())
@@ -174,8 +175,9 @@ class TestPipelineErrors:
         assert result.status == "fetch_failed"
         assert "HTTP 403" in result.error
 
+    @patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
     @patch("app.ingestion.pipeline.fetch_source")
-    def test_pdf_not_supported_in_cli(self, mock_fetch):
+    def test_pdf_not_supported_in_cli(self, mock_fetch, mock_dedup):
         mock_fetch.return_value = _fetch_pdf()
 
         result = ingest(
@@ -203,9 +205,10 @@ class TestPipelineErrors:
         assert result.status == "no_mappings_found"
         assert result.suggestion is not None
 
+    @patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
     @patch("app.ingestion.pipeline.scan_pii")
     @patch("app.ingestion.pipeline.fetch_source")
-    def test_pii_scan_error_blocks(self, mock_fetch, mock_scan):
+    def test_pii_scan_error_blocks(self, mock_fetch, mock_scan, mock_dedup):
         mock_fetch.return_value = _fetch_ok()
         mock_scan.return_value = PIIReport(error="Scanner crashed")
 

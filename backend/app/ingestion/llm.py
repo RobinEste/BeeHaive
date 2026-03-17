@@ -140,8 +140,12 @@ def _validate_mapping(raw: dict[str, Any]) -> TaxonomyMapping | None:
     BuildingBlock/Guardrail name, etc.).
     """
     entity_type = raw.get("entity_type", "")
-    matched_name = raw.get("matched_name", "")
+    matched_name = raw.get("matched_name", "").strip()
     confidence = raw.get("confidence", 0.0)
+
+    if not matched_name:
+        logger.debug("Skipping mapping with empty matched_name")
+        return None
 
     # Validate entity_type
     valid_types: set[EntityType] = {"BuildingBlock", "Guardrail", "Topic", "Author"}
@@ -222,6 +226,13 @@ def classify_text(
 
             # Parse structured output
             import json
+
+            if not response.text:
+                logger.warning(
+                    "Gemini returned empty response (content filter?) for '%s'",
+                    title,
+                )
+                return []
 
             raw_data = json.loads(response.text)
             raw_mappings = raw_data.get("mappings", [])

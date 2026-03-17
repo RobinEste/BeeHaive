@@ -52,7 +52,16 @@ def ingest(
     url_str = str(source.url)
     logger.info("Starting ingestion for '%s' (%s)", source.title, url_str)
 
-    # --- Step 1: Fetch ---
+    # --- Step 1: Deduplication (before fetch to avoid wasted I/O) ---
+    existing = find_item_by_source_url(neo4j_session, url_str)
+    if existing:
+        logger.info("Duplicate found: '%s' already exists", existing.get("title", "?"))
+        return IngestionResult(
+            status="duplicate",
+            existing=existing.get("title", url_str),
+        )
+
+    # --- Step 2: Fetch ---
     fetch_result = fetch_source(url_str, source.source_type)
 
     if fetch_result.fetch_status == "requires_pdf_processing":
@@ -82,15 +91,6 @@ def ingest(
             status="pii_scan_failed",
             error=f"PII safety check failed: {pii_report.error}",
             pii_report=pii_report,
-        )
-
-    # --- Step 2: Deduplication ---
-    existing = find_item_by_source_url(neo4j_session, url_str)
-    if existing:
-        logger.info("Duplicate found: '%s' already exists", existing.get("title", "?"))
-        return IngestionResult(
-            status="duplicate",
-            existing=existing.get("title", url_str),
         )
 
     # Fuzzy title check — warn but don't block
@@ -132,37 +132,53 @@ def ingest(
     logger.info("Created KnowledgeItem: %s", item.get("title", "?"))
 
     # --- Step 6: Dual ingest to LightRAG ---
+    rag_synced = True
     if not skip_rag:
         try:
             _ingest_to_lightrag(text, source.title)
         except Exception as e:
-            # Non-fatal: KnowledgeItem is already in the graph
+            rag_synced = False
             logger.warning("LightRAG ingest failed: %s", e)
 
     return IngestionResult(
         status="ingested",
         mappings=mappings,
         pii_report=pii_report if pii_report.has_pii else None,
+        rag_synced=rag_synced,
     )
+
+
+def _run_async(coro):
+    """Run an async coroutine from sync context, safe for both CLI and FastAPI."""
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        # No event loop running (CLI) — use asyncio.run()
+        return asyncio.run(coro)
+    else:
+        # Event loop already running (FastAPI) — run in a thread
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            return pool.submit(asyncio.run, coro).result()
 
 
 def _ingest_to_lightrag(text: str, title: str) -> None:
     """Insert text into LightRAG for RAG query retrieval.
 
-    Runs async ainsert() via asyncio.run() since the pipeline is sync.
-    Failures are logged but do not block the main ingestion — the
-    KnowledgeItem is already persisted in Neo4j.
+    Uses _run_async() to bridge sync/async safely — works from both
+    CLI (no event loop) and FastAPI (existing event loop).
+    Failures are logged but do not block the main ingestion.
     """
     try:
         from app.rag.engine import create_rag_engine
 
         async def _do_ingest():
             engine = await create_rag_engine()
-            # Prepend title for better entity extraction by LightRAG
             content = f"# {title}\n\n{text}" if title else text
             await engine.lightrag.ainsert(content)
 
-        asyncio.run(_do_ingest())
+        _run_async(_do_ingest())
         logger.info("LightRAG ingest complete for '%s'", title)
     except Exception as e:
         # Non-fatal: KnowledgeItem is already in the graph

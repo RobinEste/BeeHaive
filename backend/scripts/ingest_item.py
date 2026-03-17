@@ -115,13 +115,21 @@ def main():
     print(f"  Type:  {source.source_type}")
     print(f"{'='*60}\n")
 
-    with get_session() as session:
-        result = ingest(
-            source=source,
-            neo4j_session=session,
-            dry_run=dry_run,
-            skip_rag=args.skip_rag,
-        )
+    try:
+        with get_session() as session:
+            result = ingest(
+                source=source,
+                neo4j_session=session,
+                dry_run=dry_run,
+                skip_rag=args.skip_rag,
+            )
+    except ValueError as e:
+        print(f"CONFIGURATIEFOUT: {e}")
+        sys.exit(1)
+    except Exception as e:
+        logging.getLogger(__name__).exception("Onverwachte fout")
+        print(f"FOUT: {e}")
+        sys.exit(1)
 
     # Display result
     status_display = {
@@ -140,6 +148,9 @@ def main():
     if result.mappings:
         print(f"\nMappings ({len(result.mappings)}):")
         print(_format_mappings(result.mappings))
+
+    if result.status == "ingested" and not result.rag_synced:
+        print("\n  ⚠ LightRAG ingest mislukt — item is NIET vindbaar via RAG queries.")
 
     if result.status == "preview":
         print("\nHerrun met --commit om op te slaan.")
