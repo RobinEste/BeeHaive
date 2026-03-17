@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 1 |
-| architectuur | 5 |
-| development | 4 |
+| architectuur | 7 |
+| development | 5 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **13** |
+| **Totaal** | **16** |
 
 ## Inzichten
 
@@ -31,3 +31,6 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-011 | Frontier API boven lokaal LLM voor classificatietaken | architectuur | 2026-03-09 | hoog |
 | KNW-2026-012 | Test-isolatie via prefixed dataset in gedeelde database | testing | 2026-03-11 | hoog |
 | KNW-2026-013 | Allowlist-validatie op LLM output voor gestructureerde classificatie | architectuur | 2026-03-11 | hoog |
+| KNW-2026-014 | asyncio.run() bridge patroon voor sync→async in gemengde contexten | architectuur | 2026-03-17 | hoog |
+| KNW-2026-015 | Dual ingest met zichtbare graceful degradation | architectuur | 2026-03-17 | hoog |
+| KNW-2026-016 | Goedkope checks vóór dure I/O in pipelines | development | 2026-03-17 | midden |
