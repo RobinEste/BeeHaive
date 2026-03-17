@@ -9,12 +9,17 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
-- Ingestion pipeline fase 2: Gemini taxonomy mapper (#7)
-  - `llm.py` — classificeert tekst naar BuildingBlocks, Guardrails, Topics, Authors via Gemini 2.5 Flash
-  - Structured output met response_schema (altijd parseerbare JSON)
-  - Confidence filtering (>= 0.7) en allowlist-validatie op taxonomy namen
-  - Retry met exponential backoff, graceful degradation bij API failure
-  - 23 unit tests met mocked Gemini responses
+- Ingestion pipeline fase 2-3: taxonomy mapper, orchestrator, CLI, dual ingest (#7)
+  - `llm.py` — Gemini 2.5 Flash taxonomy classifier met structured output
+  - `pipeline.py` — orchestrator: dedup → fetch → PII → classify → persist → LightRAG
+  - `ingest_item.py` — CLI met preview/commit modus (`make ingest-item`)
+  - Dual ingest: items gaan naar zowel Neo4j (knowledge graph) als LightRAG (RAG queries)
+  - Mapping-dedup per (entity_type, matched_name), hoogste confidence behouden
+  - Async-safe bridge (`_run_async`) voor CLI + FastAPI compatibiliteit
+  - `rag_synced` veld signaleert gefaalde LightRAG ingest
+  - RAG config gemigreerd van vLLM-MLX naar Gemini API (ADR-2026-003)
+  - `google-genai` dependency toegevoegd
+  - 31 unit tests (21 LLM + 10 pipeline), /review met 6 findings — alle gefixt
 - Ingestion pipeline fase 1: fetcher, PII scanner, graph mutations (#7)
   - Document fetcher met SSRF-preventie (HTTPS-only, private IP blocking, redirect blokkering)
   - Thread-safe rate limiter (1 req/sec) met retry + exponential backoff
