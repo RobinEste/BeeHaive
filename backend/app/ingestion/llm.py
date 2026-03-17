@@ -226,9 +226,10 @@ def classify_text(
             raw_data = json.loads(response.text)
             raw_mappings = raw_data.get("mappings", [])
 
-            # Validate and filter
+            # Validate, filter, and deduplicate
             all_mappings: list[TaxonomyMapping] = []
             below_threshold: list[tuple[str, str, float]] = []
+            seen: dict[tuple[str, str], float] = {}
 
             for raw in raw_mappings:
                 mapping = _validate_mapping(raw)
@@ -239,6 +240,18 @@ def classify_text(
                         (mapping.entity_type, mapping.matched_name, mapping.confidence)
                     )
                     continue
+
+                # Dedup per (entity_type, matched_name) — keep highest confidence
+                key = (mapping.entity_type, mapping.matched_name)
+                if key in seen:
+                    if mapping.confidence <= seen[key]:
+                        continue
+                    # Replace with higher confidence version
+                    all_mappings = [
+                        m for m in all_mappings
+                        if (m.entity_type, m.matched_name) != key
+                    ]
+                seen[key] = mapping.confidence
                 all_mappings.append(mapping)
 
             if below_threshold:

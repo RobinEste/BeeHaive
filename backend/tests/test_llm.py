@@ -260,3 +260,28 @@ class TestClassifyText:
         assert len(result) == 2
         assert result[0].matched_name == "Completely Novel Topic"
         assert result[1].matched_name == "Unknown Author XYZ"
+
+    @patch("app.ingestion.llm._get_client")
+    def test_duplicate_mappings_deduplicated(self, mock_get_client):
+        """Multiple mappings for same (entity_type, matched_name) keep highest confidence."""
+        mock_client = MagicMock()
+        mock_get_client.return_value = mock_client
+        mock_client.models.generate_content.return_value = _mock_gemini_response([
+            _bb_mapping(name="Knowledge", confidence=0.85),
+            _bb_mapping(name="Knowledge", confidence=0.95),
+            _bb_mapping(name="Knowledge", confidence=0.90),
+            _bb_mapping(name="Model Engines", confidence=0.80),
+        ])
+
+        result = classify_text("Some text", "paper", "Test")
+
+        # Knowledge should appear once with highest confidence (0.95)
+        knowledge = [m for m in result if m.matched_name == "Knowledge"]
+        assert len(knowledge) == 1
+        assert knowledge[0].confidence == 0.95
+
+        # Model Engines should also appear once
+        engines = [m for m in result if m.matched_name == "Model Engines"]
+        assert len(engines) == 1
+
+        assert len(result) == 2
