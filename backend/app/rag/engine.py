@@ -2,7 +2,9 @@
 
 Creates and configures a RAGAnything instance backed by:
 - Neo4j for graph storage (same instance as the knowledge graph)
-- vLLM-MLX for LLM (entity extraction) and embeddings (vector search)
+- Gemini API for LLM (entity extraction) and embeddings (vector search)
+
+Provider is configurable via env vars (see config.py / ADR-2026-003).
 
 Usage:
     engine = await create_rag_engine()
@@ -20,8 +22,8 @@ from lightrag.utils import EmbeddingFunc
 from raganything import RAGAnything, RAGAnythingConfig
 
 from app.rag.config import (
-    VLLM_BASE_URL,
-    VLLM_API_KEY,
+    LLM_BASE_URL,
+    LLM_API_KEY,
     LLM_MODEL,
     EMBEDDING_MODEL,
     EMBEDDING_DIM,
@@ -29,8 +31,8 @@ from app.rag.config import (
     RAG_WORKING_DIR,
 )
 
-# Shared OpenAI client — reused across LLM and embedding calls
-_oai_client = _openai.AsyncOpenAI(api_key=VLLM_API_KEY, base_url=VLLM_BASE_URL)
+# Shared OpenAI-compatible client — reused across LLM and embedding calls
+_oai_client = _openai.AsyncOpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
 
 # Singleton — initialised once, reused across requests
 _engine: RAGAnything | None = None
@@ -38,10 +40,10 @@ _engine_lock = asyncio.Lock()
 
 
 def _strip_thinking(text: str) -> str:
-    """Strip Qwen's thinking block, keeping only the actual answer.
+    """Strip LLM thinking blocks, keeping only the actual answer.
 
-    Qwen 3.5 wraps its reasoning in <think>...</think> tags. This function
-    removes those blocks and returns the remaining content unchanged.
+    Some models (Qwen, Gemini with thinking enabled) wrap reasoning in
+    <think>...</think> tags. This function removes those blocks.
     """
     if not text:
         return text
@@ -51,15 +53,15 @@ def _strip_thinking(text: str) -> str:
 
 
 async def _llm_func(prompt, system_prompt=None, history_messages=None, **kwargs):
-    """LLM function that calls vLLM-MLX directly via openai client.
+    """LLM function that calls the configured API via OpenAI-compatible client.
 
     Bypasses openai_complete_if_cache entirely to avoid response_format issues.
-    Handles Qwen 3.5 thinking preamble by stripping it from output.
+    Strips thinking blocks from models that emit them (Qwen, Gemini).
     """
     if history_messages is None:
         history_messages = []
 
-    # Strip all LightRAG-specific kwargs that vLLM-MLX doesn't understand
+    # Strip LightRAG-specific kwargs that the API doesn't understand
     kwargs.pop("keyword_extraction", None)
     kwargs.pop("response_format", None)
     kwargs.pop("hashing_kv", None)
@@ -83,11 +85,10 @@ async def _llm_func(prompt, system_prompt=None, history_messages=None, **kwargs)
 
 
 async def _embedding_func(texts: list[str]) -> list[list[float]]:
-    """Embedding function that calls vLLM-MLX directly via openai client.
+    """Embedding function via OpenAI-compatible client.
 
-    Bypasses LightRAG's openai_embed to avoid dimension mismatch issues
-    with base64 encoding and the dimensions parameter. Processes in batches
-    of 64 to avoid OOM/timeout on the embedding server with large documents.
+    Bypasses LightRAG's openai_embed to avoid dimension mismatch issues.
+    Processes in batches of 64 to stay within API limits.
     """
     if not texts:
         return np.empty((0, EMBEDDING_DIM), dtype=np.float32)
@@ -102,7 +103,7 @@ async def _embedding_func(texts: list[str]) -> list[list[float]]:
 
 
 def _build_lightrag() -> LightRAG:
-    """Create a LightRAG instance configured for Neo4j + vLLM-MLX."""
+    """Create a LightRAG instance configured for Neo4j + external LLM API."""
     return LightRAG(
         working_dir=RAG_WORKING_DIR,
         graph_storage="Neo4JStorage",
@@ -161,7 +162,7 @@ async def get_rag_engine() -> RAGAnything:
         from fastapi import HTTPException
         raise HTTPException(
             status_code=503,
-            detail="RAG engine niet beschikbaar. Controleer of vLLM-MLX draait.",
+            detail="RAG engine niet beschikbaar. Controleer GEMINI_API_KEY en connectiviteit.",
         ) from e
 
 

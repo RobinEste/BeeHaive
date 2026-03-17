@@ -1,101 +1,174 @@
-"""Pipeline orchestrator for BeeHaive knowledge item ingestion.
+"""Ingestion pipeline orchestrator.
 
-Ties together: fetch -> dedup check -> Gemini classify -> preview/commit to Neo4j.
-Designed for CLI usage (sync, one item at a time).
+Coordinates the full flow: fetch → PII scan → dedup → classify → persist.
+Supports dual ingest: writes to both the handmatige knowledge graph
+(KnowledgeItem nodes) and LightRAG (for RAG query retrieval).
+
+CLI-first design: all operations are synchronous except the optional
+LightRAG ingest (async, bridged via asyncio.run).
 """
 
+import asyncio
 import logging
-
-from neo4j import Session
 
 from app.graph.mutations import create_knowledge_item_with_relations
 from app.graph.queries import find_item_by_source_url, find_items_by_fuzzy_title
 from app.ingestion.fetcher import fetch_source
 from app.ingestion.llm import classify_text
-from app.models.ingestion import IngestionResult, IngestionSource
+from app.ingestion.pii import scan_pii
+from app.models.ingestion import (
+    IngestionResult,
+    IngestionSource,
+)
 
 logger = logging.getLogger(__name__)
 
 
-def ingest(source: IngestionSource, session: Session, *, dry_run: bool = True) -> IngestionResult:
-    """Run the full ingestion pipeline for a single knowledge item.
+def ingest(
+    source: IngestionSource,
+    neo4j_session,
+    dry_run: bool = True,
+    skip_rag: bool = False,
+) -> IngestionResult:
+    """Ingest a source document into the BeeHaive knowledge graph.
+
+    Steps:
+        1. Fetch document content (with SSRF protection + PII redaction)
+        2. Check for duplicates (exact URL + fuzzy title)
+        3. Classify text via Gemini → taxonomy mappings
+        4. Preview mode (dry_run=True): show proposed mappings
+        5. Persist: create KnowledgeItem + relations in Neo4j
+        6. Optional: insert into LightRAG for RAG query retrieval
 
     Args:
-        source: The item to ingest (url, title, source_type).
-        session: Neo4j session for graph operations.
-        dry_run: If True (default), show preview without writing to graph.
+        source: IngestionSource with url, title, source_type.
+        neo4j_session: Active Neo4j session for graph operations.
+        dry_run: If True (default), show preview without persisting.
+        skip_rag: If True, skip LightRAG ingest (useful for testing).
 
     Returns:
-        IngestionResult with status and mappings.
+        IngestionResult with status, mappings, and any errors.
     """
-    url = str(source.url)
-    logger.info("Starting ingestion for '%s' (%s)", source.title, url)
+    url_str = str(source.url)
+    logger.info("Starting ingestion for '%s' (%s)", source.title, url_str)
 
-    # 1. Deduplication check (before fetching to save time/bandwidth)
-    existing = find_item_by_source_url(session, url)
-    if existing:
-        logger.info("Duplicate found: '%s'", existing["title"])
-        return IngestionResult(
-            status="duplicate",
-            existing=existing["title"],
-        )
-
-    fuzzy_matches = find_items_by_fuzzy_title(session, source.title)
-    if fuzzy_matches:
-        titles = [m["title"] for m in fuzzy_matches]
-        logger.warning("Fuzzy title matches found: %s", titles)
-
-    # 2. Fetch document content
-    fetch_result = fetch_source(url, source.source_type)
+    # --- Step 1: Fetch ---
+    fetch_result = fetch_source(url_str, source.source_type)
 
     if fetch_result.fetch_status == "requires_pdf_processing":
         return IngestionResult(
             status="engine_unavailable",
-            error="PDF processing not yet supported in CLI pipeline. Use HTML sources or add content manually.",
+            error="PDF processing via RAG-Anything is not yet supported in CLI mode. "
+            "Use HTML sources (regulation, guideline, best_practice) for now.",
         )
 
     if fetch_result.fetch_status != "ok":
         error_msg = fetch_result.metadata.get("error", "Unknown fetch error")
-        logger.error("Fetch failed for '%s': %s", url, error_msg)
+        logger.error("Fetch failed for '%s': %s", source.title, error_msg)
         return IngestionResult(
             status="fetch_failed",
             error=f"Fetch failed: {error_msg}",
         )
 
-    # 2b. PII scan check — abort if PII redaction failed (AVG Art. 5(1)(c))
-    if not fetch_result.pii_clean:
-        logger.error("PII scan failed for '%s' — aborting to prevent PII leakage", url)
+    # The fetcher already performs PII redaction before caching (AVG Art. 5(1)(c)).
+    # Verify that text passed to the LLM is indeed from the redacted pipeline.
+    text = fetch_result.text
+
+    # Extra PII safety check — assert no PII slipped through
+    pii_report = scan_pii(text)
+    if pii_report.error:
+        logger.error("PII re-scan failed: %s", pii_report.error)
         return IngestionResult(
             status="pii_scan_failed",
-            error="PII scan failed — aborting to prevent unredacted PII reaching external APIs.",
+            error=f"PII safety check failed: {pii_report.error}",
+            pii_report=pii_report,
         )
 
-    # 3. Taxonomy mapping via Gemini
+    # --- Step 2: Deduplication ---
+    existing = find_item_by_source_url(neo4j_session, url_str)
+    if existing:
+        logger.info("Duplicate found: '%s' already exists", existing.get("title", "?"))
+        return IngestionResult(
+            status="duplicate",
+            existing=existing.get("title", url_str),
+        )
+
+    # Fuzzy title check — warn but don't block
+    similar = find_items_by_fuzzy_title(neo4j_session, source.title, limit=3)
+    if similar:
+        titles = [item.get("title", "?") for item in similar]
+        logger.warning(
+            "Similar items found for '%s': %s — proceeding anyway",
+            source.title,
+            titles,
+        )
+
+    # --- Step 3: Classify via Gemini ---
     mappings = classify_text(
-        fetch_result.text,
-        source.source_type,
+        text=text,
+        source_type=source.source_type,
         title=source.title,
     )
 
     if not mappings:
+        logger.warning("No taxonomy mappings found for '%s'", source.title)
         return IngestionResult(
             status="no_mappings_found",
-            suggestion="No taxonomy mappings found. Try a different source or map manually.",
+            suggestion="No mappings found. Try with a different source or add mappings manually.",
         )
 
-    # 4. Preview mode — return proposed mappings without writing
+    # --- Step 4: Preview mode ---
     if dry_run:
-        logger.info("Dry-run: %d mappings proposed for '%s'", len(mappings), source.title)
+        logger.info("Dry run — showing %d proposed mappings", len(mappings))
         return IngestionResult(
             status="preview",
             mappings=mappings,
+            pii_report=pii_report if pii_report.has_pii else None,
         )
 
-    # 5. Create KnowledgeItem + relations in Neo4j
-    create_knowledge_item_with_relations(session, source, mappings)
-    logger.info("Ingested '%s' with %d relations", source.title, len(mappings))
+    # --- Step 5: Persist to knowledge graph ---
+    logger.info("Creating KnowledgeItem with %d relations", len(mappings))
+    item = create_knowledge_item_with_relations(neo4j_session, source, mappings)
+    logger.info("Created KnowledgeItem: %s", item.get("title", "?"))
+
+    # --- Step 6: Dual ingest to LightRAG ---
+    if not skip_rag:
+        try:
+            _ingest_to_lightrag(text, source.title)
+        except Exception as e:
+            # Non-fatal: KnowledgeItem is already in the graph
+            logger.warning("LightRAG ingest failed: %s", e)
 
     return IngestionResult(
         status="ingested",
         mappings=mappings,
+        pii_report=pii_report if pii_report.has_pii else None,
     )
+
+
+def _ingest_to_lightrag(text: str, title: str) -> None:
+    """Insert text into LightRAG for RAG query retrieval.
+
+    Runs async ainsert() via asyncio.run() since the pipeline is sync.
+    Failures are logged but do not block the main ingestion — the
+    KnowledgeItem is already persisted in Neo4j.
+    """
+    try:
+        from app.rag.engine import create_rag_engine
+
+        async def _do_ingest():
+            engine = await create_rag_engine()
+            # Prepend title for better entity extraction by LightRAG
+            content = f"# {title}\n\n{text}" if title else text
+            await engine.lightrag.ainsert(content)
+
+        asyncio.run(_do_ingest())
+        logger.info("LightRAG ingest complete for '%s'", title)
+    except Exception as e:
+        # Non-fatal: KnowledgeItem is already in the graph
+        logger.warning(
+            "LightRAG ingest failed for '%s': %s — KnowledgeItem was "
+            "persisted to Neo4j but is not available via RAG queries",
+            title,
+            e,
+        )

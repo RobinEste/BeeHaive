@@ -1,65 +1,112 @@
-"""CLI script for ingesting a single knowledge item into BeeHaive.
+"""CLI script for ingesting a knowledge item into BeeHaive.
 
 Usage:
-    make ingest-item URL="https://..." TITLE="Paper Title" TYPE=paper
-    make ingest-item URL="https://..." TITLE="Paper Title" TYPE=paper COMMIT=1
+    # Preview mode (default — shows proposed mappings without persisting):
+    python backend/scripts/ingest_item.py \
+        --url "https://example.com/paper" \
+        --title "Paper Title" \
+        --type paper
 
-Default is dry-run (preview). Pass COMMIT=1 to write to Neo4j.
+    # Commit mode (persists to Neo4j + LightRAG):
+    python backend/scripts/ingest_item.py \
+        --url "https://example.com/paper" \
+        --title "Paper Title" \
+        --type paper \
+        --commit
 
-Source types: paper, regulation, guideline, best_practice
+    # Via Makefile:
+    make ingest-item URL="..." TITLE="..." TYPE=paper
+    make ingest-item URL="..." TITLE="..." TYPE=paper COMMIT=1
 """
 
 import argparse
 import logging
 import sys
-from typing import get_args
 
 from app.graph.connection import get_session
 from app.ingestion.pipeline import ingest
-from app.models.ingestion import IngestionSource, SourceType
+from app.models.ingestion import IngestionSource
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s  %(name)s  %(message)s",
-)
-logger = logging.getLogger(__name__)
 
-VALID_TYPES = get_args(SourceType)
+def _setup_logging(verbose: bool) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(levelname)-8s %(name)s: %(message)s",
+    )
+    # Quiet noisy libraries
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("neo4j").setLevel(logging.WARNING)
+    logging.getLogger("openai").setLevel(logging.WARNING)
 
 
 def _format_mappings(mappings) -> str:
-    """Format taxonomy mappings for terminal output."""
-    lines = []
-    grouped = {}
-    for m in mappings:
-        grouped.setdefault(m.entity_type, []).append(m)
+    """Format taxonomy mappings for terminal display."""
+    if not mappings:
+        return "  (geen mappings)"
 
-    for entity_type in ("BuildingBlock", "Guardrail", "Topic", "Author"):
-        items = grouped.get(entity_type, [])
-        if items:
-            lines.append(f"  {entity_type}:")
-            for m in items:
-                lines.append(f"    - {m.matched_name} (confidence: {m.confidence:.2f})")
+    lines = []
+    # Group by entity type
+    by_type = {}
+    for m in mappings:
+        by_type.setdefault(m.entity_type, []).append(m)
+
+    type_order = ["BuildingBlock", "Guardrail", "Topic", "Author"]
+    type_emoji = {
+        "BuildingBlock": "[BB]",
+        "Guardrail": "[GR]",
+        "Topic": "[TP]",
+        "Author": "[AU]",
+    }
+
+    for entity_type in type_order:
+        group = by_type.get(entity_type, [])
+        if not group:
+            continue
+        for m in sorted(group, key=lambda x: -x.confidence):
+            prefix = type_emoji.get(entity_type, "    ")
+            lines.append(
+                f"  {prefix} {m.matched_name} (confidence: {m.confidence:.2f})"
+            )
+
     return "\n".join(lines)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Ingest a knowledge item into BeeHaive")
+    parser = argparse.ArgumentParser(
+        description="Ingest a knowledge item into BeeHaive",
+    )
     parser.add_argument("--url", required=True, help="Source URL (HTTPS)")
     parser.add_argument("--title", required=True, help="Item title")
-    parser.add_argument("--type", required=True, choices=VALID_TYPES, dest="source_type", help="Source type")
-    parser.add_argument("--commit", action="store_true", help="Write to Neo4j (default: dry-run preview)")
-    args = parser.parse_args()
+    parser.add_argument(
+        "--type",
+        required=True,
+        choices=["paper", "regulation", "guideline", "best_practice"],
+        help="Source type",
+    )
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="Persist to graph (default: dry-run/preview)",
+    )
+    parser.add_argument(
+        "--skip-rag",
+        action="store_true",
+        help="Skip LightRAG ingest (only write to knowledge graph)",
+    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Debug logging")
 
-    dry_run = not args.commit
+    args = parser.parse_args()
+    _setup_logging(args.verbose)
 
     source = IngestionSource(
         url=args.url,
         title=args.title,
-        source_type=args.source_type,
+        source_type=args.type,
     )
 
-    mode = "PREVIEW (dry-run)" if dry_run else "COMMIT"
+    dry_run = not args.commit
+    mode = "PREVIEW" if dry_run else "COMMIT"
     print(f"\n{'='*60}")
     print(f"BeeHaive Ingestion — {mode}")
     print(f"{'='*60}")
@@ -68,43 +115,43 @@ def main():
     print(f"  Type:  {source.source_type}")
     print(f"{'='*60}\n")
 
-    try:
-        with get_session() as session:
-            result = ingest(source, session, dry_run=dry_run)
-    except ValueError as e:
-        print(f"CONFIGURATION ERROR: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: {e}")
-        sys.exit(1)
+    with get_session() as session:
+        result = ingest(
+            source=source,
+            neo4j_session=session,
+            dry_run=dry_run,
+            skip_rag=args.skip_rag,
+        )
 
     # Display result
-    if result.status == "duplicate":
-        print(f"DUPLICATE: Item already exists as '{result.existing}'")
-        sys.exit(1)
+    status_display = {
+        "preview": "PREVIEW — voorgestelde mappings:",
+        "ingested": "INGESTED — item opgeslagen in knowledge graph",
+        "duplicate": f"DUPLICATE — item bestaat al: '{result.existing}'",
+        "no_mappings_found": "NO MAPPINGS — geen taxonomie-mappings gevonden",
+        "fetch_failed": f"FAILED — {result.error}",
+        "pii_scan_failed": f"FAILED — {result.error}",
+        "engine_unavailable": f"UNAVAILABLE — {result.error}",
+        "entity_validation_failed": f"VALIDATION FAILED — {result.error}",
+    }
 
-    elif result.status == "preview":
-        print("Proposed taxonomy mappings:\n")
+    print(f"Status: {status_display.get(result.status, result.status)}")
+
+    if result.mappings:
+        print(f"\nMappings ({len(result.mappings)}):")
         print(_format_mappings(result.mappings))
-        print(f"\n  Total: {len(result.mappings)} mappings")
-        print("\nRe-run with --commit to write to Neo4j.")
 
-    elif result.status == "ingested":
-        print("Successfully ingested! Taxonomy mappings:\n")
-        print(_format_mappings(result.mappings))
-        print(f"\n  Total: {len(result.mappings)} mappings written to Neo4j.")
+    if result.status == "preview":
+        print("\nHerrun met --commit om op te slaan.")
 
-    elif result.status == "no_mappings_found":
-        print(f"NO MAPPINGS: {result.suggestion}")
-        sys.exit(1)
+    if result.suggestion:
+        print(f"\nSuggestie: {result.suggestion}")
 
-    elif result.status == "engine_unavailable":
-        print(f"NOT SUPPORTED: {result.error}")
-        sys.exit(1)
+    print()
 
-    else:
-        print(f"FAILED ({result.status}): {result.error}")
-        sys.exit(1)
+    # Exit code
+    success_statuses = {"preview", "ingested"}
+    sys.exit(0 if result.status in success_statuses else 1)
 
 
 if __name__ == "__main__":

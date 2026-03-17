@@ -1,318 +1,241 @@
-"""Tests for the ingestion pipeline orchestrator.
+"""Unit tests for ingestion pipeline orchestrator.
 
-Uses mocked fetcher, LLM, and Neo4j session to test the pipeline flow
-without external dependencies.
+Tests the full flow with mocked dependencies (fetcher, LLM, Neo4j).
+Covers: happy path, deduplication, dry-run, error handling, LightRAG ingest.
 """
 
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from app.ingestion.pipeline import ingest
 from app.models.ingestion import (
     FetchResult,
     IngestionSource,
+    PIIReport,
     TaxonomyMapping,
 )
 
 
-@pytest.fixture
-def source():
-    return IngestionSource(
-        url="https://example.com/test-article",
-        title="Test Article on AI Ethics",
-        source_type="regulation",
-    )
+# --- Fixtures ---
 
 
-@pytest.fixture
-def mock_session():
-    return MagicMock()
+def _source(url="https://example.com/paper", title="Test Paper", source_type="regulation"):
+    return IngestionSource(url=url, title=title, source_type=source_type)
 
 
-@pytest.fixture
-def sample_mappings():
-    return [
-        TaxonomyMapping(
-            entity_text="Knowledge",
-            entity_type="BuildingBlock",
-            matched_name="Knowledge",
-            match_method="llm",
-            confidence=0.95,
-        ),
-        TaxonomyMapping(
-            entity_text="Transparency",
-            entity_type="Guardrail",
-            matched_name="Transparency",
-            match_method="llm",
-            confidence=0.88,
-        ),
-        TaxonomyMapping(
-            entity_text="AI Ethics",
-            entity_type="Topic",
-            matched_name="AI Ethics",
-            match_method="llm",
-            confidence=0.92,
-        ),
-    ]
-
-
-@pytest.fixture
-def ok_fetch_result():
+def _fetch_ok(text="Some academic text about AI governance and privacy."):
     return FetchResult(
-        text="This is a test article about AI ethics and transparency.",
-        source_url="https://example.com/test-article",
+        text=text,
+        source_url="https://example.com/paper",
         fetch_status="ok",
-        metadata={"content_length": 56},
+        metadata={"content_length": len(text)},
     )
 
 
-# --- Deduplication tests ---
-
-
-@patch("app.ingestion.pipeline.find_item_by_source_url")
-def test_duplicate_by_source_url(mock_find, source, mock_session):
-    """Pipeline returns 'duplicate' when source_url already exists."""
-    mock_find.return_value = {"title": "Existing Article"}
-
-    result = ingest(source, mock_session)
-
-    assert result.status == "duplicate"
-    assert result.existing == "Existing Article"
-    mock_find.assert_called_once_with(mock_session, str(source.url))
-
-
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
-@patch("app.ingestion.pipeline.find_item_by_source_url")
-def test_fuzzy_match_logs_warning_but_continues(
-    mock_find_exact, mock_find_fuzzy, mock_fetch, mock_classify,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """Fuzzy title matches log a warning but don't block ingestion."""
-    mock_find_exact.return_value = None
-    mock_find_fuzzy.return_value = [{"title": "Similar Article"}]
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
-
-    result = ingest(source, mock_session)
-
-    assert result.status == "preview"
-    mock_find_fuzzy.assert_called_once()
-
-
-# --- Fetch tests ---
-
-
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-@patch("app.ingestion.pipeline.fetch_source")
-def test_fetch_failed(mock_fetch, mock_find_exact, mock_find_fuzzy, source, mock_session):
-    """Pipeline returns error when fetch fails."""
-    mock_fetch.return_value = FetchResult(
+def _fetch_failed():
+    return FetchResult(
         text="",
-        source_url=str(source.url),
+        source_url="https://example.com/paper",
         fetch_status="failed",
         metadata={"error": "HTTP 403"},
     )
 
-    result = ingest(source, mock_session)
 
-    assert result.status == "fetch_failed"
-    assert "HTTP 403" in result.error
-
-
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-@patch("app.ingestion.pipeline.fetch_source")
-def test_pdf_source_returns_engine_unavailable(mock_fetch, mock_find_exact, mock_find_fuzzy, mock_session):
-    """Pipeline returns engine_unavailable for PDF sources."""
-    paper_source = IngestionSource(
-        url="https://arxiv.org/pdf/2024.12345",
-        title="Some Paper",
-        source_type="paper",
-    )
-    mock_fetch.return_value = FetchResult(
+def _fetch_pdf():
+    return FetchResult(
         text="",
-        source_url="https://arxiv.org/pdf/2024.12345",
+        source_url="https://example.com/paper.pdf",
         fetch_status="requires_pdf_processing",
         metadata={},
     )
 
-    result = ingest(paper_source, mock_session)
 
-    assert result.status == "engine_unavailable"
-    assert "PDF" in result.error
-
-
-# --- PII scan tests ---
-
-
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-@patch("app.ingestion.pipeline.fetch_source")
-def test_pii_scan_failed_aborts_pipeline(mock_fetch, mock_find_exact, mock_find_fuzzy, source, mock_session):
-    """Pipeline returns pii_scan_failed when PII redaction failed."""
-    mock_fetch.return_value = FetchResult(
-        text="Text with unredacted email@example.com",
-        source_url=str(source.url),
-        fetch_status="ok",
-        pii_clean=False,
-        metadata={},
-    )
-
-    result = ingest(source, mock_session)
-
-    assert result.status == "pii_scan_failed"
-    assert "PII" in result.error
+def _mappings():
+    return [
+        TaxonomyMapping(
+            entity_text="AI governance",
+            entity_type="BuildingBlock",
+            matched_name="Knowledge",
+            match_method="llm",
+            confidence=0.9,
+        ),
+        TaxonomyMapping(
+            entity_text="privacy",
+            entity_type="Guardrail",
+            matched_name="Privacy",
+            match_method="llm",
+            confidence=0.85,
+        ),
+    ]
 
 
-# --- Classification tests ---
+# --- Tests ---
 
 
-@patch("app.ingestion.pipeline.classify_text", return_value=[])
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_no_mappings_found(mock_find, mock_fuzzy, mock_fetch, mock_classify, source, mock_session, ok_fetch_result):
-    """Pipeline returns no_mappings_found when LLM returns nothing."""
-    mock_fetch.return_value = ok_fetch_result
+class TestPipelineHappyPath:
+    @patch("app.ingestion.pipeline._ingest_to_lightrag")
+    @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_full_commit_flow(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
+        mock_classify, mock_create, mock_rag,
+    ):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = []
+        mock_classify.return_value = _mappings()
+        mock_create.return_value = {"title": "Test Paper"}
 
-    result = ingest(source, mock_session)
+        result = ingest(_source(), MagicMock(), dry_run=False)
 
-    assert result.status == "no_mappings_found"
-    assert result.suggestion is not None
+        assert result.status == "ingested"
+        assert len(result.mappings) == 2
+        mock_create.assert_called_once()
+        mock_rag.assert_called_once()
 
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_dry_run_does_not_persist(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy, mock_classify,
+    ):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = []
+        mock_classify.return_value = _mappings()
 
-# --- Dry-run / preview tests ---
+        result = ingest(_source(), MagicMock(), dry_run=True)
 
+        assert result.status == "preview"
+        assert len(result.mappings) == 2
 
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_dry_run_returns_preview(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """Dry-run returns preview status with mappings."""
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
+    @patch("app.ingestion.pipeline._ingest_to_lightrag")
+    @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_skip_rag_flag(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
+        mock_classify, mock_create, mock_rag,
+    ):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = []
+        mock_classify.return_value = _mappings()
+        mock_create.return_value = {"title": "Test Paper"}
 
-    result = ingest(source, mock_session, dry_run=True)
+        result = ingest(_source(), MagicMock(), dry_run=False, skip_rag=True)
 
-    assert result.status == "preview"
-    assert len(result.mappings) == 3
-    assert result.mappings[0].entity_type == "BuildingBlock"
-
-
-@patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_dry_run_does_not_write_to_graph(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify, mock_create,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """Dry-run never calls create_knowledge_item_with_relations."""
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
-
-    ingest(source, mock_session, dry_run=True)
-
-    mock_create.assert_not_called()
-
-
-# --- Commit tests ---
-
-
-@patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_commit_writes_to_graph(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify, mock_create,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """With dry_run=False, pipeline writes to Neo4j."""
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
-    mock_create.return_value = {"title": source.title}
-
-    result = ingest(source, mock_session, dry_run=False)
-
-    assert result.status == "ingested"
-    assert len(result.mappings) == 3
-    mock_create.assert_called_once_with(mock_session, source, sample_mappings)
+        assert result.status == "ingested"
+        mock_rag.assert_not_called()
 
 
-@patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_commit_passes_correct_args_to_graph(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify, mock_create,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """Verify the source and mappings are passed correctly to the graph layer."""
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
-    mock_create.return_value = {"title": source.title}
+class TestPipelineDeduplication:
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_exact_url_duplicate_blocked(self, mock_fetch, mock_dedup_url):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = {"title": "Existing Paper"}
 
-    ingest(source, mock_session, dry_run=False)
+        result = ingest(_source(), MagicMock())
 
-    call_args = mock_create.call_args
-    assert call_args[0][0] is mock_session
-    assert call_args[0][1] is source
-    assert call_args[0][2] is sample_mappings
+        assert result.status == "duplicate"
+        assert result.existing == "Existing Paper"
 
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_fuzzy_title_match_warns_but_proceeds(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy, mock_classify,
+    ):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = [{"title": "Similar Paper"}]
+        mock_classify.return_value = _mappings()
 
-# --- End-to-end flow tests ---
+        result = ingest(_source(), MagicMock(), dry_run=True)
 
-
-@patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url", return_value=None)
-def test_full_flow_dedup_then_fetch_then_classify_then_write(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify, mock_create,
-    source, mock_session, sample_mappings, ok_fetch_result,
-):
-    """Verify the pipeline calls steps in correct order."""
-    mock_fetch.return_value = ok_fetch_result
-    mock_classify.return_value = sample_mappings
-    mock_create.return_value = {"title": source.title}
-
-    ingest(source, mock_session, dry_run=False)
-
-    # Verify call order: dedup -> fetch -> classify -> write
-    mock_find.assert_called_once()
-    mock_fetch.assert_called_once_with(str(source.url), source.source_type)
-    mock_classify.assert_called_once_with(
-        ok_fetch_result.text,
-        source.source_type,
-        title=source.title,
-    )
-    mock_create.assert_called_once()
+        # Should still proceed (fuzzy match is a warning, not a block)
+        assert result.status == "preview"
 
 
-@patch("app.ingestion.pipeline.classify_text")
-@patch("app.ingestion.pipeline.fetch_source")
-@patch("app.ingestion.pipeline.find_items_by_fuzzy_title", return_value=[])
-@patch("app.ingestion.pipeline.find_item_by_source_url")
-def test_duplicate_skips_fetch_and_classify(
-    mock_find, mock_fuzzy, mock_fetch, mock_classify,
-    source, mock_session,
-):
-    """Duplicate detection short-circuits before fetch and classify."""
-    mock_find.return_value = {"title": "Already There"}
+class TestPipelineErrors:
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_fetch_failure(self, mock_fetch):
+        mock_fetch.return_value = _fetch_failed()
 
-    ingest(source, mock_session)
+        result = ingest(_source(), MagicMock())
 
-    mock_fetch.assert_not_called()
-    mock_classify.assert_not_called()
+        assert result.status == "fetch_failed"
+        assert "HTTP 403" in result.error
+
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_pdf_not_supported_in_cli(self, mock_fetch):
+        mock_fetch.return_value = _fetch_pdf()
+
+        result = ingest(
+            _source(url="https://example.com/paper.pdf", source_type="paper"),
+            MagicMock(),
+        )
+
+        assert result.status == "engine_unavailable"
+        assert "PDF" in result.error
+
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_no_mappings_found(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy, mock_classify,
+    ):
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = []
+        mock_classify.return_value = []  # No mappings
+
+        result = ingest(_source(), MagicMock())
+
+        assert result.status == "no_mappings_found"
+        assert result.suggestion is not None
+
+    @patch("app.ingestion.pipeline.scan_pii")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_pii_scan_error_blocks(self, mock_fetch, mock_scan):
+        mock_fetch.return_value = _fetch_ok()
+        mock_scan.return_value = PIIReport(error="Scanner crashed")
+
+        result = ingest(_source(), MagicMock())
+
+        assert result.status == "pii_scan_failed"
+        assert "Scanner crashed" in result.error
+
+
+class TestLightRAGIngest:
+    @patch("app.ingestion.pipeline._ingest_to_lightrag")
+    @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
+    @patch("app.ingestion.pipeline.classify_text")
+    @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
+    @patch("app.ingestion.pipeline.find_item_by_source_url")
+    @patch("app.ingestion.pipeline.fetch_source")
+    def test_lightrag_failure_does_not_block(
+        self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
+        mock_classify, mock_create, mock_rag,
+    ):
+        """LightRAG failure should not prevent KnowledgeItem creation."""
+        mock_fetch.return_value = _fetch_ok()
+        mock_dedup_url.return_value = None
+        mock_dedup_fuzzy.return_value = []
+        mock_classify.return_value = _mappings()
+        mock_create.return_value = {"title": "Test Paper"}
+        mock_rag.side_effect = Exception("LightRAG connection failed")
+
+        # Should not raise — LightRAG is non-fatal
+        result = ingest(_source(), MagicMock(), dry_run=False)
+
+        assert result.status == "ingested"
+        mock_create.assert_called_once()

@@ -1,129 +1,171 @@
-"""Gemini-based taxonomy classifier for the BeeHaive knowledge graph.
+"""Gemini-based taxonomy classifier for ingestion pipeline.
 
-Classifies text into BeeHaive taxonomy entities (BuildingBlocks, Guardrails,
-Topics, Authors) using Google's Gemini 2.5 Flash via the google-genai SDK.
+Classifies text into the BeeHaive taxonomy (BuildingBlocks, Guardrails,
+Topics, Authors) using Gemini 2.5 Flash with structured output.
 
-Text is PII-redacted before being sent to the API (see fetcher.py).
+Uses the google-genai SDK directly (not OpenAI-compatible) because native
+Gemini structured output with response_schema gives more reliable parsing
+than the OpenAI compatibility layer.
+
+PII safety: callers must ensure text is PII-redacted before calling
+classify_text(). This module does NOT perform PII checks.
 """
 
 import logging
 import os
 import time
+from typing import Any
 
 from google import genai
 from google.genai import types
 
-from app.models.ingestion import SourceType, TaxonomyMapping
+from app.models.ingestion import EntityType, SourceType, TaxonomyMapping
 
 logger = logging.getLogger(__name__)
 
-GEMINI_MODEL = "gemini-2.5-flash-preview-05-20"
-CONFIDENCE_THRESHOLD = 0.7
-REQUEST_TIMEOUT = 30
-MAX_RETRIES = 2
+# Gemini client — initialised lazily
+_client: genai.Client | None = None
 
-# The BeeHaive taxonomy — used in the system prompt for classification.
-BUILDING_BLOCKS = {
-    "Knowledge": "Het fundament: alle kennis die het AI-systeem voedt. Documenten, whitepapers, artikelen en kennisbanken.",
-    "Client Blueprint": "Gestructureerd profiel van de klant/gebruiker. Context over doelen, branche, kennisniveau.",
-    "Dynamic Context": "Real-time context voor het AI-model. Combineert kennisbank, klantprofiel en conversatie.",
-    "Prompt Design": "Gestructureerde prompt templates en chains voor consistente AI-output.",
-    "Tool Integration": "Externe tools en APIs die het AI-systeem kan aanroepen.",
-    "Model Engines": "De AI-modellen die worden ingezet, inclusief fallback en routing.",
-    "Evaluation Loop": "Continue evaluatie van AI-output kwaliteit en feedback loops.",
+# Model for classification
+_CLASSIFY_MODEL = os.getenv("GEMINI_CLASSIFY_MODEL", "gemini-2.5-flash")
+
+# Confidence threshold — mappings below this are logged but not returned
+_CONFIDENCE_THRESHOLD = 0.7
+
+# Retry config
+_MAX_RETRIES = 2
+_BACKOFF_BASE = 2.0
+_TIMEOUT_SECONDS = 30
+
+# The BeeHaive taxonomy — must match seed.py exactly
+_BUILDING_BLOCKS = {
+    "Knowledge": "Het fundament: kennisbronnen, documenten, data die het AI-systeem voedt.",
+    "Client Blueprint": "Klantprofiel en context — wie is de gebruiker, wat is het doel.",
+    "Dynamic Context": "Real-time context: sessie-informatie, recente interacties, omgevingsvariabelen.",
+    "Prompt Design": "Prompt engineering: instructies, templates, few-shot examples.",
+    "Tool Integration": "Externe tools en API's die het AI-systeem kan aanroepen.",
+    "Model Engines": "De AI-modellen zelf: selectie, configuratie, fine-tuning.",
+    "Evaluation Loop": "Evaluatie en feedback: kwaliteitsmetrieken, menselijke feedback, continue verbetering.",
 }
 
-GUARDRAILS = {
-    "Human Agency": "Mensen behouden controle over AI-beslissingen, oversight en interventie.",
-    "Robustness": "Technisch robuust, veilig en betrouwbaar. Bescherming tegen fouten en aanvallen.",
-    "Privacy": "Persoonsgegevens beschermd conform AVG/GDPR. Data minimalisatie.",
-    "Fairness": "Eerlijke, niet-discriminerende AI-output. Aandacht voor bias.",
-    "Transparency": "Transparant over wanneer en hoe AI wordt ingezet. Bronvermelding.",
-    "Well-being": "Draagt bij aan maatschappelijk welzijn, minimaliseert milieu-impact.",
-    "Accountability": "Duidelijke verantwoordelijkheid, audit trails en governance.",
+_GUARDRAILS = {
+    "Human Agency": "Menselijke controle en oversight over AI-beslissingen (EU: Human agency & oversight).",
+    "Robustness": "Technische robuustheid, veiligheid en betrouwbaarheid (EU: Technical robustness & safety).",
+    "Privacy": "Privacy en datagovernance, AVG-compliance (EU: Privacy & data governance).",
+    "Fairness": "Diversiteit, non-discriminatie en eerlijkheid (EU: Diversity, non-discrimination & fairness).",
+    "Transparency": "Transparantie, uitlegbaarheid en traceerbaarheid (EU: Transparency).",
+    "Well-being": "Maatschappelijk en ecologisch welzijn (EU: Societal & environmental well-being).",
+    "Accountability": "Verantwoording, auditability en governance (EU: Accountability).",
 }
 
-SYSTEM_PROMPT = """You are a taxonomy classifier for the BeeHaive AI knowledge framework.
+_SYSTEM_PROMPT = """Je bent een taxonomie-classifier voor het BeeHaive AI knowledge framework.
 
-Given a text (title + content), classify it into the BeeHaive taxonomy.
+Je taak: classificeer de gegeven tekst naar de BeeHaive-taxonomie.
 
-## BuildingBlocks (match 1-3 that are most relevant)
+## Building Blocks (7 stuks)
 {building_blocks}
 
-## Guardrails (match 1-3 that are most relevant)
+## Guardrails (7 stuks — gebaseerd op EU Trustworthy AI)
 {guardrails}
 
-## Topics
-Extract 1-5 topic keywords from the text. Use short, specific terms (e.g. "RAG", "AI Ethics", "EU AI Act"). Reuse existing topics when appropriate.
-
-## Authors
-Extract author names from the text. Only include names explicitly mentioned as authors. For organisations, use the organisation name. Do NOT invent authors.
-
-## Rules
-- Only return mappings you are confident about (confidence >= 0.7)
-- For BuildingBlocks and Guardrails: match against the EXACT names listed above
-- For Topics: use concise, reusable terms
-- For Authors: use the name as written in the source
-- Return an empty array if the text is not classifiable
+## Regels
+1. Match BuildingBlocks en Guardrails ALLEEN op de exacte namen hierboven.
+2. Extraheer Topics als korte termen (1-3 woorden, Engels). Max 5 topics.
+3. Extraheer Authors (organisaties of personen). Gebruik de naam zoals in de tekst.
+4. Geef per mapping een confidence score (0.0-1.0).
+5. Wees selectief: alleen mappings die duidelijk uit de tekst volgen.
+6. Een tekst kan meerdere BuildingBlocks en Guardrails raken.
 """.format(
-    building_blocks="\n".join(f"- **{k}**: {v}" for k, v in BUILDING_BLOCKS.items()),
-    guardrails="\n".join(f"- **{k}**: {v}" for k, v in GUARDRAILS.items()),
+    building_blocks="\n".join(
+        f"- **{name}**: {desc}" for name, desc in _BUILDING_BLOCKS.items()
+    ),
+    guardrails="\n".join(
+        f"- **{name}**: {desc}" for name, desc in _GUARDRAILS.items()
+    ),
 )
 
 # Structured output schema for Gemini
-RESPONSE_SCHEMA = types.Schema(
-    type=types.Type.ARRAY,
-    items=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "entity_type": types.Schema(
-                type=types.Type.STRING,
-                enum=["BuildingBlock", "Guardrail", "Topic", "Author"],
+_RESPONSE_SCHEMA = types.Schema(
+    type=types.Type.OBJECT,
+    properties={
+        "mappings": types.Schema(
+            type=types.Type.ARRAY,
+            items=types.Schema(
+                type=types.Type.OBJECT,
+                properties={
+                    "entity_text": types.Schema(
+                        type=types.Type.STRING,
+                        description="The text fragment that triggered this mapping",
+                    ),
+                    "entity_type": types.Schema(
+                        type=types.Type.STRING,
+                        enum=["BuildingBlock", "Guardrail", "Topic", "Author"],
+                        description="The taxonomy category",
+                    ),
+                    "matched_name": types.Schema(
+                        type=types.Type.STRING,
+                        description="The canonical name in the BeeHaive taxonomy",
+                    ),
+                    "confidence": types.Schema(
+                        type=types.Type.NUMBER,
+                        description="Confidence score between 0.0 and 1.0",
+                    ),
+                },
+                required=["entity_text", "entity_type", "matched_name", "confidence"],
             ),
-            "matched_name": types.Schema(type=types.Type.STRING),
-            "confidence": types.Schema(type=types.Type.NUMBER),
-        },
-        required=["entity_type", "matched_name", "confidence"],
-    ),
+        ),
+    },
+    required=["mappings"],
 )
 
 
 def _get_client() -> genai.Client:
-    """Create a Gemini client. Raises ValueError if API key is missing."""
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError(
-            "GEMINI_API_KEY not set. Get one at https://aistudio.google.com/apikey"
-        )
-    return genai.Client(api_key=api_key)
+    """Get or create the Gemini client (lazy init)."""
+    global _client
+    if _client is None:
+        api_key = os.getenv("GEMINI_API_KEY", "")
+        if not api_key:
+            raise ValueError(
+                "GEMINI_API_KEY is not set. "
+                "Get a key at https://aistudio.google.com/apikey"
+            )
+        _client = genai.Client(api_key=api_key)
+    return _client
 
 
-def _validate_mapping(raw: dict) -> TaxonomyMapping | None:
-    """Validate a single raw mapping from Gemini output.
+def _validate_mapping(raw: dict[str, Any]) -> TaxonomyMapping | None:
+    """Validate and convert a raw mapping dict to a TaxonomyMapping.
 
-    Returns None if the mapping is invalid (unknown entity type,
-    unknown BuildingBlock/Guardrail name, or below confidence threshold).
+    Returns None if the mapping is invalid (wrong entity_type, unknown
+    BuildingBlock/Guardrail name, etc.).
     """
-    entity_type = raw.get("entity_type")
-    matched_name = raw.get("matched_name", "").strip()
+    entity_type = raw.get("entity_type", "")
+    matched_name = raw.get("matched_name", "")
     confidence = raw.get("confidence", 0.0)
 
-    if not matched_name or confidence < CONFIDENCE_THRESHOLD:
+    # Validate entity_type
+    valid_types: set[EntityType] = {"BuildingBlock", "Guardrail", "Topic", "Author"}
+    if entity_type not in valid_types:
+        logger.debug("Skipping unknown entity_type: %s", entity_type)
         return None
 
-    # Validate that BuildingBlock/Guardrail names match the taxonomy
-    if entity_type == "BuildingBlock" and matched_name not in BUILDING_BLOCKS:
-        logger.warning("Unknown BuildingBlock from LLM: %s", matched_name)
+    # Validate matched_name for fixed taxonomy entities
+    if entity_type == "BuildingBlock" and matched_name not in _BUILDING_BLOCKS:
+        logger.warning(
+            "LLM returned unknown BuildingBlock '%s' — skipping", matched_name
+        )
         return None
-    if entity_type == "Guardrail" and matched_name not in GUARDRAILS:
-        logger.warning("Unknown Guardrail from LLM: %s", matched_name)
+    if entity_type == "Guardrail" and matched_name not in _GUARDRAILS:
+        logger.warning(
+            "LLM returned unknown Guardrail '%s' — skipping", matched_name
+        )
         return None
-    if entity_type not in ("BuildingBlock", "Guardrail", "Topic", "Author"):
-        logger.warning("Unknown entity_type from LLM: %s", entity_type)
-        return None
+
+    # Clamp confidence to [0, 1]
+    confidence = max(0.0, min(1.0, float(confidence)))
 
     return TaxonomyMapping(
-        entity_text=matched_name,
+        entity_text=raw.get("entity_text", ""),
         entity_type=entity_type,
         matched_name=matched_name,
         match_method="llm",
@@ -132,81 +174,109 @@ def _validate_mapping(raw: dict) -> TaxonomyMapping | None:
 
 
 def classify_text(
-    text: str, source_type: SourceType, title: str = ""
+    text: str,
+    source_type: SourceType,
+    title: str = "",
+    confidence_threshold: float = _CONFIDENCE_THRESHOLD,
 ) -> list[TaxonomyMapping]:
-    """Classify text into BeeHaive taxonomy entities via Gemini.
+    """Classify text into the BeeHaive taxonomy via Gemini.
 
     Args:
-        text: The (PII-redacted) document text.
+        text: PII-redacted source text to classify.
         source_type: Type of source (paper, regulation, etc.).
         title: Optional title for additional context.
+        confidence_threshold: Minimum confidence to include a mapping.
 
     Returns:
-        List of validated TaxonomyMappings above confidence threshold.
+        List of TaxonomyMapping objects with confidence >= threshold.
         Returns empty list on API failure (graceful degradation).
     """
     if not text.strip():
+        logger.warning("classify_text called with empty text")
         return []
 
-    user_prompt = f"Title: {title}\nType: {source_type}\n\nText:\n{text[:8000]}"
+    # Truncate very long texts — Gemini Flash handles ~1M tokens but
+    # we don't need the full text for classification
+    max_chars = 30_000
+    truncated = text[:max_chars]
+    if len(text) > max_chars:
+        logger.info("Text truncated from %d to %d chars for classification", len(text), max_chars)
 
-    client = _get_client()
+    user_prompt = f"Titel: {title}\nType: {source_type}\n\n{truncated}"
 
-    for attempt in range(MAX_RETRIES + 1):
+    last_error: str | None = None
+    for attempt in range(_MAX_RETRIES + 1):
         try:
+            client = _get_client()
             response = client.models.generate_content(
-                model=GEMINI_MODEL,
+                model=_CLASSIFY_MODEL,
                 contents=user_prompt,
                 config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
+                    system_instruction=_SYSTEM_PROMPT,
                     response_mime_type="application/json",
-                    response_schema=RESPONSE_SCHEMA,
+                    response_schema=_RESPONSE_SCHEMA,
                     temperature=0.1,
-                    http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT * 1000),
+                    http_options=types.HttpOptions(timeout=_TIMEOUT_SECONDS * 1000),
                 ),
             )
 
-            raw_mappings = response.parsed
-            if raw_mappings is None:
-                logger.warning("Gemini returned no parseable response")
-                return []
+            # Parse structured output
+            import json
 
-            mappings = []
+            raw_data = json.loads(response.text)
+            raw_mappings = raw_data.get("mappings", [])
+
+            # Validate and filter
+            all_mappings: list[TaxonomyMapping] = []
+            below_threshold: list[tuple[str, str, float]] = []
+
             for raw in raw_mappings:
-                # response.parsed returns model objects; convert to dict
-                raw_dict = (
-                    raw if isinstance(raw, dict) else raw.model_dump()
-                    if hasattr(raw, "model_dump") else dict(raw)
-                )
-                validated = _validate_mapping(raw_dict)
-                if validated:
-                    mappings.append(validated)
-                else:
-                    logger.debug(
-                        "Mapping below threshold or invalid: %s", raw_dict
+                mapping = _validate_mapping(raw)
+                if mapping is None:
+                    continue
+                if mapping.confidence < confidence_threshold:
+                    below_threshold.append(
+                        (mapping.entity_type, mapping.matched_name, mapping.confidence)
                     )
+                    continue
+                all_mappings.append(mapping)
+
+            if below_threshold:
+                logger.info(
+                    "Filtered %d mappings below threshold %.1f: %s",
+                    len(below_threshold),
+                    confidence_threshold,
+                    below_threshold,
+                )
 
             logger.info(
-                "Classified '%s': %d mappings (from %d raw)",
-                title or text[:50],
-                len(mappings),
-                len(raw_mappings),
+                "Classified '%s': %d mappings (BB=%d, GR=%d, Topic=%d, Author=%d)",
+                title or "(untitled)",
+                len(all_mappings),
+                sum(1 for m in all_mappings if m.entity_type == "BuildingBlock"),
+                sum(1 for m in all_mappings if m.entity_type == "Guardrail"),
+                sum(1 for m in all_mappings if m.entity_type == "Topic"),
+                sum(1 for m in all_mappings if m.entity_type == "Author"),
             )
-            return mappings
+            return all_mappings
 
         except Exception as e:
-            if attempt < MAX_RETRIES:
-                wait = 2 ** (attempt + 1)
+            last_error = str(e)
+            if attempt < _MAX_RETRIES:
+                backoff = _BACKOFF_BASE ** (attempt + 1)
                 logger.warning(
-                    "Gemini API error (attempt %d/%d): %s. Retrying in %ds.",
+                    "Gemini classify attempt %d failed: %s. Retrying in %.0fs",
                     attempt + 1,
-                    MAX_RETRIES + 1,
-                    e,
-                    wait,
+                    last_error,
+                    backoff,
                 )
-                time.sleep(wait)
+                time.sleep(backoff)
             else:
                 logger.error(
-                    "Gemini API failed after %d attempts: %s", MAX_RETRIES + 1, e
+                    "Gemini classify failed after %d attempts: %s",
+                    _MAX_RETRIES + 1,
+                    last_error,
                 )
-                return []
+
+    # Graceful degradation: return empty mappings
+    return []

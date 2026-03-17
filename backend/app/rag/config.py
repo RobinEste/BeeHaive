@@ -1,22 +1,27 @@
 """RAG pipeline configuration.
 
-Centralises all settings for the vLLM-MLX server and RAG-Anything/LightRAG.
+Centralises all settings for the LLM/embedding API and RAG-Anything/LightRAG.
 Values come from environment variables with sensible dev defaults.
+
+Default provider: Gemini via OpenAI-compatible endpoint (ADR-2026-003).
 """
 
 import os
 
-# vLLM-MLX server (runs locally on Apple Silicon)
-VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", "http://localhost:8100/v1")
-VLLM_API_KEY = os.getenv("VLLM_API_KEY", "dummy-key")
+# LLM API (OpenAI-compatible endpoint)
+# Default: Gemini 2.5 Flash via Google AI Studio
+LLM_BASE_URL = os.getenv(
+    "LLM_BASE_URL",
+    "https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+LLM_API_KEY = os.getenv("GEMINI_API_KEY", "")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.5-flash")
 
-# Model names (must match what vLLM-MLX is serving)
-LLM_MODEL = os.getenv("LLM_MODEL", "mlx-community/Qwen3.5-9B-4bit")
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "mlx-community/multilingual-e5-large-mlx")
-
-# Embedding dimensions for multilingual-e5-large
-EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "1024"))
-EMBEDDING_MAX_TOKENS = int(os.getenv("EMBEDDING_MAX_TOKENS", "512"))
+# Embedding model (same OpenAI-compatible endpoint)
+# Default: Gemini text-embedding-004 (768 dimensions)
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-004")
+EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "768"))
+EMBEDDING_MAX_TOKENS = int(os.getenv("EMBEDDING_MAX_TOKENS", "2048"))
 
 # LightRAG / RAG-Anything storage
 RAG_WORKING_DIR = os.getenv("RAG_WORKING_DIR", "./rag_storage")

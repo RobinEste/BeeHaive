@@ -1,4 +1,4 @@
-.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix
+.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix ingest-item
 
 setup:
 	python3 -m venv .venv
@@ -35,4 +35,4 @@ graph-reset:
 ingest-item:
 	.venv/bin/python backend/scripts/ingest_item.py \
 		--url "$(URL)" --title "$(TITLE)" --type "$(TYPE)" \
-		$(if $(COMMIT),--commit,)
+		$(if $(COMMIT),--commit,) $(if $(SKIP_RAG),--skip-rag,)
