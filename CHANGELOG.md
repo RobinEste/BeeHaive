@@ -9,6 +9,14 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Kalibratiescript, DATA_GLOSSARY, blocked_authors + Gemini 3.1 Pro upgrade (#7)
+  - `calibrate_mapper.py` — valideert taxonomy mapper tegen seed.py (BB 77%, GR 74% precision)
+  - `DATA_GLOSSARY.md` — verwerkingsregister met LIA, bezwaarprocedure Art. 21, data flow diagram
+  - `blocked_authors.txt` + fail-secure check in pipeline (Art. 21 AVG)
+  - Gemini 3.1 Pro als default classifier (was 2.5 Flash)
+  - BB/GR definities afgestemd op Notion framework-beschrijvingen
+  - seed.py Knowledge-labels herzien naar Notion-definitie (menselijke expertise)
+  - `make calibrate` target, PLAN-007 v7
 - Ingestion pipeline fase 2-3: taxonomy mapper, orchestrator, CLI, dual ingest (#7)
   - `llm.py` — Gemini 2.5 Flash taxonomy classifier met structured output
   - `pipeline.py` — orchestrator: dedup → fetch → PII → classify → persist → LightRAG

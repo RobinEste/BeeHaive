@@ -32,7 +32,7 @@
 
 - [x] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
 - [x] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
-- [~] Stap 7: Ingestion pipeline voor knowledge items (#7) — Fase 1-3 klaar (fetcher, PII, mutations, Gemini mapper, orchestrator, CLI, dual ingest). Rest: kalibratie, docs.
+- [x] Stap 7: Ingestion pipeline voor knowledge items (#7) — Compleet: fetcher, PII, mutations, Gemini 3.1 Pro mapper, orchestrator, CLI, dual ingest, kalibratie (BB 77%/GR 74%), DATA_GLOSSARY, blocked_authors.
 
 ### Fase 3: Frontend Website 🔴
 
