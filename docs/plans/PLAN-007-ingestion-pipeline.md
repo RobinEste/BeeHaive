@@ -2,7 +2,7 @@
 
 **Issue:** #7
 **Fase:** 2 — Knowledge Graph
-**Status:** Draft v6 (Fase 1-3 done, kalibratie open)
+**Status:** Draft v7 (Fase 1-3 done, kalibratie + verwerkingsregister)
 **Datum:** 2026-03-09
 
 ---
@@ -100,9 +100,12 @@ User prompt: de (geredacteerde) tekst + titel + source_type.
 
 Eenmalig script: `backend/scripts/calibrate_mapper.py`
 
-- Draait de mapper over de 34 bestaande items (tekst uit seed.py content)
-- Vergelijkt output met bestaande relaties in Neo4j (ground truth)
-- Rapporteert precision/recall per entity type
+- Draait de mapper over alle seed items (tekst uit seed.py `KNOWLEDGE_ITEMS`)
+- **Ground truth:** `seed.py` (authoritative), niet Neo4j — seed.py is de bron, Neo4j is afgeleide state
+- Pre-check: verifieert dat BB/GR namen in seed.py en llm.py overeenkomen
+- Rapporteert precision/recall per entity type op twee niveaus (threshold=0.0 en 0.7)
+- **Normatief:** BuildingBlock + Guardrail precision >= 70% (telt mee voor exitcode)
+- **Informatief:** Topic + Author metrics (ter indicatie, telt niet mee)
 - **Doel:** >= 70% precision op BuildingBlock en Guardrail mappings
 - **Prompt tuning:** pas de system prompt aan op basis van de resultaten
 
@@ -154,8 +157,9 @@ Update `docs/DATA_GLOSSARY.md` met de ingestion pipeline als verwerkingsactivite
 
 | Target | Beschrijving |
 |--------|-------------|
-| `make fetch-sources` | Download bronnen van de 34 seed items |
-| `make ingest-compare` | Ingest 34 items via LightRAG + vergelijk met handmatige graph |
+| ~~`make fetch-sources`~~ | ~~Download bronnen van de 34 seed items~~ — vervallen (LightRAG pivot v5) |
+| ~~`make ingest-compare`~~ | ~~Ingest 34 items via LightRAG + vergelijk met handmatige graph~~ — vervallen (LightRAG pivot v5) |
+| `make calibrate` | Kalibratiescript: vergelijk Gemini mapper met seed.py ground truth |
 | `make ingest-item URL=... TITLE=... TYPE=...` | Ingest één nieuw item (default: dry-run) |
 
 ---

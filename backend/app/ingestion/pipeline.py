@@ -10,6 +10,7 @@ LightRAG ingest (async, bridged via asyncio.run).
 
 import asyncio
 import logging
+from pathlib import Path
 
 from app.graph.mutations import create_knowledge_item_with_relations
 from app.graph.queries import find_item_by_source_url, find_items_by_fuzzy_title
@@ -22,6 +23,35 @@ from app.models.ingestion import (
 )
 
 logger = logging.getLogger(__name__)
+
+_BLOCKED_AUTHORS_PATH = Path(__file__).parent / "blocked_authors.txt"
+
+
+class ConfigurationError(Exception):
+    """Raised when a required configuration file is missing or unreadable."""
+
+
+def _load_blocked_authors() -> set[str]:
+    """Load blocked author names from blocked_authors.txt.
+
+    Fail-secure: if the file is missing or unreadable, raise
+    ConfigurationError — the pipeline must not proceed without
+    the blocklist being available (even if empty).
+    """
+    try:
+        text = _BLOCKED_AUTHORS_PATH.read_text(encoding="utf-8")
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        raise ConfigurationError(
+            f"blocked_authors.txt is missing or unreadable: {e}. "
+            f"Expected at {_BLOCKED_AUTHORS_PATH}. "
+            f"The file must exist (may be empty)."
+        ) from e
+
+    return {
+        line.strip().lower()
+        for line in text.splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
 
 
 def ingest(
@@ -116,6 +146,20 @@ def ingest(
             status="no_mappings_found",
             suggestion="No mappings found. Try with a different source or add mappings manually.",
         )
+
+    # --- Step 3b: Strip blocked authors (Art. 21 AVG) ---
+    blocked = _load_blocked_authors()
+    if blocked:
+        filtered = []
+        for m in mappings:
+            if m.entity_type == "Author" and m.matched_name.lower() in blocked:
+                logger.warning(
+                    'Author "%s" geblokkeerd via blocked_authors.txt — mapping overgeslagen',
+                    m.matched_name,
+                )
+                continue
+            filtered.append(m)
+        mappings = filtered
 
     # --- Step 4: Preview mode ---
     if dry_run:

@@ -60,6 +60,9 @@ rag_storage/
 # Fetched source documents (ingestion cache)
 data/fetched/
 
+# Calibration results (generated, per-run)
+backend/scripts/calibration-results.json
+
 # Temporary files
 *.tmp
 *.bak

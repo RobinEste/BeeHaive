@@ -1,4 +1,4 @@
-.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix ingest-item
+.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix ingest-item calibrate
 
 setup:
 	python3 -m venv .venv
@@ -36,3 +36,6 @@ ingest-item:
 	.venv/bin/python backend/scripts/ingest_item.py \
 		--url "$(URL)" --title "$(TITLE)" --type "$(TYPE)" \
 		$(if $(COMMIT),--commit,) $(if $(SKIP_RAG),--skip-rag,)
+
+calibrate:
+	.venv/bin/python backend/scripts/calibrate_mapper.py

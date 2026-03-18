@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 _client: genai.Client | None = None
 
 # Model for classification
-_CLASSIFY_MODEL = os.getenv("GEMINI_CLASSIFY_MODEL", "gemini-2.5-flash")
+_CLASSIFY_MODEL = os.getenv("GEMINI_CLASSIFY_MODEL", "gemini-3.1-pro-preview")
 
 # Confidence threshold — mappings below this are logged but not returned
 _CONFIDENCE_THRESHOLD = 0.7
@@ -39,23 +39,131 @@ _TIMEOUT_SECONDS = 30
 
 # The BeeHaive taxonomy — must match seed.py exactly
 _BUILDING_BLOCKS = {
-    "Knowledge": "Het fundament: kennisbronnen, documenten, data die het AI-systeem voedt.",
-    "Client Blueprint": "Klantprofiel en context — wie is de gebruiker, wat is het doel.",
-    "Dynamic Context": "Real-time context: sessie-informatie, recente interacties, omgevingsvariabelen.",
-    "Prompt Design": "Prompt engineering: instructies, templates, few-shot examples.",
-    "Tool Integration": "Externe tools en API's die het AI-systeem kan aanroepen.",
-    "Model Engines": "De AI-modellen zelf: selectie, configuratie, fine-tuning.",
-    "Evaluation Loop": "Evaluatie en feedback: kwaliteitsmetrieken, menselijke feedback, continue verbetering.",
+    "Knowledge": (
+        "Het samenspel van ervaring, vaardigheden, inzichten en attitude waarmee mensen "
+        "informatie, tools, AI-modellen en processen effectief inzetten. De centrale "
+        "competentielaag: technische kennis, proces-/taakgerichte expertise, en domeinspecifiek "
+        "begrip van context, regels en betekenis. "
+        "Checklist: domeinkennis, begrip AI-mogelijkheden én beperkingen, ervaring met "
+        "prompt-gebruik, vaardigheid met tooling, bewustzijn van risico's/bias/kwaliteit, "
+        "leercultuur, rolverdeling. "
+        "Niet: documenten of data zelf (→ Dynamic Context), tools (→ Tool Integration)."
+    ),
+    "Client Blueprint": (
+        "Een gestructureerde, end-to-end beschrijving van een AI-oplossing binnen een "
+        "specifieke klantcontext: doel, processen, gebruikersinteracties, agent-workflows, "
+        "datastromen en gewenste output. De brug tussen klantbehoefte en AI-architectuur. "
+        "Checklist: doel helder/afgebakend, processen/rollen/interacties beschreven, "
+        "output concreet en toetsbaar, data/context/bronnen duidelijk, agents/tools uitgewerkt, "
+        "risico's en randvoorwaarden benoemd, afgestemd met stakeholders. "
+        "Niet: algemene methodologieën zonder concrete AI-oplossingscontext."
+    ),
+    "Dynamic Context": (
+        "De actuele, taak- of domeinspecifieke informatie die een AI-oplossing tijdens "
+        "uitvoering ontvangt uit een knowledge base, dataset of externe bron. De variabele "
+        "laag bovenop het vaste systeemontwerp: inhoud kan voortdurend worden aangepast. "
+        "Checklist: bronbestanden actueel, duidelijk welke context wanneer ingevoegd, "
+        "irrelevante/verouderde context uitgesloten, privacy/datakwaliteit geborgd, "
+        "context gestructureerd opgeslagen, hoeveelheid afgestemd op model (tokens/limits). "
+        "Niet: vaste systeemprompts (→ Prompt Design), menselijke expertise (→ Knowledge)."
+    ),
+    "Prompt Design": (
+        "De systematische praktijk van het ontwerpen, structureren, testen en verfijnen "
+        "van prompts — inclusief rol, context, instructies, criteria en voorbeelden — "
+        "om AI-modellen consistente, relevante en betrouwbare output te laten produceren. "
+        "Checklist: heldere taakdefinitie, logische opbouw (rol→context→instructies→criteria→output), "
+        "correcte context, few-shot voorbeelden, formatting/output-structuur, edge-case testing, "
+        "periodieke herziening. "
+        "Niet: platforms die prompts beheren (→ Tool Integration)."
+    ),
+    "Tool Integration": (
+        "Het koppelen van externe systemen, databronnen, API's en software-tools aan een "
+        "AI-oplossing, zodat het model niet alleen antwoorden genereert maar ook acties "
+        "uitvoert, informatie ophaalt of processen aanstuurt. "
+        "Checklist: tools/systemen in kaart, APIs stabiel/gedocumenteerd/veilig, acties "
+        "afgebakend, foutafhandeling, logging/controle, fallback-mechanismen. "
+        "Inclusief: vector DBs, monitoring-platforms, test-toolkits, RPA, domeinapplicaties."
+    ),
+    "Model Engines": (
+        "De AI-modellen en runtime-omgevingen die de kernfunctionaliteit aandrijven. "
+        "Elk type model dat input verwerkt: taalmodellen, redeneermodellen, vision-modellen, "
+        "embedding-modellen, classificatiemodellen. Omvat het model zelf (architectuur, "
+        "parameters, trainingsbasis) én de operationele laag (runtime, APIs, optimalisaties). "
+        "Checklist: juiste modeltype per taak, latency/kosten/schaalbaarheid, inzicht in "
+        "trainingsbasis/beperkingen, function calling/reasoning/tools support, "
+        "veilige runtime, fallback-modellen, getest met prompts en context. "
+        "Niet: teksten die een model gebruiken zonder over modelkeuze/-werking te gaan."
+    ),
+    "Evaluation Loop": (
+        "De systematische, terugkerende cyclus waarin kwaliteit, betrouwbaarheid en "
+        "veiligheid van een AI-oplossing wordt gemeten aan de hand van expliciete criteria, "
+        "resultaten worden geanalyseerd en gerichte verbeteringen worden doorgevoerd. "
+        "Combineert gestructureerde evaluaties (testcases, datasets, metrics, LLM-as-judge, "
+        "menselijke beoordeling) met continue monitoring. "
+        "Checklist: evaluatiecriteria/metrics vooraf gedefinieerd, representatieve testcases, "
+        "automatische/handmatige beoordeling, fouten vastgelegd/geanalyseerd, "
+        "verbeteracties, risico's/bias gemonitord, periodiek (niet eenmalig). "
+        "Niet: eenmalige benchmarkresultaten of methodologie-evaluaties."
+    ),
 }
 
 _GUARDRAILS = {
-    "Human Agency": "Menselijke controle en oversight over AI-beslissingen (EU: Human agency & oversight).",
-    "Robustness": "Technische robuustheid, veiligheid en betrouwbaarheid (EU: Technical robustness & safety).",
-    "Privacy": "Privacy en datagovernance, AVG-compliance (EU: Privacy & data governance).",
-    "Fairness": "Diversiteit, non-discriminatie en eerlijkheid (EU: Diversity, non-discrimination & fairness).",
-    "Transparency": "Transparantie, uitlegbaarheid en traceerbaarheid (EU: Transparency).",
-    "Well-being": "Maatschappelijk en ecologisch welzijn (EU: Societal & environmental well-being).",
-    "Accountability": "Verantwoording, auditability en governance (EU: Accountability).",
+    "Human Agency": (
+        "AI-systemen moeten mensen versterken zodat zij weloverwogen beslissingen kunnen "
+        "nemen. Menselijke controle via HITL (elke beslissing controleren), HOTL (toezicht "
+        "op autonoom systeem), HIC (kaders vooraf bepalen). "
+        "Checklist: eindverantwoordelijkheid vastgelegd, impactvolle beslissingen met "
+        "menselijke controle, AI-gebruik zichtbaar in interface, override-mogelijkheden, "
+        "training tegen over-reliance. "
+        "Niet: elk systeem waar mensen betrokken zijn."
+    ),
+    "Robustness": (
+        "AI-systemen moeten veerkrachtig en veilig zijn: veilig functioneren met nood-/terugvalplan, "
+        "accuraat, betrouwbaar en reproduceerbaar. "
+        "Checklist: systematische tests (functioneel, edge-cases, adversarial), fail-safes bij "
+        "time-outs/fouten, kwaliteitsmonitoring (factuality, guardrail-violations, latencies), "
+        "rollback-mogelijkheden, incident-responsproces. "
+        "Niet: elke vermelding van 'veilig' of 'betrouwbaar' zonder concrete maatregelen."
+    ),
+    "Privacy": (
+        "Naast privacy en gegevensbescherming ook datagovernance: dataminimalisatie, "
+        "datakwaliteit, legitimiteit, eigenaarschap, beveiligde toegang. "
+        "Checklist: beleid welke data wél/niet verwerkt, dataminimalisatie in prompts/RAG/tools, "
+        "logging zonder onnodige persoonsgegevens, datastromen gedocumenteerd, "
+        "bewaartermijnen, DSAR-procedures, bijzondere persoonsgegevens uitgesloten. "
+        "Niet: algemene dataverwerking zonder privacyfocus."
+    ),
+    "Fairness": (
+        "Het systeem voorkomt systematische benadeling en ondersteunt inclusie en gelijke behandeling. "
+        "Checklist: bias-impact geïdentificeerd, testen met diverse persona's (leeftijd, regio, "
+        "taalniveau), feedbackmechanisme voor discriminerende output, gevoelige kenmerken "
+        "alleen met duidelijke reden, bias-risico's gedocumenteerd met mitigaties. "
+        "Niet: elke vermelding van 'eerlijkheid' in algemene zin."
+    ),
+    "Transparency": (
+        "Het moet helder zijn dát en hóe AI wordt ingezet, welke data en modellen zijn gebruikt "
+        "en hoe een antwoord tot stand komt. "
+        "Checklist: gebruikers geïnformeerd over AI-inzet, bronverwijzingen bij antwoorden, "
+        "uitleglaag (hoe antwoord tot stand kwam), modelkaart/systeemkaart, onzekerheid "
+        "expliciet benoemd, wijzigingen gedocumenteerd, documentatie toegankelijk. "
+        "Breed toepasbaar: alles wat beschrijft HOE of WAAROM AI tot een resultaat komt."
+    ),
+    "Well-being": (
+        "Het systeem draagt bij aan maatschappelijk welzijn en houdt rekening met milieu-impact "
+        "en langetermijneffecten. "
+        "Checklist: maatschappelijke doelen expliciet, impactscan uitgevoerd, digitale inclusie "
+        "(toegankelijkheid, taalniveau), macro-effecten gevolgd, energie-/compute-footprint "
+        "gemeten, efficiënte modelstrategie, function creep bewaakt. "
+        "Niet: elke business case zonder maatschappelijke dimensie."
+    ),
+    "Accountability": (
+        "Duidelijk wie verantwoordelijk is voor ontwerp, inzet, beheer en uitkomsten van het "
+        "AI-systeem, en hoe daarop kan worden toegezien. "
+        "Checklist: eigenaarschap vastgelegd (product-owner, data-owner, security-officer), "
+        "EU-principes gekoppeld aan controls, wijzigingslogboek voor modellen/prompts/datasets, "
+        "periodieke audits (ALTAI), klachtenproces met afhandelingstermijn. "
+        "Niet: elke tekst die 'verantwoordelijkheid' noemt zonder governance-structuur."
+    ),
 }
 
 _SYSTEM_PROMPT = """Je bent een taxonomie-classifier voor het BeeHaive AI knowledge framework.
@@ -70,11 +178,43 @@ Je taak: classificeer de gegeven tekst naar de BeeHaive-taxonomie.
 
 ## Regels
 1. Match BuildingBlocks en Guardrails ALLEEN op de exacte namen hierboven.
-2. Extraheer Topics als korte termen (1-3 woorden, Engels). Max 5 topics.
-3. Extraheer Authors (organisaties of personen). Gebruik de naam zoals in de tekst.
-4. Geef per mapping een confidence score (0.0-1.0).
-5. Wees selectief: alleen mappings die duidelijk uit de tekst volgen.
-6. Een tekst kan meerdere BuildingBlocks en Guardrails raken.
+2. Wees STRIKT selectief: map alleen waar de tekst substantieel over gaat.
+3. Typisch 1-2 BuildingBlocks en 1-2 Guardrails per tekst. Meer dan 3 is zeldzaam.
+4. Als een tekst meerdere Guardrails OPSOMT (bv. overzichtsartikel), map alleen de Guardrails die de tekst inhoudelijk uitdiept — niet alle genoemde.
+5. Extraheer Topics als korte termen (1-3 woorden, Engels). Max 5 topics.
+6. Extraheer Authors (organisaties of personen). Gebruik de naam zoals in de tekst.
+7. Geef per mapping een confidence score (0.0-1.0). Gebruik het VOLLEDIGE bereik: tangentieel = 0.2-0.4, redelijk verband = 0.5-0.6, duidelijk primair onderwerp = 0.7-0.8, kernonderwerp = 0.9+. Bij twijfel: geef 0.6.
+
+## Veelgemaakte fouten — let extra op:
+- **Knowledge** gaat over menselijke expertise en competentie, NIET over documenten, papers of databronnen. Een paper over RAG is geen Knowledge — het kan wel Dynamic Context of Tool Integration zijn.
+- **Evaluation Loop** is ALLEEN wanneer de tekst beschrijft hoe je een evaluatiesysteem BOUWT of INRICHT (metrics kiezen, A/B testing opzetten, feedback loops implementeren). NIET voor: teksten die benchmarkresultaten presenteren, een methodologie evalueren, monitoring terloops noemen, of testing als onderdeel van een groter verhaal bespreken. De meeste teksten zijn GEEN Evaluation Loop.
+- **Model Engines** gaat over modelkeuze en -werking, NIET over teksten die een model gebruiken.
+- **Tool Integration** gaat over tools als PRODUCT (platforms, SDKs, databases). Een tekst die tools als onderdeel van een breder framework bespreekt is niet automatisch Tool Integration.
+- **Robustness** gaat over concrete veiligheidsmaatregelen, NIET over elke vermelding van 'veilig'.
+
+## Voorbeelden
+
+Tekst: "The EU AI Act establishes a comprehensive framework for trustworthy AI, defining requirements for high-risk AI systems."
+→ BuildingBlock: Knowledge (kennisbron voor het framework)
+→ Guardrails: Transparency, Accountability
+NIET: Model Engines, Evaluation Loop. NIET alle 7 guardrails.
+
+Tekst: "Open source toolkit for systematic AI safety testing with adversarial prompts, bias detection, and CI/CD integration."
+→ BuildingBlocks: Tool Integration (het is een tool/toolkit), Evaluation Loop (systematisch testen)
+→ Guardrails: Robustness (aanvalsbestendigheid), Fairness (bias detectie)
+NIET: Model Engines (gaat niet over modelkeuze). NIET: Knowledge.
+
+Tekst: "Professional platform for developing, testing and monitoring prompts with version control, A/B testing, and real-time monitoring."
+→ BuildingBlocks: Evaluation Loop (A/B testing, monitoring), Tool Integration (het is een platform)
+→ Guardrails: Accountability (monitoring, versioning), Robustness (productie-monitoring)
+
+Tekst: "Open source vector database prioritizing data sovereignty with GDPR-compliant data handling and EU data residency."
+→ BuildingBlocks: Dynamic Context (vector search voor context), Tool Integration (database tool)
+→ Guardrail: Privacy (GDPR, data sovereignty)
+
+Tekst: "Comprehensive handbook covering prompt engineering from theory to practice, including token optimization, context management, and fine-tuning trade-offs."
+→ BuildingBlocks: Prompt Design (kernonderwerp), Model Engines (fine-tuning trade-offs)
+→ Guardrails: Transparency (het boek legt uit hoe technieken werken), Robustness (token optimization, context management)
 """.format(
     building_blocks="\n".join(
         f"- **{name}**: {desc}" for name, desc in _BUILDING_BLOCKS.items()
