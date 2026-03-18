@@ -9,6 +9,7 @@ LightRAG ingest (async, bridged via asyncio.run).
 """
 
 import asyncio
+import hashlib
 import logging
 from pathlib import Path
 
@@ -153,13 +154,21 @@ def ingest(
         filtered = []
         for m in mappings:
             if m.entity_type == "Author" and m.matched_name.lower() in blocked:
+                name_hash = hashlib.sha256(m.matched_name.lower().encode()).hexdigest()[:8]
                 logger.warning(
-                    'Author "%s" geblokkeerd via blocked_authors.txt — mapping overgeslagen',
-                    m.matched_name,
+                    "Author geblokkeerd via blocked_authors.txt — mapping overgeslagen (hash: %s)",
+                    name_hash,
                 )
                 continue
             filtered.append(m)
         mappings = filtered
+
+        if not mappings:
+            logger.warning("All mappings filtered after blocked-authors check for '%s'", source.title)
+            return IngestionResult(
+                status="no_mappings_found",
+                suggestion="All mappings were filtered (blocked authors). Add mappings manually if needed.",
+            )
 
     # --- Step 4: Preview mode ---
     if dry_run:

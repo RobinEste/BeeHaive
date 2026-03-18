@@ -66,7 +66,7 @@ Hercontrole van de opgehaalde tekst op resterende PII.
 Tekst naar Gemini API voor taxonomy mapping naar BuildingBlocks, Guardrails, Topics en Authors.
 
 - **Module:** `backend/app/ingestion/llm.py`
-- **Model:** Gemini 2.5 Flash
+- **Model:** Gemini 3.1 Pro
 - **Input:** PII-geredacteerde tekst + titel + source_type
 - **Output:** Lijst van `TaxonomyMapping` objecten met confidence score
 - **Drempel:** Mappings met confidence < 0.7 worden gefilterd
@@ -149,13 +149,13 @@ Tekst naar LightRAG vector store voor RAG query retrieval.
 
 | Naam | Beschrijving |
 |------|-------------|
-| Knowledge | Kennisbronnen die het AI-systeem voedt |
-| Client Blueprint | Klantprofiel en context |
-| Dynamic Context | Real-time context voor AI-interacties |
-| Prompt Design | Prompt engineering en templates |
-| Tool Integration | Externe tools en API's |
-| Model Engines | AI-modellen en configuratie |
-| Evaluation Loop | Evaluatie en continue verbetering |
+| Knowledge | Menselijke expertise en competentie: domeinkennis, AI-begrip, vaardigheid met tooling |
+| Client Blueprint | End-to-end beschrijving van een AI-oplossing: doel, processen, interacties, datastromen |
+| Dynamic Context | Actuele, taakspecifieke informatie die het model tijdens uitvoering ontvangt (RAG, queries) |
+| Prompt Design | Ontwerp, structuur en verfijning van prompts: rol, context, instructies, criteria |
+| Tool Integration | Koppeling van externe systemen, API's, databases en software aan de AI-oplossing |
+| Model Engines | AI-modellen en runtime-omgevingen: modelkeuze, architectuur, training, fallbacks |
+| Evaluation Loop | Systematische cyclus van meten en verbeteren: testcases, metrics, A/B tests, monitoring |
 
 ### Guardrails (7, gebaseerd op EU Trustworthy AI)
 

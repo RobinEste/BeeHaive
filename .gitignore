@@ -60,6 +60,9 @@ rag_storage/
 # Fetched source documents (ingestion cache)
 data/fetched/
 
+# Blocked authors list (may contain PII after Art. 21 requests)
+backend/app/ingestion/blocked_authors.txt
+
 # Calibration results (generated, per-run)
 backend/scripts/calibration-results.json
 

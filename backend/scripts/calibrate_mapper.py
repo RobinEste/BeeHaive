@@ -101,7 +101,7 @@ def compute_metrics(predicted: set, expected: set) -> dict:
     fp = len(predicted - expected)
     fn = len(expected - predicted)
 
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0  # geen voorspellingen = geen credit
     recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -219,7 +219,7 @@ def main():
             a = accum[threshold][et]
             tp, fp, fn = a["tp"], a["fp"], a["fn"]
 
-            precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
+            precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0  # geen voorspellingen = geen credit
             recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
             f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
 

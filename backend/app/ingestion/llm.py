@@ -1,7 +1,7 @@
 """Gemini-based taxonomy classifier for ingestion pipeline.
 
 Classifies text into the BeeHaive taxonomy (BuildingBlocks, Guardrails,
-Topics, Authors) using Gemini 2.5 Flash with structured output.
+Topics, Authors) using Gemini 3.1 Pro with structured output.
 
 Uses the google-genai SDK directly (not OpenAI-compatible) because native
 Gemini structured output with response_schema gives more reliable parsing

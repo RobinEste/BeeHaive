@@ -1,0 +1,6 @@
+# Blocked authors list (Art. 21 AVG bezwaarprocedure)
+# One name per line, case-insensitive.
+# Lines starting with # are comments.
+#
+# Copy this file to blocked_authors.txt and add names as needed.
+# blocked_authors.txt is gitignored to prevent PII in version control.
