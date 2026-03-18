@@ -7,12 +7,12 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | Categorie | Aantal |
 |-----------|--------|
 | security | 1 |
-| avg-privacy | 1 |
-| architectuur | 7 |
-| development | 5 |
+| avg-privacy | 2 |
+| architectuur | 8 |
+| development | 7 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **16** |
+| **Totaal** | **20** |
 
 ## Inzichten
 
@@ -34,3 +34,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-014 | asyncio.run() bridge patroon voor sync→async in gemengde contexten | architectuur | 2026-03-17 | hoog |
 | KNW-2026-015 | Dual ingest met zichtbare graceful degradation | architectuur | 2026-03-17 | hoog |
 | KNW-2026-016 | Goedkope checks vóór dure I/O in pipelines | development | 2026-03-17 | midden |
+| KNW-2026-017 | Discriminatieve LLM-definities: "wat het IS" + "wat het NIET is" | development | 2026-03-18 | hoog |
+| KNW-2026-018 | Single source of truth voor LLM-gestuurde classificatie | architectuur | 2026-03-18 | hoog |
+| KNW-2026-019 | Art. 21 bezwaar-implementatie: hash PII, gitignore blocklists | avg-privacy | 2026-03-18 | hoog |
+| KNW-2026-020 | Gemini model generatie-sprong: altijd nieuwste modellen checken | development | 2026-03-18 | midden |
