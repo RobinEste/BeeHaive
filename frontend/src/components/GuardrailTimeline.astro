@@ -13,8 +13,8 @@ const guardrails = [
 <section class="guardrails-section" id="guardrails">
   <div class="guardrails-layout">
     <div class="guardrail-info">
-      <div class="section-eyebrow">EU Trustworthy AI</div>
-      <div class="section-title">7 Guardrails</div>
+      <div class="eyebrow">EU Trustworthy AI</div>
+      <h2 class="section-title">7 Guardrails</h2>
       <p class="section-intro">Verantwoorde AI is geen bijzaak — het is ingebouwd in het framework. Zeven waarborgen op basis van de EU-richtlijnen voor betrouwbare AI.</p>
       <div class="guardrail-callout">
         <p>De guardrails zijn direct gekoppeld aan de EU AI Act en de HLEG-richtlijnen — zodat je platform niet alleen werkt, maar ook klopt.</p>
@@ -64,45 +64,6 @@ const guardrails = [
     z-index: 1;
   }
 
-  .section-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .section-eyebrow::after {
-    content: '';
-    width: 32px;
-    height: 1.5px;
-    background: var(--teal);
-    opacity: 0.5;
-  }
-
-  .section-title {
-    font-size: clamp(2.2rem, 3.8vw, 3.5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    margin-bottom: 1rem;
-    line-height: 1.12;
-  }
-
-  .section-intro {
-    font-size: 1rem;
-    line-height: 1.78;
-    color: var(--text-dim);
-    max-width: 560px;
-    margin-bottom: 3.5rem;
-    font-weight: 300;
-  }
-
   .guardrail-callout {
     background: rgba(68, 194, 186, 0.07);
     border: 1px solid var(--border-2);
@@ -150,7 +111,7 @@ const guardrails = [
     border-radius: 50%;
     background: var(--bg);
     border: 2px solid var(--teal);
-    transition: all 0.3s;
+    transition: background 0.3s, box-shadow 0.3s;
   }
 
   .g-item:hover .g-dot {

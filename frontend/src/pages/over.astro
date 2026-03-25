@@ -4,22 +4,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Over ons — BeeHaive">
   <section class="page-hero">
-    <div class="section-eyebrow">Over BeeHaive</div>
+    <div class="eyebrow">Over BeeHaive</div>
     <h1>AI-kennis,<br/>gestructureerd.</h1>
     <p class="page-intro">BeeHaive is een AI knowledge framework voor Nederlandse professionals. We structureren AI-kennis in 7 bouwstenen en 7 waarborgen — zodat je niet alleen weet wát AI kan, maar ook hoe je het goed doet.</p>
   </section>
 
   <section class="about-content">
     <div class="about-grid">
-      <div class="about-card">
+      <div class="about-card card-glow-left">
         <h3>Het framework</h3>
         <p>7 Building Blocks dekken alle aspecten van een AI-project: van menselijke expertise tot evaluatie. 7 Guardrails waarborgen verantwoorde AI op basis van de EU Trustworthy AI richtlijnen.</p>
       </div>
-      <div class="about-card">
+      <div class="about-card card-glow-left">
         <h3>De kennisbank</h3>
         <p>Gecureerde papers, regulering en best practices — automatisch geclassificeerd en gekoppeld aan het framework via onze knowledge graph.</p>
       </div>
-      <div class="about-card">
+      <div class="about-card card-glow-left">
         <h3>De missie</h3>
         <p>AI toegankelijk en verantwoord maken voor Nederlandse professionals. Geen hype, maar structuur en inzicht.</p>
       </div>
@@ -28,44 +28,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 8rem 5% 4rem;
-  }
-
-  .section-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .section-eyebrow::after {
-    content: '';
-    width: 32px;
-    height: 1.5px;
-    background: var(--teal);
-    opacity: 0.5;
-  }
-
-  h1 {
-    color: var(--text);
-    margin-bottom: 1.5rem;
-  }
-
-  .page-intro {
-    font-size: 1.12rem;
-    line-height: 1.8;
-    color: var(--text-dim);
-    max-width: 600px;
-    font-weight: 300;
-  }
-
   .about-content {
     padding: 2rem 5% 7rem;
   }
@@ -83,17 +45,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 2.2rem;
     position: relative;
     overflow: hidden;
-  }
-
-  .about-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--teal);
-    box-shadow: 0 0 16px rgba(68, 194, 186, 0.5);
   }
 
   .about-card h3 {

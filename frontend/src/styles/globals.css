@@ -132,6 +132,44 @@ code, pre, .mono {
   opacity: 0.5;
 }
 
+/* Section titles */
+.section-title {
+  font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 1rem;
+  line-height: 1.12;
+}
+
+.section-intro {
+  font-size: 1rem;
+  line-height: 1.78;
+  color: var(--text-dim);
+  max-width: 560px;
+  margin-bottom: 3.5rem;
+  font-weight: 300;
+}
+
+/* Page hero — shared across subpages */
+.page-hero {
+  padding: 8rem 5% 4rem;
+  position: relative;
+}
+
+.page-hero h1 {
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.page-intro {
+  font-size: 1.12rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+  max-width: 600px;
+  font-weight: 300;
+}
+
 /* Cards */
 .card {
   background: var(--bg-2);
@@ -194,7 +232,7 @@ code, pre, .mono {
   font-size: 0.95rem;
   letter-spacing: 0.02em;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
   box-shadow: 0 4px 24px rgba(68, 194, 186, 0.28);
 }
 
@@ -217,7 +255,7 @@ code, pre, .mono {
   font-size: 0.95rem;
   text-decoration: none;
   border: 1.5px solid var(--border-2);
-  transition: all 0.3s;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
 }
 
 .btn-ghost:hover {
@@ -237,7 +275,7 @@ code, pre, .mono {
   font-size: 0.85rem;
   text-decoration: none;
   letter-spacing: 0.03em;
-  transition: all 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
   box-shadow: 0 4px 18px rgba(233, 202, 98, 0.25);
 }
 
@@ -259,7 +297,7 @@ code, pre, .mono {
   font-size: 0.88rem;
   text-decoration: none;
   letter-spacing: 0.02em;
-  transition: all 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
   box-shadow: 0 4px 20px rgba(68, 194, 186, 0.25);
 }
 
@@ -396,4 +434,13 @@ code, pre, .mono {
   border-radius: 50%;
   box-shadow: 0 0 10px var(--teal);
   animation: blink 2s ease-in-out infinite;
+}
+
+/* ── ACCESSIBILITY ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
