@@ -1,4 +1,4 @@
-.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix ingest-item calibrate
+.PHONY: setup run graph-up graph-down graph-seed graph-reset test lint check fix ingest-item calibrate frontend-install frontend-dev frontend-build
 
 setup:
 	python3 -m venv .venv
@@ -39,3 +39,14 @@ ingest-item:
 
 calibrate:
 	.venv/bin/python backend/scripts/calibrate_mapper.py
+
+# ── Frontend ──────────────────────────────────────────────────
+
+frontend-install:
+	cd frontend && npm install
+
+frontend-dev:
+	cd frontend && npm run dev
+
+frontend-build:
+	cd frontend && npm run build

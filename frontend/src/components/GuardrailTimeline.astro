@@ -1,0 +1,189 @@
+---
+const guardrails = [
+  { code: 'GR_01', name: 'Human Agency', desc: 'Menselijke controle en oversight als uitgangspunt.' },
+  { code: 'GR_02', name: 'Robustness', desc: 'Technische veerkracht en veiligheid in alle omstandigheden.' },
+  { code: 'GR_03', name: 'Privacy', desc: 'Privacy by design en verantwoorde datagovernance.' },
+  { code: 'GR_04', name: 'Fairness', desc: 'Non-discriminatie en inclusie in AI-systemen.' },
+  { code: 'GR_05', name: 'Transparency', desc: 'Uitlegbaarheid en openheid over hoe AI werkt.' },
+  { code: 'GR_06', name: 'Well-being', desc: 'Bijdrage aan maatschappelijk welzijn als kernwaarde.' },
+  { code: 'GR_07', name: 'Accountability', desc: 'Verantwoording en governance op alle niveaus.' },
+];
+---
+
+<section class="guardrails-section" id="guardrails">
+  <div class="guardrails-layout">
+    <div class="guardrail-info">
+      <div class="section-eyebrow">EU Trustworthy AI</div>
+      <div class="section-title">7 Guardrails</div>
+      <p class="section-intro">Verantwoorde AI is geen bijzaak — het is ingebouwd in het framework. Zeven waarborgen op basis van de EU-richtlijnen voor betrouwbare AI.</p>
+      <div class="guardrail-callout">
+        <p>De guardrails zijn direct gekoppeld aan de EU AI Act en de HLEG-richtlijnen — zodat je platform niet alleen werkt, maar ook klopt.</p>
+        <a href="/framework#guardrails" class="btn-teal-sm">Verken de guardrails →</a>
+      </div>
+    </div>
+
+    <div class="guardrail-timeline">
+      {guardrails.map((g) => (
+        <div class="g-item">
+          <div class="g-dot"></div>
+          <div class="g-code">{g.code}</div>
+          <div class="g-name">{g.name}</div>
+          <p class="g-desc">{g.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .guardrails-section {
+    background: var(--bg);
+    padding: 7rem 5%;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guardrails-section::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: 0;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(68, 194, 186, 0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .guardrails-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1.5px;
+    background: var(--teal);
+    opacity: 0.5;
+  }
+
+  .section-title {
+    font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.12;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    line-height: 1.78;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin-bottom: 3.5rem;
+    font-weight: 300;
+  }
+
+  .guardrail-callout {
+    background: rgba(68, 194, 186, 0.07);
+    border: 1px solid var(--border-2);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .guardrail-callout p {
+    font-size: 0.93rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  .guardrail-timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .guardrail-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--teal), rgba(68, 194, 186, 0.08));
+  }
+
+  .g-item {
+    position: relative;
+    padding: 0 0 2.2rem 2rem;
+    cursor: pointer;
+  }
+
+  .g-item:last-child { padding-bottom: 0; }
+
+  .g-dot {
+    position: absolute;
+    left: -2.25rem;
+    top: 0.15rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--teal);
+    transition: all 0.3s;
+  }
+
+  .g-item:hover .g-dot {
+    background: var(--teal);
+    box-shadow: 0 0 18px rgba(68, 194, 186, 0.6);
+  }
+
+  .g-code {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+  }
+
+  .g-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+    transition: color 0.25s;
+  }
+
+  .g-item:hover .g-name { color: var(--teal-light); }
+
+  .g-desc {
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  @media (max-width: 960px) {
+    .guardrails-layout { grid-template-columns: 1fr; gap: 3rem; }
+  }
+</style>

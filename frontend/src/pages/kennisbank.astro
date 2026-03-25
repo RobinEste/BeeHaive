@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Kennisbank — BeeHaive">
+  <section class="page-hero">
+    <div class="section-eyebrow">Kennisbank</div>
+    <h1>Papers, regulering<br/>en best practices.</h1>
+    <p class="page-intro">Gecureerde bronnen uit de AI-wereld — direct gekoppeld aan de BeeHaive building blocks en guardrails.</p>
+  </section>
+
+  <section class="knowledge-placeholder">
+    <p>Kennisbank wordt gevuld vanuit de API. Binnenkort beschikbaar.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 8rem 5% 4rem;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1.5px;
+    background: var(--teal);
+    opacity: 0.5;
+  }
+
+  h1 {
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .page-intro {
+    font-size: 1.12rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    max-width: 600px;
+    font-weight: 300;
+  }
+
+  .knowledge-placeholder {
+    padding: 4rem 5% 7rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+</style>

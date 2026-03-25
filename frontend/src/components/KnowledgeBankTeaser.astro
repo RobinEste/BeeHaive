@@ -1,0 +1,163 @@
+---
+const items = [
+  { tag: 'regulation', tagLabel: 'Regulation', title: 'EU AI Act: A Comprehensive Framework for Trustworthy AI' },
+  { tag: 'paper', tagLabel: 'Paper', title: 'RAG-Anything: Multimodal Retrieval-Augmented Generation' },
+  { tag: 'practice', tagLabel: 'Best Practice', title: 'Prompt Engineering: From Theory to Practice' },
+];
+---
+
+<section class="knowledge-section">
+  <div class="section-eyebrow">Kennisbank</div>
+  <div class="section-title">Uit de kennisbank</div>
+  <p class="section-intro">Papers, regulering en best practices — gecureerd en direct gekoppeld aan het BeeHaive-framework.</p>
+
+  <div class="knowledge-grid">
+    {items.map((item) => (
+      <div class="knowledge-card">
+        <span class:list={['k-tag', `k-${item.tag}`]}>{item.tagLabel}</span>
+        <h3>{item.title}</h3>
+        <a href="/kennisbank" class="k-link">Lees meer →</a>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .knowledge-section {
+    background: var(--bg-2);
+    padding: 7rem 5%;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .knowledge-section::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -60px;
+    width: 440px;
+    height: 440px;
+    background: radial-gradient(circle, rgba(233, 202, 98, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1.5px;
+    background: var(--teal);
+    opacity: 0.5;
+  }
+
+  .section-title {
+    font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.12;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    line-height: 1.78;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin-bottom: 3.5rem;
+    font-weight: 300;
+  }
+
+  .knowledge-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+
+  .knowledge-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.2rem;
+    cursor: pointer;
+    transition: all 0.35s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .knowledge-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--teal);
+    box-shadow: 0 0 16px rgba(68, 194, 186, 0.5);
+  }
+
+  .knowledge-card:hover {
+    border-color: var(--border-2);
+    transform: translateY(-4px);
+    box-shadow: 0 0 40px rgba(68, 194, 186, 0.1), 0 16px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .k-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.4rem;
+    border: 1px solid;
+  }
+
+  .k-regulation { color: var(--gold);       border-color: rgba(233, 202, 98, 0.35);  background: rgba(233, 202, 98, 0.08); }
+  .k-paper      { color: var(--teal-light); border-color: var(--border);              background: rgba(68, 194, 186, 0.08); }
+  .k-practice   { color: var(--yellow);     border-color: rgba(238, 219, 67, 0.3);   background: rgba(238, 219, 67, 0.07); }
+
+  .knowledge-card h3 {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.45;
+    margin-bottom: 2rem;
+    letter-spacing: -0.01em;
+  }
+
+  .k-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--teal);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: gap 0.2s, color 0.2s;
+  }
+
+  .k-link:hover { gap: 1rem; color: var(--teal-light); }
+
+  @media (max-width: 960px) {
+    .knowledge-grid { grid-template-columns: 1fr; }
+  }
+</style>

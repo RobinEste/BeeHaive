@@ -1,0 +1,399 @@
+/* ============================================================
+   BeeHaive — globals.css
+   Design tokens + base styles + utility classes
+   Fonts: Space Grotesk + Space Mono (self-hosted, GDPR-compliant)
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts are imported via @fontsource in BaseLayout.astro (self-hosted, GDPR-compliant) */
+
+/* ── CSS CUSTOM PROPERTIES ─────────────────────────────────── */
+:root {
+  /* Brand colors */
+  --teal:         #44C2BA;
+  --teal-light:   #8BE6DA;
+  --gold:         #E9CA62;
+  --yellow:       #EEDB43;
+
+  /* Backgrounds */
+  --bg:           #0C1E1D;
+  --bg-2:         #122C2A;
+  --bg-3:         #163330;
+
+  /* Borders */
+  --border:       rgba(68, 194, 186, 0.18);
+  --border-2:     rgba(68, 194, 186, 0.38);
+
+  /* Text */
+  --text:         #E0F2F1;
+  --text-dim:     rgba(224, 242, 241, 0.62);
+  --text-muted:   rgba(224, 242, 241, 0.36);
+
+  /* Typography */
+  --font-sans:    'Space Grotesk', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+}
+
+/* ── BASE ───────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle grid overlay on body */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(68, 194, 186, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68, 194, 186, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  color: var(--text);
+}
+
+h1 { font-size: clamp(3rem, 6vw, 6.5rem);   letter-spacing: -0.04em; line-height: 1.0; }
+h2 { font-size: clamp(2.2rem, 3.8vw, 3.5rem); }
+h3 { font-size: 1.2rem; }
+
+p {
+  color: var(--text-dim);
+  line-height: 1.78;
+  font-weight: 300;
+}
+
+code, pre, .mono {
+  font-family: var(--font-mono);
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────── */
+.container-page {
+  padding-left: 5%;
+  padding-right: 5%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+.section {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+}
+
+/* ── COMPONENTS ─────────────────────────────────────────────── */
+
+/* Section eyebrow label */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.eyebrow::after {
+  content: '';
+  width: 32px;
+  height: 1.5px;
+  background: var(--teal);
+  opacity: 0.5;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--teal-light));
+  box-shadow: 0 0 10px var(--teal);
+  transition: width 0.4s ease;
+}
+
+.card:hover {
+  background: var(--bg-3);
+  border-color: var(--border-2);
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px rgba(68, 194, 186, 0.1), 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover::after {
+  width: 100%;
+}
+
+/* Glowing left border card variant */
+.card-glow-left::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--teal);
+  box-shadow: 0 0 16px rgba(68, 194, 186, 0.5);
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────── */
+
+/* Primary — teal glow */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--teal);
+  color: var(--bg);
+  padding: 1rem 2.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 24px rgba(68, 194, 186, 0.28);
+}
+
+.btn-primary:hover {
+  background: var(--teal-light);
+  box-shadow: 0 0 40px rgba(68, 194, 186, 0.55), 0 8px 30px rgba(68, 194, 186, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Ghost */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--text-dim);
+  padding: 1rem 2.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1.5px solid var(--border-2);
+  transition: all 0.3s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(68, 194, 186, 0.08);
+}
+
+/* Gold CTA */
+.btn-gold {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--bg);
+  padding: 0.65rem 1.4rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: all 0.3s;
+  box-shadow: 0 4px 18px rgba(233, 202, 98, 0.25);
+}
+
+.btn-gold:hover {
+  box-shadow: 0 0 28px rgba(233, 202, 98, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Small teal */
+.btn-teal-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--teal);
+  color: var(--bg);
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(68, 194, 186, 0.25);
+}
+
+.btn-teal-sm:hover {
+  box-shadow: 0 0 36px rgba(68, 194, 186, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ── TAGS / BADGES ──────────────────────────────────────────── */
+.tag {
+  display: inline-block;
+  padding: 0.28rem 0.85rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid;
+}
+
+.tag-regulation { color: var(--gold);       border-color: rgba(233,202,98,0.35);  background: rgba(233,202,98,0.08); }
+.tag-paper      { color: var(--teal-light);  border-color: var(--border);          background: rgba(68,194,186,0.08); }
+.tag-practice   { color: var(--yellow);      border-color: rgba(238,219,67,0.3);   background: rgba(238,219,67,0.07); }
+
+/* ── FOOTER GLOW BAR ────────────────────────────────────────── */
+.glow-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--teal-light), var(--gold), var(--yellow), var(--teal));
+  background-size: 300%;
+  animation: flowGlow 5s ease-in-out infinite alternate;
+  border-radius: 2px;
+  box-shadow: 0 0 14px rgba(68, 194, 186, 0.28);
+}
+
+@keyframes flowGlow {
+  from { background-position: 0%; }
+  to   { background-position: 100%; }
+}
+
+/* ── STATUS DOT ─────────────────────────────────────────────── */
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--teal);
+  animation: blink 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up           { animation: fadeUp 0.5s ease both; }
+.animate-fade-up-delay-1   { animation: fadeUp 0.5s 0.1s ease both; }
+.animate-fade-up-delay-2   { animation: fadeUp 0.5s 0.2s ease both; }
+.animate-fade-up-delay-3   { animation: fadeUp 0.5s 0.3s ease both; }
+
+/* ── ICONS (PNG with black bg) ──────────────────────────────── */
+.icon-blend {
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+.icon-blend:hover,
+*:hover > .icon-blend {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(68, 194, 186, 0.5));
+}
+
+/* ── GUARDRAIL TIMELINE ─────────────────────────────────────── */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal), rgba(68, 194, 186, 0.08));
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -2.25rem;
+  top: 0.15rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--teal);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.timeline-item:hover .timeline-dot {
+  background: var(--teal);
+  box-shadow: 0 0 18px rgba(68, 194, 186, 0.6);
+}
+
+/* ── KNOWLEDGE CHIP ─────────────────────────────────────────── */
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(68, 194, 186, 0.1);
+  border: 1px solid var(--border-2);
+  margin-bottom: 2.5rem;
+  color: var(--teal-light);
+  padding: 0.4rem 1.1rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.chip-pulse {
+  width: 7px;
+  height: 7px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--teal);
+  animation: blink 2s ease-in-out infinite;
+}

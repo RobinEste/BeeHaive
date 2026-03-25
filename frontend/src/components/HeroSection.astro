@@ -1,0 +1,103 @@
+---
+import KnowledgeGraph from './KnowledgeGraph.astro';
+---
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip animate-fade-up">
+      <span class="chip-pulse"></span>
+      AI Knowledge Framework — Nederlandse professionals
+    </div>
+    <h1>
+      <span class="h1-teal">AI begrijpen.</span>
+      <span class="h1-gold">AI toepassen.</span>
+      <span class="h1-white">AI vertrouwen.</span>
+    </h1>
+    <p class="hero-sub">BeeHaive is het framework dat AI-kennis structureert in 7 bouwstenen en 7 waarborgen — zodat je niet alleen weet wát AI kan, maar ook hoe je het goed doet.</p>
+    <div class="hero-actions">
+      <a href="/framework" class="btn-primary">Ontdek het framework →</a>
+      <a href="/kennisbank" class="btn-ghost">Verken de kennisbank</a>
+    </div>
+  </div>
+
+  <KnowledgeGraph />
+
+  <div class="orb orb-teal"></div>
+  <div class="orb orb-gold"></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 90vh;
+    display: grid;
+    grid-template-columns: 1fr 680px;
+    align-items: center;
+    padding: 8rem 5% 7rem;
+    gap: 2rem;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+  }
+
+  .orb-teal {
+    top: -120px;
+    right: -100px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(68, 194, 186, 0.13) 0%, transparent 65%);
+    animation: lumPulse 7s ease-in-out infinite alternate;
+  }
+
+  .orb-gold {
+    bottom: -100px;
+    left: 5%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(233, 202, 98, 0.08) 0%, transparent 65%);
+    animation: lumPulse 9s 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes lumPulse {
+    from { opacity: 0.8; transform: scale(1); }
+    to   { opacity: 1;   transform: scale(1.1); }
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+
+  .h1-teal  { display: block; color: var(--teal); }
+  .h1-gold  { display: block; color: var(--gold); text-shadow: 0 0 60px rgba(233, 202, 98, 0.22); }
+  .h1-white { display: block; color: var(--text); }
+
+  .hero-sub {
+    font-size: 1.12rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin: 2rem 0 3rem;
+    font-weight: 300;
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.5s 0.3s ease both;
+  }
+
+  @media (max-width: 960px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: 60vh;
+    }
+  }
+</style>

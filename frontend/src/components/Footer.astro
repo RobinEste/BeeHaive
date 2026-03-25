@@ -1,0 +1,121 @@
+---
+---
+
+<footer>
+  <div class="glow-bar"></div>
+  <div class="footer-grid">
+    <div>
+      <img src="/logo.png" alt="BeeHaive" class="footer-logo-img" />
+      <p class="footer-tagline">AI knowledge framework voor Nederlandse professionals. Structureer, begrijp en pas AI verantwoord toe.</p>
+    </div>
+    <div>
+      <div class="footer-col-head">Framework</div>
+      <ul>
+        <li><a href="/framework">Building Blocks</a></li>
+        <li><a href="/framework#guardrails">Guardrails</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head">Kennisbank</div>
+      <ul>
+        <li><a href="/kennisbank">Papers</a></li>
+        <li><a href="/kennisbank">Regulering</a></li>
+        <li><a href="/kennisbank">Best Practices</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-head">Organisatie</div>
+      <ul>
+        <li><a href="/over">Over ons</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="status-row">
+      <span class="status-dot"></span>
+      © 2025 BeeHaive
+    </div>
+    <span>Privacy · Cookies · Toegankelijkheid</span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 5rem 5% 2.5rem;
+  }
+
+  .glow-bar {
+    margin-bottom: 4rem;
+  }
+
+  .footer-logo-img {
+    height: 28px;
+    width: auto;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 3.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.72;
+    max-width: 260px;
+  }
+
+  .footer-col-head {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1.4rem;
+  }
+
+  footer ul { list-style: none; }
+  footer li { margin-bottom: 0.65rem; }
+  footer a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--teal-light); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+
+  @media (max-width: 960px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
