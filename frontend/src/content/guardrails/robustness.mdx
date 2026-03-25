@@ -1,0 +1,44 @@
+---
+code: GR_02
+name: Robustness
+euTerm: "Technical robustness and safety"
+tagline: "Betrouwbaar gedrag onder alle omstandigheden."
+icon: "🛡️"
+order: 2
+checklist:
+  - "Zijn functionele tests, edge-case tests en adversarial tests uitgevoerd vóór livegang?"
+  - "Worden kwaliteitsindicatoren gemonitord (factuality, guardrail violations, latencies)?"
+  - "Bestaan er drempelwaarden en alerts voor afwijkingen of degradatie in prestaties?"
+  - "Is er een duidelijk fail-safe of fallback mechanisme als de AI faalt of onzeker is?"
+  - "Zijn rollback-mechanismen ingericht om oude versies snel te herstellen?"
+  - "Is een incidentresponsproces ingericht (melding → analyse → mitigatie → terugkoppeling)?"
+  - "Wordt het incidentproces periodiek getest en geëvalueerd?"
+operationalFocus:
+  - "Voer systematische tests uit (functioneel, edge-cases, adversarial prompts) vóór livegang én periodiek."
+  - "Bouw fail-safes in: wat gebeurt er bij time-outs, ontbrekende context of foutmeldingen van tools?"
+  - "Monitor kwaliteitsindicatoren (factuality-scores, guardrail-violations, latencies) en stel drempelwaarden vast."
+  - "Zorg voor rollback-mogelijkheden: oude modellen/prompts snel kunnen terugzetten."
+  - "Richt incident-proces in: melding → impactanalyse → mitigatie → terugkoppeling naar gebruikers."
+legislation:
+  - name: "EU AI Act"
+    relevance: "Art. 9 — Risicobeheer, Art. 15 — Nauwkeurigheid, robuustheid en cybersecurity voor hoog-risico systemen."
+  - name: "NIS2"
+    relevance: "Cybersecurity-eisen voor essentiële en belangrijke entiteiten, inclusief incidentrespons en risicobeheer."
+auditExample:
+  title: "AI-Readiness Audit"
+  description: "De volautomatische teststraat draait 17 kwaliteitschecks bij elke wijziging. Bij een score onder de drempel wordt de wijziging geblokkeerd. Rollback naar vorige versies is altijd mogelijk."
+---
+
+## Wat zegt de EU?
+
+AI-systemen moeten veerkrachtig en veilig zijn. Ze moeten veilig functioneren, met een goed nood- of terugvalplan voor het geval er iets misgaat, én ze moeten accuraat, betrouwbaar en reproduceerbaar zijn. Alleen op die manier kan ook onbedoelde schade worden geminimaliseerd en voorkomen.
+
+## Wat vinden wij?
+
+Robuustheid is niet iets dat je achteraf toevoegt. Het zit in de architectuur, vanaf dag één. De EU focust terecht op testen en monitoring, maar mist het belang van *graceful degradation*: een systeem dat elegant faalt is veiliger dan een systeem dat nooit zou mogen falen.
+
+Fail-safes, rollback-mechanismen en incidentprocessen klinken bureaucratisch, maar ze zijn het verschil tussen een weekend van paniek en een gecontroleerde respons.
+
+## In de praktijk
+
+Een AI-systeem zonder teststraat is als een auto zonder remmen. Het rijdt prima — tot het moment dat het niet meer doet. Investeer in geautomatiseerde tests, monitoring en incident-response voordat je live gaat, niet erna.

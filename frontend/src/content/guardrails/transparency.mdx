@@ -1,0 +1,44 @@
+---
+code: GR_05
+name: Transparency
+euTerm: "Transparency"
+tagline: "Helder hoe AI werkt, wat het doet, en waarom."
+icon: "🔍"
+order: 5
+checklist:
+  - "Weet de gebruiker expliciet dat AI wordt ingezet (banner, melding, uitlegpagina)?"
+  - "Worden bronnen, links, documenten of datasetverwijzingen bij antwoorden getoond?"
+  - "Is er een uitleglaag beschikbaar (hoe het antwoord tot stand kwam: RAG, tools, modules)?"
+  - "Bestaat er een modelkaart of systeemkaart met doel, versie, beperkingen en herkomst?"
+  - "Wordt onzekerheid expliciet benoemd in antwoorden wanneer dat relevant is?"
+  - "Zijn alle wijzigingen in modellen, prompts en datastructuren gedocumenteerd?"
+  - "Is de documentatie toegankelijk voor zowel experts als niet-technische gebruikers?"
+operationalFocus:
+  - "Informeer gebruikers expliciet: doel, grenzen en risico's van het AI-systeem."
+  - "Toon bronverwijzingen bij antwoorden (links naar documenten, tijdstempels, versies)."
+  - "Geef een uitleglaag: korte beschrijving hoe het antwoord tot stand kwam (RAG, tools, interne modules)."
+  - "Publiceer een modelkaart / systeemkaart: modellen, datasets, versies, bekende beperkingen en use-cases."
+  - "Maak beleid en prompts voor uitlegbaar antwoorden: vermijd pseudo-zekerheid, benoem onzekerheid expliciet."
+legislation:
+  - name: "EU AI Act"
+    relevance: "Art. 13 — Transparantie en informatieverstrekking aan gebruikers, Art. 50 — Verplichte AI-disclosure."
+  - name: "AVG/GDPR"
+    relevance: "Art. 13-14 — Informatieverplichting bij verzameling persoonsgegevens, inclusief geautomatiseerde besluitvorming."
+auditExample:
+  title: "AI-Readiness Audit"
+  description: "Elke conclusie in het rapport heeft data lineage: van rapportconclussie → dimensie-aggregatie → interview-scores → geanonimiseerde quotes. Drie lagen diep, volledig traceerbaar via de API."
+---
+
+## Wat zegt de EU?
+
+Het moet helder zijn dát en hóe AI wordt ingezet, welke data en modellen zijn gebruikt en hoe een antwoord tot stand komt.
+
+## Wat vinden wij?
+
+Transparantie is meer dan een disclaimer "dit is AI-gegenereerd". Het gaat om traceerbaarheid: kan een gebruiker, auditor of betrokkene achterhalen *waarom* het systeem tot een bepaalde conclusie kwam?
+
+Data lineage is hierin cruciaal. Een rapport dat zegt "de organisatie scoort laag op data-volwassenheid" is nutteloos als niemand kan achterhalen op basis van welke antwoorden die conclusie is getrokken. Transparantie moet doorlopen van eindresultaat tot brondata.
+
+## In de praktijk
+
+Begin met bronverwijzingen bij elke AI-output. Dat alleen al is een enorme stap vooruit ten opzichte van de meeste AI-implementaties. Bouw van daaruit verder naar volledige traceerbaarheid als je systeem complexer wordt.

@@ -1,0 +1,46 @@
+---
+code: GR_04
+name: Fairness
+euTerm: "Diversity, non-discrimination and fairness"
+tagline: "Gelijke behandeling, geen systematische benadeling."
+icon: "⚖️"
+order: 4
+checklist:
+  - "Zijn datasets en bronmaterialen gecontroleerd op bias of scheve representatie?"
+  - "Zijn fairness-criteria per toepassing expliciet gedefinieerd en afgestemd met stakeholders?"
+  - "Zijn use-cases getest met diverse persona's (leeftijd, regio, taalniveau, opleiding)?"
+  - "Is een feedbackmechanisme ingebouwd voor gebruikers die bias in antwoorden signaleren?"
+  - "Worden gevoelige kenmerken alleen verwerkt als dit noodzakelijk en rechtmatig is?"
+  - "Zijn bias-risico's gedocumenteerd en worden mitigaties regelmatig herzien?"
+  - "Worden fairness-tests periodiek uitgevoerd (automatisch of handmatig)?"
+operationalFocus:
+  - "Identificeer waar bias impact kan hebben (cliëntprofielen, risicosignalering, toeleiding naar voorzieningen)."
+  - "Test prompts en use-cases met diverse persona's en casussen (leeftijd, regio, opleidingsniveau, taalniveau)."
+  - "Richt feedback-mechanisme in voor gebruikers die discriminerende of scheve antwoorden signaleren."
+  - "Vermijd het gebruik van gevoelige kenmerken in modellen/tools tenzij er een duidelijke, proportionele reden is."
+  - "Documenteer bekende bias-risico's en de gekozen mitigaties, zodat auditors dit kunnen beoordelen."
+legislation:
+  - name: "EU AI Act"
+    relevance: "Art. 10 — Datakwaliteitseisen, bias-detectie en -mitigatie voor hoog-risico systemen."
+  - name: "AVG/GDPR"
+    relevance: "Art. 9 — Verwerking bijzondere persoonsgegevens (ras, religie, gezondheid) is verboden tenzij er een uitzondering geldt."
+  - name: "Grondwet / EU Handvest"
+    relevance: "Art. 1 Grondwet (gelijke behandeling), Art. 21 EU Handvest (non-discriminatie)."
+auditExample:
+  title: "AI-Readiness Audit"
+  description: "Het interviewsysteem wordt getest met 10 synthetische persona's die variëren in rol, ervaring, functie en AI-vertrouwdheid. Dit voorkomt dat het systeem bepaalde profielen systematisch anders behandelt."
+---
+
+## Wat zegt de EU?
+
+Het systeem voorkomt systematische benadeling van groepen en ondersteunt inclusie en gelijke behandeling.
+
+## Wat vinden wij?
+
+Fairness is het lastigste guardrail om te implementeren, omdat bias vaak onzichtbaar is tot je er actief naar zoekt. De EU zegt terecht dat je moet testen met diverse persona's, maar in de praktijk test bijna niemand hier structureel op.
+
+Het begint bij bewustzijn: wéét je waar bias impact kan hebben in jouw specifieke toepassing? En heb je een mechanisme waarmee gebruikers scheve antwoorden kunnen melden? Zonder dat feedbackkanaal ben je blind voor de bias die je tests niet vangen.
+
+## In de praktijk
+
+Fairness is geen binair gegeven. Het is een continu proces van testen, luisteren en bijsturen. Documenteer je bekende risico's en mitigaties — niet omdat het moet, maar omdat het je dwingt om er expliciet over na te denken.

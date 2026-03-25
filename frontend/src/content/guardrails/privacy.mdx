@@ -1,0 +1,46 @@
+---
+code: GR_03
+name: Privacy
+euTerm: "Privacy and data governance"
+tagline: "Data bescherming als fundament, niet als bijzaak."
+icon: "🔐"
+order: 3
+checklist:
+  - "Is gedefinieerd welke data de AI-agent wél en níet mag verwerken?"
+  - "Is dataminimalisatie toegepast voor prompts, RAG en tool-calls?"
+  - "Worden logs zo opgeslagen dat geen onnodige persoonsgegevens worden bewaard?"
+  - "Is duidelijk gedocumenteerd waar data worden opgeslagen en door welke verwerkers?"
+  - "Zijn bewaartermijnen opgenomen en automatisch afgedwongen?"
+  - "Bestaan procedures voor inzage, correctie en verwijdering (DSAR's) voor AI-interacties?"
+  - "Zijn bijzondere persoonsgegevens uitgesloten, tenzij strikt noodzakelijk én met grondslag?"
+operationalFocus:
+  - "Definieer welke data wél en níet door de AI-agent mogen worden verwerkt (incl. beleid voor bijzondere persoonsgegevens)."
+  - "Pas standaard dataminimalisatie toe: alleen noodzakelijke velden beschikbaar maken voor prompts, tools en RAG."
+  - "Richt logging zo in dat je gedrag kunt auditen zonder onnodige persoonsgegevens in de logfiles op te slaan."
+  - "Documenteer datastromen: waar wordt welke data opgeslagen, met welke verwerkers en in welke jurisdictie?"
+  - "Maak procedures voor inzage, correctie en verwijdering (DSAR's) ook toepasbaar op AI-interacties."
+legislation:
+  - name: "AVG/GDPR"
+    relevance: "Kernwetgeving: Art. 5 (beginselen), Art. 6 (grondslag), Art. 25 (privacy by design), Art. 15-20 (rechten betrokkenen), Art. 35 (DPIA)."
+  - name: "EU AI Act"
+    relevance: "Art. 10 — Datakwaliteit en datagovernance voor training en validatie van hoog-risico systemen."
+  - name: "ePrivacy"
+    relevance: "Aanvullende regels voor elektronische communicatie, cookies en tracking in AI-interfaces."
+auditExample:
+  title: "AI-Readiness Audit"
+  description: "Interviews draaien op lokale LLMs — geen data verlaat de EU. Voor analyse met frontier modellen gaat alles door een Privacy Gateway: spaCy NER herkent namen en organisaties, vervangt ze door semantische placeholders, en valideert k-anonymity (k≥5). PII-mappings worden na 7 dagen automatisch verwijderd."
+---
+
+## Wat zegt de EU?
+
+Naast volledige naleving van privacy en gegevensbescherming moeten ook adequate datagovernancestructuren worden geborgd. Daarbij moet rekening worden gehouden met de kwaliteit en integriteit van de data en met rechtmatige toegang tot gegevens.
+
+## Wat vinden wij?
+
+Privacy in AI gaat verder dan "voldoen aan de AVG". Het gaat om een fundamentele architectuurkeuze: *waar* draait je model, *welke* data ziet het, en *hoe* voorkom je dat PII op plekken terechtkomt waar het niet hoort?
+
+De meeste AI-systemen falen niet op beleid, maar op implementatie. Een Privacy Gateway die data anonimiseert vóórdat het een extern model bereikt, is effectiever dan tien pagina's privacybeleid. Semantische placeholders (niet simpel `[REDACTED]`) behouden de context die het model nodig heeft zonder de privacy te schenden.
+
+## In de praktijk
+
+De vraag is niet óf je met privacy te maken krijgt, maar wanneer. Bouw privacy in vanaf het begin — het achteraf toevoegen is tien keer duurder en altijd incompleet.

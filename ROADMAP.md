@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-17
+**Laatst bijgewerkt:** 2026-03-25
 
 ---
 
@@ -9,8 +9,8 @@
 | Fase | Status | Beschrijving |
 |------|--------|--------------|
 | **Fase 1: Project Foundation** | ✅ Compleet | Projectstructuur, repo, basis tooling |
-| **Fase 2: Knowledge Graph** | 🟡 In progress | Neo4j opzetten, knowledge items modelleren, ingestion pipeline |
-| **Fase 3: Frontend Website** | 🔴 Te doen | Astro site, framework pagina's, blog systeem |
+| **Fase 2: Knowledge Graph** | ✅ Compleet | Neo4j opzetten, knowledge items modelleren, ingestion pipeline |
+| **Fase 3: Frontend Website** | 🟡 In progress | Astro site, framework pagina's, blog systeem |
 | **Fase 4: Backend API** | 🔴 Te doen | FastAPI, Neo4j integratie, AI content generatie |
 | **Fase 5: Training Portal** | 🔴 Te doen | OAuth, cursusstructuur, voortgang tracking |
 | **Fase 6: Betalingen & Launch** | 🔴 Te doen | Mollie integratie, deployment op Hetzner |
@@ -28,15 +28,17 @@
 - [x] Stap 2: Neo4j schema, constraints en seed data (#2)
 - [x] Stap 3: Query-laag voor knowledge graph (#3)
 
-### Fase 2: Knowledge Graph 🟡
+### Fase 2: Knowledge Graph ✅
 
 - [x] Stap 5: RAG pipeline met vector embeddings en full-text search (#5)
 - [x] Stap 6: Knowledge graph uitbreiden met meer bronnen en items (#6)
 - [x] Stap 7: Ingestion pipeline voor knowledge items (#7) — Compleet: fetcher, PII, mutations, Gemini 3.1 Pro mapper, orchestrator, CLI, dual ingest, kalibratie (BB 77%/GR 74%), DATA_GLOSSARY, blocked_authors.
 
-### Fase 3: Frontend Website 🔴
+### Fase 3: Frontend Website 🟡
 
-- [ ] Stap 8: Astro frontend opzetten met basis pagina's (#8)
+- [x] Stap 8: Astro frontend opzetten met basis pagina's (#8) — Compleet: 4 pagina's, 8 componenten, Luminous Dark design system, Tailwind, self-hosted fonts.
+- [ ] Stap 8b: Workflow visualisatie met React Flow (#22)
+- [ ] Stap 8c: Building Block detail-pagina's met 10-secties template (#23)
 - [ ] Stap 9: Blog systeem met content collecties (#9)
 
 ### Fase 4: Backend API 🔴
@@ -70,8 +72,8 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Ingestion pipeline afronden: kalibratiescript + DATA_GLOSSARY.md (#7)
-2. **Daarna:** Astro frontend opzetten met basis pagina's (#8)
+1. **Eerstvolgende:** Building Block detail-pagina's met 10-secties template (#23)
+2. **Daarna:** Workflow visualisatie met React Flow (#22)
 3. **Vervolgens:** Blog systeem met content collecties (#9)
 
 ---

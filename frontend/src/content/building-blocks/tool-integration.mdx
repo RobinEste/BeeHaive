@@ -1,0 +1,33 @@
+---
+code: BB_05
+name: Tool Integration
+tagline: "AI verbinden met de buitenwereld."
+icon: "⚙️"
+order: 5
+quote: "Een model zonder tools is een denker zonder handen."
+checklist:
+  - "Zijn benodigde tools en systemen volledig in kaart gebracht?"
+  - "Zijn APIs stabiel, gedocumenteerd en veilig?"
+  - "Is duidelijk welke acties de AI mag uitvoeren (en welke niet)?"
+  - "Is foutafhandeling georganiseerd (timeouts, validatie, retries)?"
+  - "Worden acties gelogd, gecontroleerd en verantwoord?"
+  - "Zijn er fallback-mechanismes als tools falen?"
+  - "Sluit de toolset aan op het ontwerp in de Client Blueprint?"
+quickStart:
+  - "Maak een inventarisatie van alle systemen waarmee je AI moet communiceren."
+  - "Begin met één integratie, test die grondig, en breid dan uit."
+  - "Implementeer foutafhandeling vanaf dag één — tools falen altijd op het verkeerde moment."
+auditExample:
+  title: "AI-Readiness Audit"
+  description: "Het auditsysteem integreert RAG voor doorzoekbare use cases, caching voor token-optimalisatie, en schakelt tussen lokale en externe LLMs afhankelijk van de privacy-context. Elke tool-call wordt gelogd en gevalideerd."
+---
+
+## Wat is Tool Integration?
+
+Tool integration is het koppelen van externe systemen, databronnen, API's en software-tools aan een AI-oplossing, zodat het model niet alleen antwoorden genereert maar ook acties uitvoert, informatie ophaalt of processen aanstuurt.
+
+Het vormt de uitvoerende laag van het systeem: via tooling krijgt de AI toegang tot functies buiten het model zelf — zoals databases, zoekmachines, planningssoftware, documentverwerking, RPA, of domeinspecifieke applicaties. Goede integratie bepaalt *wat* de AI daadwerkelijk kan doen, *welke* acties betrouwbaar zijn, en *hoe* resultaten gecontroleerd en reproduceerbaar worden uitgevoerd binnen de bredere workflow.
+
+## In de praktijk
+
+De kracht van AI zit niet in het model alleen, maar in wat het kan aansturen. Tool integration is waar de theorie praktijk wordt — en waar de meeste complexiteit zit. Elke integratie is een potentieel breekpunt, dus robuuste foutafhandeling en logging zijn geen luxe maar noodzaak.
