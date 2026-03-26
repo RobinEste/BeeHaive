@@ -4,23 +4,26 @@ import KnowledgeGraph from './KnowledgeGraph.astro';
 
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-chip animate-fade-up">
-      <span class="chip-pulse"></span>
-      AI Knowledge Framework by Noblesse Oblige
-    </div>
     <h1>
       <span class="h1-white">AI begrijpen.</span>
       <span class="h1-teal">AI toepassen.</span>
       <span class="h1-gold">AI vertrouwen.</span>
     </h1>
-    <p class="hero-sub">BeeHaive is het framework dat AI-kennis structureert in 7 bouwstenen en 7 waarborgen — zodat je niet alleen weet wát AI kan, maar ook hoe je het goed doet.</p>
+    <p class="hero-sub">Succesvolle toepassing van AI ontstaat door zeven samenhangende bouwstenen consistent in te zetten en te blijven verbeteren. Deze bouwstenen vormen de "knoppen waaraan je kunt draaien" tijdens ontwerp, ontwikkeling, implementatie en gebruik.</p>
+    <p class="hero-sub">Het BeeHaive-framework helpt om te begrijpen hoe je aan die knoppen kunt draaien, welke bouwstenen je wanneer kunt inzetten en aan welke waarborgen (guardrails) je moet voldoen om AI succesvol toe te passen.</p>
     <div class="hero-actions">
-      <a href="/framework" class="btn-primary">Ontdek het framework →</a>
+      <a href="/framework" class="btn-gold">Ontdek het framework →</a>
       <a href="/kennisbank" class="btn-ghost">Verken de kennisbank</a>
     </div>
   </div>
 
-  <KnowledgeGraph />
+  <div class="hero-graph-col">
+    <div class="hero-chip animate-fade-up">
+      <span class="chip-pulse"></span>
+      AI Knowledge Framework by Noblesse Oblige
+    </div>
+    <KnowledgeGraph />
+  </div>
 
   <div class="orb orb-teal"></div>
   <div class="orb orb-gold"></div>
@@ -29,13 +32,25 @@ import KnowledgeGraph from './KnowledgeGraph.astro';
 <style>
   .hero {
     position: relative;
-    min-height: 90vh;
+    min-height: auto;
     display: grid;
     grid-template-columns: 1fr 680px;
-    align-items: center;
-    padding: 8rem 5% 7rem;
+    align-items: start;
+    padding: 3rem 5% 3rem;
     gap: 2rem;
     overflow: hidden;
+  }
+
+  .hero-graph-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .hero-graph-col .hero-chip {
+    margin-top: 2rem;
+    margin-bottom: 0.3rem;
   }
 
   .orb {
@@ -82,7 +97,7 @@ import KnowledgeGraph from './KnowledgeGraph.astro';
     line-height: 1.8;
     color: var(--text-dim);
     max-width: 580px;
-    margin: 2rem 0 3rem;
+    margin: 1rem 0 1rem;
     font-weight: 300;
     animation: fadeUp 0.5s 0.2s ease both;
   }

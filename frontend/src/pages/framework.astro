@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BuildingBlocksGrid from '../components/BuildingBlocksGrid.astro';
 import GuardrailTimeline from '../components/GuardrailTimeline.astro';
+import AuditWorkflow from '../components/AuditWorkflow.tsx';
 ---
 
 <BaseLayout title="Framework — BeeHaive">
@@ -12,7 +13,21 @@ import GuardrailTimeline from '../components/GuardrailTimeline.astro';
   </section>
 
   <BuildingBlocksGrid />
+
+  <section class="workflow-section">
+    <div class="eyebrow">In de praktijk</div>
+    <h2 class="section-title">AI-Readiness Audit</h2>
+    <p class="section-intro">Hoe werken de building blocks samen in een echt project? Hieronder kun je stap-voor-stap door een concrete use-case heen lopen: AI-Readiness Audit. Je ziet per processtap onze gedachten en daaronder de building blocks die we gebruikten met toelichting. Klik op de blokjes om te starten.</p>
+    <AuditWorkflow client:visible />
+  </section>
+
   <GuardrailTimeline />
 </BaseLayout>
 
-<!-- Styles via globals.css: .page-hero, .eyebrow, .page-intro -->
+<style>
+  .workflow-section {
+    background: var(--bg);
+    padding: 4rem 5%;
+    border-top: 1px solid var(--border);
+  }
+</style>

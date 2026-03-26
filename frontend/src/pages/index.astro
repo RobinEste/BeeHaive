@@ -7,8 +7,39 @@ import KnowledgeBankTeaser from '../components/KnowledgeBankTeaser.astro';
 ---
 
 <BaseLayout>
+  <div class="hero-quote">
+    <blockquote>"People who are good with people are going to benefit the most from AI"</blockquote>
+    <cite>— Ethan Mollick</cite>
+  </div>
   <HeroSection />
   <BuildingBlocksGrid />
   <GuardrailTimeline />
   <KnowledgeBankTeaser />
 </BaseLayout>
+
+<style>
+  .hero-quote {
+    padding: 2.5rem 5% 0.5rem;
+    text-align: center;
+  }
+
+  .hero-quote blockquote {
+    font-family: var(--font-sans);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .hero-quote cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-style: normal;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-top: 0.5rem;
+  }
+</style>
