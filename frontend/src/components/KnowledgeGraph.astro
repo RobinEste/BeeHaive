@@ -2,7 +2,7 @@
 ---
 
 <div class="hero-graph">
-  <svg viewBox="0 115 480 330" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="35 110 410 325" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <filter id="nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
         <feGaussianBlur stdDeviation="4" result="blur"/>
@@ -247,15 +247,11 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    height: 720px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .hero-graph svg {
     width: 100%;
-    height: 100%;
+    height: auto;
     overflow: visible;
   }
 
@@ -273,8 +269,7 @@
 
   @media (max-width: 960px) {
     .hero-graph {
-      height: 400px;
-      margin-top: 2rem;
+      margin-top: 0;
     }
   }
 </style>

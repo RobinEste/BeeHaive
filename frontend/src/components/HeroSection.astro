@@ -112,7 +112,32 @@ import KnowledgeGraph from './KnowledgeGraph.astro';
   @media (max-width: 960px) {
     .hero {
       grid-template-columns: 1fr;
-      min-height: 60vh;
+      min-height: auto;
+      padding: 2rem 5% 2rem;
+    }
+
+    .hero-graph-col {
+      order: -1;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .hero-graph-col .hero-chip {
+      margin-top: 0;
+    }
+
+    .hero-inner {
+      text-align: center;
+    }
+
+    .hero-sub {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      justify-content: center;
     }
   }
 </style>
