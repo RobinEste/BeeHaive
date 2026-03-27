@@ -9,6 +9,25 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Astro frontend met Luminous Dark design system (#8)
+  - 4 pagina's (homepage, framework, kennisbank, over), 8 componenten, Tailwind config
+  - Self-hosted fonts (Space Grotesk + Space Mono) via @fontsource (GDPR-compliant)
+  - Content Collections: 7 Building Block + 7 Guardrail MDX bestanden met Zod schema's
+  - Interactieve workflow visualisatie (React): Waarom/Hoe/Wat tabs, auto-play, BB-tags per stap
+  - AI-Readiness Audit als primaire use case met Evaluation Loop per processtap
+  - Quotes per pagina (Mollick, Amodei, Kozyrkov, Fei-Fei Li) + per BB
+  - Achtergrondfotos via Unsplash met donkere overlay
+  - Mobiel responsive: KnowledgeGraph schaalt mee, hero layout past zich aan
+  - Hero redesign: nieuwe subtekst, chip boven model, quote bovenaan
+  - `prefers-reduced-motion` media query (WCAG 2.1 AA)
+
+### Gewijzigd
+- CSS-duplicatie opgeschoond: ~285 regels verwijderd, globale utility classes
+- Tekst leesbaarheid verhoogd: --text-dim 0.90, --text-muted 0.72
+- Sectie-padding geüniformeerd (7rem → 4rem)
+- CTA buttons consistent: btn-gold zelfde grootte als btn-primary
+- ROADMAP: Fase 2 compleet, Fase 3 in progress, issues #22/#23 toegevoegd
+
 - Kalibratiescript, DATA_GLOSSARY, blocked_authors + Gemini 3.1 Pro upgrade (#7)
   - `calibrate_mapper.py` — valideert taxonomy mapper tegen seed.py (BB 77%, GR 74% precision)
   - `DATA_GLOSSARY.md` — verwerkingsregister met LIA, bezwaarprocedure Art. 21, data flow diagram
