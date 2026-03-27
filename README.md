@@ -31,8 +31,8 @@ Kennis uit diverse bronnen (regelgeving, papers, video's, best practices) wordt 
 | Fase | Status |
 |------|--------|
 | Fase 1: Project Foundation | ✅ Compleet |
-| Fase 2: Knowledge Graph | 🟡 In progress |
-| Fase 3: Frontend Website | 🔴 Te doen |
+| Fase 2: Knowledge Graph | ✅ Compleet |
+| Fase 3: Frontend Website | 🟡 In progress |
 | Fase 4: Backend API | 🔴 Te doen |
 | Fase 5: Training Portal | 🔴 Te doen |
 | Fase 6: Betalingen & Launch | 🔴 Te doen |
@@ -41,10 +41,12 @@ Zie [ROADMAP.md](ROADMAP.md) voor het volledige overzicht met issue-referenties.
 
 ## Wat is er klaar?
 
-- Neo4j knowledge graph met 7 BuildingBlocks, 7 Guardrails, Topics, Authors en KnowledgeItems
-- 13 read-only Cypher query functies (parameterized, case-insensitive search, related items)
-- 21 integration tests
-- Makefile met lint, test, check en fix targets
+- **Frontend:** Astro site met 4 pagina's, Luminous Dark design system (teal/gold), interactieve workflow visualisatie, content collections voor 7 BBs + 7 GRs, mobiel responsive
+- **Knowledge Graph:** Neo4j met BuildingBlocks, Guardrails, Topics, Authors, KnowledgeItems + 13 query functies
+- **Ingestion Pipeline:** Fetcher, PII scanner, Gemini taxonomy mapper, orchestrator, CLI, dual ingest (Neo4j + LightRAG)
+- **RAG Pipeline:** LightRAG met hybrid retrieval (vector + graph), query + ingest endpoints
+- **API:** FastAPI met 13 REST endpoints op de knowledge graph
+- 87 tests, Makefile targets, CI pipeline
 
 ## Quickstart
 
@@ -78,24 +80,38 @@ make check
 | `make test` | Integration tests (vereist draaiende Neo4j) |
 | `make check` | Lint + test in één keer |
 | `make fix` | Auto-fix linting issues |
+| `make frontend-install` | Frontend dependencies installeren |
+| `make frontend-dev` | Astro dev server starten (port 4321) |
+| `make frontend-build` | Frontend SSG build |
 
 ## Architectuur
 
 ```
 BeeHaive/
 ├── frontend/              # Astro + React islands (beehaive.org)
+│   ├── src/
+│   │   ├── pages/         # Astro pagina's (index, framework, kennisbank, over)
+│   │   ├── components/    # Astro + React componenten
+│   │   ├── content/       # MDX content collections (building-blocks/, guardrails/)
+│   │   ├── layouts/       # BaseLayout
+│   │   └── styles/        # Design system (globals.css)
+│   ├── public/            # Statische assets (logo, iconen)
+│   └── tailwind.config.mjs
 ├── backend/               # Python FastAPI + Neo4j query-laag
 │   ├── app/
-│   │   ├── graph/         # Neo4j connection, schema, seed, queries
+│   │   ├── api/           # REST endpoints
+│   │   ├── graph/         # Neo4j connection, schema, seed, queries, mutations
+│   │   ├── ingestion/     # Fetcher, PII scanner, LLM mapper, pipeline
+│   │   ├── rag/           # LightRAG engine
 │   │   └── config/        # Environment configuratie
 │   └── tests/             # Integration tests
 ├── docs/                  # Technische documentatie
 │   ├── knowledge/         # Sessie-inzichten per categorie
 │   ├── decisions/         # Architecture Decision Records
 │   ├── solutions/         # Compound learning (opgeloste patronen)
-│   └── course-comparison.md  # Vergelijking met Multi-Agent Course
+│   └── plans/             # Design briefs en plannen
 ├── docker-compose.yml     # Neo4j + services
-├── Makefile               # Build targets
+├── Makefile               # Build targets (backend + frontend)
 ├── ROADMAP.md             # Roadmap met issue-referenties
 └── CHANGELOG.md           # Versiegeschiedenis
 ```
@@ -114,7 +130,8 @@ De RAG pipeline (RAG-Anything, gebouwd op LightRAG) combineert multimodale parsi
 ## Privacy & Data Residency
 
 - Alle productiedata blijft binnen de EU (Hetzner)
-- LLM en embeddings draaien self-hosted via vLLM — geen data naar externe services
+- LLM classificatie via Gemini API (PII-geredacteerde tekst), RAG via LightRAG
+- Self-hosted fonts (geen Google Fonts tracking)
 - AVG/GDPR compliant by design
 - Zie [globale privacy policy](https://github.com/RobinEste/BeeHaive/blob/main/CLAUDE.md) voor details
 
