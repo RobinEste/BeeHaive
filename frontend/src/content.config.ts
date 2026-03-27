@@ -9,7 +9,8 @@ const buildingBlocks = defineCollection({
     tagline: z.string(),        // One-line summary
     icon: z.string(),           // Emoji or icon reference
     order: z.number(),          // Sort order (1-7)
-    quote: z.string().optional(), // Hero quote
+    quote: z.string().optional(),
+    quoteAuthor: z.string().optional(),
     checklist: z.array(z.string()),
     quickStart: z.array(z.string()).optional(),
     tools: z.array(z.object({
