@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 2 |
-| architectuur | 8 |
-| development | 7 |
+| architectuur | 9 |
+| development | 10 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **20** |
+| **Totaal** | **24** |
 
 ## Inzichten
 
@@ -38,3 +38,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-018 | Single source of truth voor LLM-gestuurde classificatie | architectuur | 2026-03-18 | hoog |
 | KNW-2026-019 | Art. 21 bezwaar-implementatie: hash PII, gitignore blocklists | avg-privacy | 2026-03-18 | hoog |
 | KNW-2026-020 | Gemini model generatie-sprong: altijd nieuwste modellen checken | development | 2026-03-18 | midden |
+| KNW-2026-021 | Processtappen en building blocks zijn gescheiden lagen | architectuur | 2026-03-26 | hoog |
+| KNW-2026-022 | Opbouwende timeline als storytelling pattern | development | 2026-03-26 | hoog |
+| KNW-2026-023 | SVG viewBox bijsnijden voor responsive design | development | 2026-03-26 | midden |
+| KNW-2026-024 | Library evaluatie: complexiteit vs. use case | development | 2026-03-25 | hoog |
