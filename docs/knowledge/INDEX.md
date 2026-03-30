@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 2 |
-| architectuur | 9 |
-| development | 10 |
+| architectuur | 10 |
+| development | 13 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **24** |
+| **Totaal** | **28** |
 
 ## Inzichten
 
@@ -42,3 +42,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-022 | Opbouwende timeline als storytelling pattern | development | 2026-03-26 | hoog |
 | KNW-2026-023 | SVG viewBox bijsnijden voor responsive design | development | 2026-03-26 | midden |
 | KNW-2026-024 | Library evaluatie: complexiteit vs. use case | development | 2026-03-25 | hoog |
+| KNW-2026-025 | Native render() boven externe markdown-parser | development | 2026-03-30 | hoog |
+| KNW-2026-026 | Gedeelde constanten voor cross-component referenties | architectuur | 2026-03-30 | hoog |
+| KNW-2026-027 | Statische data als API-placeholder pattern | development | 2026-03-30 | hoog |
+| KNW-2026-028 | Framework-onderzoek als design-input | development | 2026-03-30 | hoog |
