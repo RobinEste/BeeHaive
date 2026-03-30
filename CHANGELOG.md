@@ -9,6 +9,29 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- Building Block detail-pagina's met 7 secties (#23, Fase A)
+  - Dynamic routing: `/framework/{slug}` voor alle 7 BBs
+  - Hero met SVG/PNG icons uit gedeelde `bb-icons.ts`, breadcrumb, quote
+  - Checklist (2-kolom grid, teal vinkjes) + Evidence deliverables (NIST-patroon)
+  - Quick Start (genummerde stappen cards), Voorbeeld: AI-Readiness Audit
+  - Statische guardrail-koppelingen: 3 relevante guardrails per BB met relevantie-uitleg
+  - CTA sectie naar AI-readiness audit
+  - Sticky Table of Contents met IntersectionObserver scroll-spy (desktop)
+  - Prev/next navigatie + cross-links naar alle 7 BBs
+  - Floating "terug naar boven" knop op mobiel
+  - Geconsolideerde componenten: BBIcon, BBProseSection (generiek), gedeelde section IDs
+  - Content schema uitgebreid: `evidence` array per BB
+- Footer: copyright 2026, tagline "Het framework voor succesvolle en verantwoorde AI-implementaties"
+
+### Gewijzigd
+- BuildingBlocksGrid: cards zijn nu klikbare links naar `/framework/{slug}`, icons via gedeeld BBIcon component
+- Nav: active state via `startsWith()` (werkt voor sub-routes)
+- globals.css: `text-wrap: balance` op headlines, `.bb-section` utility class
+
+### Verwijderd
+- youth-care-booking subproject (verplaatst naar apart project)
+
+### Eerder toegevoegd
 - Astro frontend met Luminous Dark design system (#8)
   - 4 pagina's (homepage, framework, kennisbank, over), 8 componenten, Tailwind config
   - Self-hosted fonts (Space Grotesk + Space Mono) via @fontsource (GDPR-compliant)

@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-25
+**Laatst bijgewerkt:** 2026-03-30
 
 ---
 
@@ -37,8 +37,9 @@
 ### Fase 3: Frontend Website 🟡
 
 - [x] Stap 8: Astro frontend opzetten met basis pagina's (#8) — Compleet: 4 pagina's, 8 componenten, Luminous Dark design system, Tailwind, self-hosted fonts.
+- [x] Stap 8c Fase A: BB detail-pagina's met 7 secties (#23) — Compleet: 7 pagina's, 10 componenten, guardrail-koppelingen, evidence, CTA, sticky ToC.
+- [ ] Stap 8c Fase B: Dynamische secties (Research, Guardrails API, Workflow) — wacht op backend API (#23)
 - [ ] Stap 8b: Workflow visualisatie met React Flow (#22)
-- [ ] Stap 8c: Building Block detail-pagina's met 10-secties template (#23)
 - [ ] Stap 9: Blog systeem met content collecties (#9)
 
 ### Fase 4: Backend API 🔴
@@ -65,6 +66,7 @@
 - [ ] Test suite opzetten: RAG, auth, API endpoints, coverage (#19)
 - [ ] Architectuur consolidatie: dual session, config, paginatie (#20)
 - [ ] Privacy-by-design: AI Act transparantie, retentie, audit trail (#21)
+- [ ] Verbeteren context engineering: token budget, placement-strategie, degradatiepatronen (#25)
 
 ---
 
@@ -72,9 +74,9 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Building Block detail-pagina's met 10-secties template (#23)
-2. **Daarna:** Workflow visualisatie met React Flow (#22)
-3. **Vervolgens:** Blog systeem met content collecties (#9)
+1. **Eerstvolgende:** Workflow visualisatie met React Flow (#22)
+2. **Daarna:** Blog systeem met content collecties (#9)
+3. **Vervolgens:** BB detail-pagina's Fase B — dynamische secties na backend API (#23)
 
 ---
 
