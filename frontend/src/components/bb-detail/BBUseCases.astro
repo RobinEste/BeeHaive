@@ -1,0 +1,64 @@
+---
+import { BB_SECTIONS } from '../../lib/bb-sections';
+
+interface Props {
+  auditExample?: {
+    title: string;
+    description: string;
+  };
+}
+
+const { auditExample } = Astro.props;
+---
+
+{auditExample && (
+  <section class="bb-usecases bb-section" id={BB_SECTIONS.VOORBEELD.id}>
+    <div class="eyebrow">Voorbeeld</div>
+    <h2 class="section-title">AI-Readiness Audit</h2>
+
+    <div class="usecase-card">
+      <span class="tag tag-practice">AI-READINESS</span>
+      <h3>{auditExample.title}</h3>
+      <p>{auditExample.description}</p>
+    </div>
+  </section>
+)}
+
+<style>
+  .bb-usecases {}
+
+  .usecase-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .usecase-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    box-shadow: 0 0 12px rgba(233, 202, 98, 0.35);
+  }
+
+  .usecase-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 1rem 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .usecase-card p {
+    font-size: 0.93rem;
+    line-height: 1.75;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+</style>

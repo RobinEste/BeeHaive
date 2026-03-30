@@ -1,0 +1,118 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BBHero from '../../components/bb-detail/BBHero.astro';
+import BBProseSection from '../../components/bb-detail/BBProseSection.astro';
+import BBChecklist from '../../components/bb-detail/BBChecklist.astro';
+import BBQuickStart from '../../components/bb-detail/BBQuickStart.astro';
+import BBUseCases from '../../components/bb-detail/BBUseCases.astro';
+import BBCallToAction from '../../components/bb-detail/BBCallToAction.astro';
+import BBGuardrails from '../../components/bb-detail/BBGuardrails.astro';
+import BBTableOfContents from '../../components/bb-detail/BBTableOfContents.astro';
+import BBNavigation from '../../components/bb-detail/BBNavigation.astro';
+import { bbGuardrailLinks } from '../../lib/bb-guardrail-links';
+import { BB_SECTIONS } from '../../lib/bb-sections';
+
+export async function getStaticPaths() {
+  const blocks = await getCollection('building-blocks');
+  const sorted = blocks.sort((a, b) => a.data.order - b.data.order);
+  const allBlocks = sorted.map((b) => ({ name: b.data.name, id: b.id }));
+
+  return sorted.map((block, index) => ({
+    params: { slug: block.id },
+    props: {
+      block,
+      prevBlock: index > 0 ? allBlocks[index - 1] : undefined,
+      nextBlock: index < sorted.length - 1 ? allBlocks[index + 1] : undefined,
+      allBlocks,
+    },
+  }));
+}
+
+const { block, prevBlock, nextBlock, allBlocks } = Astro.props;
+const { data } = block;
+const { Content } = await render(block);
+const guardrailLinks = bbGuardrailLinks[block.id] || [];
+---
+
+<BaseLayout
+  title={`${data.name} — BeeHaive Framework`}
+  description={data.tagline}
+>
+  <BBHero
+    code={data.code}
+    name={data.name}
+    tagline={data.tagline}
+    slug={block.id}
+    quote={data.quote}
+    quoteAuthor={data.quoteAuthor}
+  />
+
+  <div class="bb-layout">
+    <div class="bb-content">
+      <BBProseSection
+        eyebrow="Wat is het"
+        title={`Wat is ${data.name}?`}
+        sectionId={BB_SECTIONS.WAT_IS_HET.id}
+      >
+        <Content />
+      </BBProseSection>
+
+      <BBChecklist items={data.checklist} evidence={data.evidence} />
+
+      {data.quickStart && data.quickStart.length > 0 && (
+        <BBQuickStart steps={data.quickStart} />
+      )}
+
+      <BBUseCases auditExample={data.auditExample} />
+
+      <BBGuardrails links={guardrailLinks} bbName={data.name} />
+
+      <BBCallToAction bbName={data.name} />
+    </div>
+
+    <aside class="bb-sidebar">
+      <BBTableOfContents />
+    </aside>
+  </div>
+
+  <BBNavigation
+    prev={prevBlock}
+    next={nextBlock}
+    allBlocks={allBlocks}
+    currentId={block.id}
+  />
+</BaseLayout>
+
+<style>
+  .bb-layout {
+    display: grid;
+    grid-template-columns: 1fr min(720px, 100%) 240px;
+    gap: 0 3rem;
+    padding: 0 5%;
+    position: relative;
+  }
+
+  .bb-content {
+    grid-column: 2;
+  }
+
+  .bb-sidebar {
+    grid-column: 3;
+    position: relative;
+  }
+
+  @media (max-width: 960px) {
+    .bb-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .bb-content {
+      grid-column: 1;
+    }
+
+    .bb-sidebar {
+      display: none;
+    }
+  }
+</style>

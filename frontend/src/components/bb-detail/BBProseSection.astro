@@ -1,0 +1,57 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  sectionId: string;
+}
+
+const { eyebrow, title, sectionId } = Astro.props;
+---
+
+<section class="bb-prose-section bb-section" id={sectionId}>
+  <div class="eyebrow">{eyebrow}</div>
+  <h2 class="section-title">{title}</h2>
+  <div class="prose">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .prose {
+    max-width: 720px;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .prose :global(h2) {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--teal-light);
+    margin: 2.5rem 0 0.8rem;
+    letter-spacing: -0.01em;
+  }
+
+  .prose :global(h2:first-child) {
+    display: none;
+  }
+
+  .prose :global(p) {
+    margin-bottom: 1.2rem;
+  }
+
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .prose :global(em) {
+    color: var(--teal-light);
+    font-style: italic;
+  }
+</style>

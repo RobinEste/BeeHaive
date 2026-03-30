@@ -22,6 +22,7 @@ const buildingBlocks = defineCollection({
       title: z.string(),
       description: z.string(),
     }).optional(),
+    evidence: z.array(z.string()).optional(),
   }),
 });
 

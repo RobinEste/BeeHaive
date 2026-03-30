@@ -1,0 +1,43 @@
+---
+import { bbIcons } from '../../lib/bb-icons';
+
+interface Props {
+  slug: string;
+  size?: number;
+  class?: string;
+}
+
+const { slug, size = 20, class: className = '' } = Astro.props;
+const icon = bbIcons[slug];
+---
+
+{icon && icon.type === 'png' ? (
+  <img
+    class:list={['bb-icon-img', className]}
+    src={icon.src}
+    alt=""
+    style={`width: ${size}px; height: ${size}px;`}
+  />
+) : icon && icon.type === 'svg' ? (
+  <svg
+    class:list={['bb-icon-svg', className]}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={`width: ${size}px; height: ${size}px;`}
+  >
+    <Fragment set:html={icon.src} />
+  </svg>
+) : null}
+
+<style>
+  .bb-icon-img {
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .bb-icon-svg {
+    flex-shrink: 0;
+    color: var(--teal);
+  }
+</style>

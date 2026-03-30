@@ -1,0 +1,138 @@
+---
+import { BB_SECTION_LIST } from '../../lib/bb-sections';
+---
+
+<nav class="bb-toc" aria-label="Op deze pagina">
+  <span class="toc-label">Op deze pagina</span>
+  <ul>
+    {BB_SECTION_LIST.map((s) => (
+      <li>
+        <a href={`#${s.id}`} data-section={s.id}>{s.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<button class="scroll-top" aria-label="Terug naar boven" id="scroll-top-btn">↑</button>
+
+<script>
+  const linkMap = new Map<string, Element>();
+  document.querySelectorAll('.bb-toc a[data-section]').forEach((link) => {
+    const id = link.getAttribute('data-section');
+    if (id) linkMap.set(id, link);
+  });
+
+  const sections = Array.from(linkMap.keys())
+    .map((id) => document.getElementById(id))
+    .filter(Boolean) as HTMLElement[];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          linkMap.forEach((link) => link.classList.remove('active'));
+          const active = linkMap.get(entry.target.id);
+          if (active) active.classList.add('active');
+        }
+      }
+    },
+    { rootMargin: '-20% 0px -60% 0px' }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+
+  const scrollBtn = document.getElementById('scroll-top-btn');
+  if (scrollBtn) {
+    window.addEventListener('scroll', () => {
+      scrollBtn.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .bb-toc {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+  }
+
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    border-left: 2px solid var(--border);
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  a:hover {
+    color: var(--teal-light);
+  }
+
+  a:global(.active) {
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .scroll-top {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    border: 1px solid var(--border-2);
+    color: var(--teal);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scroll-top:global(.visible) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .scroll-top:hover {
+    background: var(--bg-3);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 960px) {
+    .bb-toc {
+      display: none;
+    }
+
+    .scroll-top {
+      display: block;
+    }
+  }
+</style>

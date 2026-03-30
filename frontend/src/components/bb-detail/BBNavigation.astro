@@ -1,0 +1,154 @@
+---
+interface BlockLink {
+  name: string;
+  id: string;
+}
+
+interface Props {
+  prev?: BlockLink;
+  next?: BlockLink;
+  allBlocks?: BlockLink[];
+  currentId?: string;
+}
+
+const { prev, next, allBlocks, currentId } = Astro.props;
+---
+
+<nav class="bb-nav" aria-label="Building Block navigatie">
+  <div class="bb-nav-main">
+    {prev ? (
+      <a href={`/framework/${prev.id}`} class="bb-nav-link bb-nav-prev">
+        <span class="bb-nav-label">← Vorige</span>
+        <span class="bb-nav-name">{prev.name}</span>
+      </a>
+    ) : <div />}
+
+    <a href="/framework" class="bb-nav-back">Terug naar framework</a>
+
+    {next ? (
+      <a href={`/framework/${next.id}`} class="bb-nav-link bb-nav-next">
+        <span class="bb-nav-label">Volgende →</span>
+        <span class="bb-nav-name">{next.name}</span>
+      </a>
+    ) : <div />}
+  </div>
+
+  {allBlocks && allBlocks.length > 0 && (
+    <div class="bb-nav-all">
+      {allBlocks.map((block) => (
+        <a
+          href={`/framework/${block.id}`}
+          class:list={['bb-nav-chip', { current: block.id === currentId }]}
+        >
+          {block.name}
+        </a>
+      ))}
+    </div>
+  )}
+</nav>
+
+<style>
+  .bb-nav {
+    padding: 3rem 5%;
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+
+  .bb-nav-main {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .bb-nav-link {
+    text-decoration: none;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.3s, background 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .bb-nav-link:hover {
+    border-color: var(--border-2);
+    background: var(--bg-3);
+  }
+
+  .bb-nav-prev { text-align: left; }
+  .bb-nav-next { text-align: right; }
+
+  .bb-nav-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .bb-nav-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--teal-light);
+  }
+
+  .bb-nav-back {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+    text-align: center;
+  }
+
+  .bb-nav-back:hover {
+    color: var(--teal);
+  }
+
+  .bb-nav-all {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .bb-nav-chip {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .bb-nav-chip:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .bb-nav-chip.current {
+    background: rgba(68, 194, 186, 0.12);
+    border-color: var(--teal);
+    color: var(--teal);
+    pointer-events: none;
+  }
+
+  @media (max-width: 960px) {
+    .bb-nav-main {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .bb-nav-prev, .bb-nav-next { text-align: center; }
+    .bb-nav-all { gap: 0.4rem; }
+    .bb-nav-chip { font-size: 0.62rem; padding: 0.3rem 0.7rem; }
+  }
+</style>

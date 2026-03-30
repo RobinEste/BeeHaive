@@ -7,9 +7,9 @@ const currentPath = Astro.url.pathname;
     <img src="/logo.png" alt="BeeHaive" class="nav-logo" />
   </a>
   <ul class="nav-links">
-    <li><a href="/framework" class:list={[{ active: currentPath === '/framework' }]}>Framework</a></li>
-    <li><a href="/kennisbank" class:list={[{ active: currentPath === '/kennisbank' }]}>Kennisbank</a></li>
-    <li><a href="/over" class:list={[{ active: currentPath === '/over' }]}>Over ons</a></li>
+    <li><a href="/framework" class:list={[{ active: currentPath.startsWith('/framework') }]}>Framework</a></li>
+    <li><a href="/kennisbank" class:list={[{ active: currentPath.startsWith('/kennisbank') }]}>Kennisbank</a></li>
+    <li><a href="/over" class:list={[{ active: currentPath.startsWith('/over') }]}>Over ons</a></li>
     <li><a href="/framework" class="nav-cta">Aan de slag</a></li>
   </ul>
 </nav>

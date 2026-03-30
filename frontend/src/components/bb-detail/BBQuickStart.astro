@@ -1,0 +1,64 @@
+---
+import { BB_SECTIONS } from '../../lib/bb-sections';
+
+interface Props {
+  steps: string[];
+}
+
+const { steps } = Astro.props;
+---
+
+<section class="bb-quickstart bb-section" id={BB_SECTIONS.QUICK_START.id}>
+  <div class="eyebrow">Quick Start</div>
+  <h2 class="section-title">Aan de slag in {steps.length} stappen</h2>
+
+  <div class="steps-grid">
+    {steps.map((step, i) => (
+      <div class="step-card">
+        <span class="step-num">{i + 1}</span>
+        <p>{step}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .bb-quickstart {}
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+  }
+
+  .step-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(233, 202, 98, 0.12);
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .step-card p {
+    font-size: 0.93rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+</style>

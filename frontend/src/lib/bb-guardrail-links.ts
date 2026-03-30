@@ -1,0 +1,65 @@
+/**
+ * Static mapping of Building Blocks to their most relevant Guardrails.
+ * Interim solution until the Neo4j knowledge graph API provides dynamic links (Fase B).
+ */
+
+export interface GuardrailLink {
+  code: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  /** Why this guardrail is relevant to this building block */
+  relevance: string;
+}
+
+const guardrails: Record<string, Omit<GuardrailLink, 'relevance'>> = {
+  GR_01: { code: 'GR_01', name: 'Human Agency', slug: 'human-agency', tagline: 'De mens houdt controle — AI ondersteunt, maar beslist niet.' },
+  GR_02: { code: 'GR_02', name: 'Robustness', slug: 'robustness', tagline: 'Betrouwbaar gedrag onder alle omstandigheden.' },
+  GR_03: { code: 'GR_03', name: 'Privacy', slug: 'privacy', tagline: 'Data bescherming als fundament, niet als bijzaak.' },
+  GR_04: { code: 'GR_04', name: 'Fairness', slug: 'fairness', tagline: 'Gelijke behandeling, geen systematische benadeling.' },
+  GR_05: { code: 'GR_05', name: 'Transparency', slug: 'transparency', tagline: 'Helder hoe AI werkt, wat het doet, en waarom.' },
+  GR_06: { code: 'GR_06', name: 'Well-being', slug: 'well-being', tagline: 'AI die bijdraagt aan maatschappelijk welzijn.' },
+  GR_07: { code: 'GR_07', name: 'Accountability', slug: 'accountability', tagline: 'Duidelijk wie verantwoordelijk is — en hoe daarop wordt toegezien.' },
+};
+
+function link(code: string, relevance: string): GuardrailLink {
+  return { ...guardrails[code], relevance };
+}
+
+export const bbGuardrailLinks: Record<string, GuardrailLink[]> = {
+  knowledge: [
+    link('GR_01', 'Kennis is de basis voor menselijk toezicht — zonder begrip geen controle.'),
+    link('GR_05', 'Wie de materie begrijpt, kan uitleggen hoe en waarom AI wordt ingezet.'),
+    link('GR_07', 'Verantwoording vereist dat de juiste mensen de juiste kennis hebben.'),
+  ],
+  'client-blueprint': [
+    link('GR_01', 'Een goed ontwerp borgt dat mensen de regie houden over het AI-systeem.'),
+    link('GR_05', 'De blueprint documenteert hoe het systeem werkt — transparantie by design.'),
+    link('GR_07', 'Rollen, verantwoordelijkheden en escalatiepaden worden in de blueprint vastgelegd.'),
+  ],
+  'dynamic-context': [
+    link('GR_03', 'Context bevat vaak gevoelige data — privacy-by-design is essentieel.'),
+    link('GR_02', 'Verouderde of onjuiste context leidt tot onbetrouwbare output.'),
+    link('GR_04', 'Eenzijdige bronnen in je context kunnen bias versterken.'),
+  ],
+  'prompt-design': [
+    link('GR_04', 'Prompts kunnen onbedoeld discrimineren — test op bias en inclusie.'),
+    link('GR_05', 'Goed ontworpen prompts maken de instructie aan het model expliciet en navolgbaar.'),
+    link('GR_01', 'De mens ontwerpt de instructies — dat is een kernmoment van oversight.'),
+  ],
+  'tool-integration': [
+    link('GR_02', 'Externe koppelingen zijn kwetsbaar — robuuste error handling is cruciaal.'),
+    link('GR_03', 'Data die via tools stroomt moet beschermd worden in transit en opslag.'),
+    link('GR_07', 'Elke tool-actie moet traceerbaar zijn voor auditdoeleinden.'),
+  ],
+  'model-engines': [
+    link('GR_02', 'Modelkeuze bepaalt betrouwbaarheid — test op edge cases en hallucinations.'),
+    link('GR_04', 'Modellen bevatten inherente biases — evalueer en mitigeer systematisch.'),
+    link('GR_05', 'Documenteer welk model wordt gebruikt, waarom, en wat de beperkingen zijn.'),
+  ],
+  'evaluation-loop': [
+    link('GR_07', 'Meten is verantwoorden — evaluatie maakt prestaties toetsbaar.'),
+    link('GR_04', 'Continue evaluatie detecteert bias die bij lancering niet zichtbaar was.'),
+    link('GR_06', 'Meet niet alleen technische metrics maar ook maatschappelijke impact.'),
+  ],
+};

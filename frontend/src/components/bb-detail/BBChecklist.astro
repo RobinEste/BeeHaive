@@ -1,0 +1,114 @@
+---
+import { BB_SECTIONS } from '../../lib/bb-sections';
+
+interface Props {
+  items: string[];
+  evidence?: string[];
+}
+
+const { items, evidence } = Astro.props;
+---
+
+<section class="bb-checklist bb-section" id={BB_SECTIONS.CHECKLIST.id}>
+  <div class="eyebrow">Checklist</div>
+  <h2 class="section-title">Heb je dit geregeld?</h2>
+
+  <div class="checklist-grid">
+    {items.map((item) => (
+      <div class="checklist-item">
+        <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5" />
+          <path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>{item}</span>
+      </div>
+    ))}
+  </div>
+
+  {evidence && evidence.length > 0 && (
+    <div class="evidence-block">
+      <h3 class="evidence-title">Wat lever je op?</h3>
+      <ul class="evidence-list">
+        {evidence.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</section>
+
+<style>
+  .bb-checklist {}
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.93rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--teal);
+    margin-top: 0.15rem;
+  }
+
+  .evidence-block {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(68, 194, 186, 0.06);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .evidence-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--teal-light);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .evidence-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .evidence-list li {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .evidence-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 960px) {
+    .checklist-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

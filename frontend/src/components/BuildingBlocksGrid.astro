@@ -1,19 +1,14 @@
 ---
+import BBIcon from './bb-detail/BBIcon.astro';
+
 const blocks = [
-  { num: 'BB_01', name: 'Knowledge', desc: 'Menselijke expertise en competentie — de centrale kennislaag.',
-    png: '/icons/bb-knowledge.png' },
-  { num: 'BB_02', name: 'Client Blueprint', desc: 'End-to-end beschrijving van een AI-oplossing binnen klantcontext.',
-    icon: '<rect x="4" y="2" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><line x1="7" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="7" y1="9" x2="13" y2="9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="7" y1="12" x2="11" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>' },
-  { num: 'BB_03', name: 'Dynamic Context', desc: 'Actuele, taakspecifieke informatie tijdens uitvoering via RAG en queries.',
-    icon: '<circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="12" y1="12" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 6l-1 3h2.5L8 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' },
-  { num: 'BB_04', name: 'Prompt Design', desc: 'Ontwerp, structuur en verfijning van prompts voor betrouwbare output.',
-    icon: '<rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><line x1="2" y1="7" x2="18" y2="7" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="7" x2="10" y2="18" stroke="currentColor" stroke-width="1.1"/><line x1="4.5" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><line x1="4.5" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><line x1="12" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><line x1="12" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>' },
-  { num: 'BB_05', name: 'Tool Integration', desc: 'Koppeling van externe systemen, API\'s en databases aan de AI-oplossing.',
-    png: '/icons/bb-tool-integration.png' },
-  { num: 'BB_06', name: 'Model Engines', desc: 'AI-modellen en runtime-omgevingen die de kernfunctionaliteit aandrijven.',
-    png: '/icons/bb-model-engines.png' },
-  { num: 'BB_07', name: 'Evaluation Loop', desc: 'Continue cyclus van meten, leren en verbeteren op basis van echte resultaten.',
-    icon: '<circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.3" fill="none"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><line x1="14" y1="6" x2="16" y2="4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="14" y1="4" x2="17" y2="4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="17" y1="4" x2="17" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' },
+  { num: 'BB_01', name: 'Knowledge', slug: 'knowledge', desc: 'Menselijke expertise en competentie — de centrale kennislaag.' },
+  { num: 'BB_02', name: 'Client Blueprint', slug: 'client-blueprint', desc: 'End-to-end beschrijving van een AI-oplossing binnen klantcontext.' },
+  { num: 'BB_03', name: 'Dynamic Context', slug: 'dynamic-context', desc: 'Actuele, taakspecifieke informatie tijdens uitvoering via RAG en queries.' },
+  { num: 'BB_04', name: 'Prompt Design', slug: 'prompt-design', desc: 'Ontwerp, structuur en verfijning van prompts voor betrouwbare output.' },
+  { num: 'BB_05', name: 'Tool Integration', slug: 'tool-integration', desc: 'Koppeling van externe systemen, API\'s en databases aan de AI-oplossing.' },
+  { num: 'BB_06', name: 'Model Engines', slug: 'model-engines', desc: 'AI-modellen en runtime-omgevingen die de kernfunctionaliteit aandrijven.' },
+  { num: 'BB_07', name: 'Evaluation Loop', slug: 'evaluation-loop', desc: 'Continue cyclus van meten, leren en verbeteren op basis van echte resultaten.' },
 ];
 ---
 
@@ -30,21 +25,15 @@ const blocks = [
     </div>
 
     {blocks.map((block) => (
-      <div class="block-card">
+      <a href={`/framework/${block.slug}`} class="block-card">
         <div class="block-gold-num">
-          {block.png ? (
-            <img class="block-icon-img" src={block.png} alt={block.name} />
-          ) : (
-            <svg class="block-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <Fragment set:html={block.icon} />
-            </svg>
-          )}
+          <BBIcon slug={block.slug} size={18} class="block-icon" />
           {block.num}
         </div>
         <h3>{block.name}</h3>
         <p>{block.desc}</p>
         <span class="block-arrow">↗</span>
-      </div>
+      </a>
     ))}
   </div>
 </section>
@@ -86,6 +75,9 @@ const blocks = [
     cursor: pointer;
     transition: background 0.3s;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
 
   .block-card::after {
@@ -143,26 +135,12 @@ const blocks = [
     gap: 0.55rem;
   }
 
-  .block-icon {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    color: var(--teal);
+  .block-gold-num :global(.block-icon) {
     opacity: 0.65;
     transition: opacity 0.3s, filter 0.3s;
   }
 
-  .block-icon-img {
-    width: 22px;
-    height: 22px;
-    flex-shrink: 0;
-    object-fit: contain;
-    opacity: 0.85;
-    transition: opacity 0.3s, filter 0.3s;
-  }
-
-  .block-card:hover .block-icon,
-  .block-card:hover .block-icon-img {
+  .block-card:hover .block-gold-num :global(.block-icon) {
     opacity: 1;
     filter: drop-shadow(0 0 5px rgba(68, 194, 186, 0.6));
   }
