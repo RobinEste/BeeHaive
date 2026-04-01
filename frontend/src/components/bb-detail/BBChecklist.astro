@@ -61,23 +61,23 @@ const { items, evidence } = Astro.props;
     width: 20px;
     height: 20px;
     flex-shrink: 0;
-    color: var(--teal);
+    color: var(--accent, var(--teal));
     margin-top: 0.15rem;
   }
 
   .evidence-block {
     margin-top: 3rem;
     padding: 2rem;
-    background: rgba(68, 194, 186, 0.06);
+    background: color-mix(in srgb, var(--accent, var(--teal)) 6%, transparent);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--teal);
+    border-left: 3px solid var(--accent, var(--teal));
     border-radius: 0 12px 12px 0;
   }
 
   .evidence-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--teal-light);
+    color: var(--accent, var(--teal));
     margin-bottom: 1rem;
     letter-spacing: -0.01em;
   }
@@ -102,7 +102,7 @@ const { items, evidence } = Astro.props;
     content: '→';
     position: absolute;
     left: 0;
-    color: var(--teal);
+    color: var(--accent, var(--teal));
     font-size: 0.85rem;
   }
 

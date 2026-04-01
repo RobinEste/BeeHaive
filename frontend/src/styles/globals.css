@@ -18,6 +18,24 @@
   --gold:         #E9CA62;
   --yellow:       #EEDB43;
 
+  /* Building Block accent colors */
+  --bb-knowledge:       #E9CA62;   /* amber/gold — fundament */
+  --bb-client-blueprint:#6366F1;   /* indigo — strategie */
+  --bb-dynamic-context: #22D3EE;   /* cyan — informatiestroom */
+  --bb-prompt-design:   #A78BFA;   /* violet — creativiteit */
+  --bb-tool-integration:#34D399;   /* emerald — verbinding */
+  --bb-model-engines:   #FB923C;   /* orange — kracht */
+  --bb-evaluation-loop: #FB7185;   /* rose — verbetering */
+
+  /* Guardrail accent colors (EU Trustworthy AI) */
+  --gr-human-agency:    #60A5FA;   /* blue — menselijke controle */
+  --gr-robustness:      #F87171;   /* red — veiligheid */
+  --gr-privacy:         #34D399;   /* emerald — data governance */
+  --gr-fairness:        #FBBF24;   /* amber — inclusie */
+  --gr-transparency:    #A78BFA;   /* violet — uitlegbaarheid */
+  --gr-well-being:      #2DD4BF;   /* teal — welzijn */
+  --gr-accountability:  #FB923C;   /* orange — verantwoording */
+
   /* Backgrounds */
   --bg:           #0C1E1D;
   --bg-2:         #122C2A;
@@ -469,11 +487,50 @@ code, pre, .mono {
   margin-top: 0.5rem;
 }
 
+/* ── SCROLL REVEAL ─────────────────────────────────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children within a reveal group (max 8 children; add more nth-child rules if needed) */
+.scroll-reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.scroll-reveal-stagger.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.08s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.16s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.24s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.32s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.40s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 0.48s; }
+.scroll-reveal-stagger.is-visible > *:nth-child(8) { transition-delay: 0.56s; }
+
 /* ── ACCESSIBILITY ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .scroll-reveal,
+  .scroll-reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

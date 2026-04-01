@@ -27,7 +27,7 @@ const { steps } = Astro.props;
 
   .steps-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.2rem;
     margin-top: 0.5rem;
   }
@@ -38,6 +38,9 @@ const { steps } = Astro.props;
     border-radius: 12px;
     padding: 2rem;
     position: relative;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
   }
 
   .step-num {
@@ -46,13 +49,13 @@ const { steps } = Astro.props;
     justify-content: center;
     width: 32px;
     height: 32px;
+    min-width: 32px;
     border-radius: 50%;
-    background: rgba(233, 202, 98, 0.12);
-    color: var(--gold);
+    background: color-mix(in srgb, var(--accent, var(--gold)) 12%, transparent);
+    color: var(--accent, var(--gold));
     font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 700;
-    margin-bottom: 1rem;
   }
 
   .step-card p {
@@ -60,5 +63,6 @@ const { steps } = Astro.props;
     line-height: 1.7;
     color: var(--text-dim);
     font-weight: 300;
+    white-space: pre-line;
   }
 </style>

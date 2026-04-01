@@ -12,27 +12,53 @@ checklist:
   - "Is context correct en volledig ingevoegd?"
   - "Zijn voorbeelden toegevoegd waar nodig (few-shot)?"
   - "Is formatting en output-structuur duidelijk (JSON, Markdown, etc.)?"
-  - "Is de prompt getest met edge cases?"
+  - "Is de prompt getest met edge cases (ongebruikelijke of extreme invoer)?"
   - "Wordt de prompt geregeld herzien op basis van evaluaties?"
+  - "Zijn je verwachtingen en kwaliteitscriteria expliciet geformuleerd — los van het model?"
+  - "Is de kern van je promptspecificatie overdraagbaar naar andere modellen en tools?"
 quickStart:
-  - "Structureer je prompt: systeem-instructie → context → taak → output-format."
-  - "Test met minimaal 5 uiteenlopende inputs en beoordeel de output op consistentie."
-  - "Gebruik caching om tokens te beperken bij herhaalde context-blokken."
+  - |
+    Structureer je prompt:
+    Je bent een... (rol) binnen deze omgeving... (context). Ik wil dat je dit doet... (instructies + voorbeelden). Houd rekening met... (criteria). Het resultaat is... (output).
+  - |
+    Test je prompt:
+    Probeer dezelfde prompt met verschillende soorten content (kort/lang, simpel/complex, uitzonderingen) en controleer of het resultaat consistent blijft.
+  - |
+    Bewaar je prompt:
+    Leg werkende prompts vast met versiebeheer zodat je ze kunt hergebruiken, verbeteren en overdragen naar andere tools.
 auditExample:
   title: "AI-Readiness Audit"
   description: "We hebben zwaar geïnvesteerd in prompt design voor het interviewsysteem. Prompts zijn 4-laags gepersonaliseerd (rol × ervaring × functie × AI-vertrouwdheid) en gebruiken caching om tokens te beperken. Elke prompt wordt iteratief verbeterd op basis van evaluatieresultaten."
 evidence:
   - "Prompt-bibliotheek met versiebeheer en changelog"
   - "Testresultaten van prompt-varianten op dezelfde inputset"
-  - "Gedocumenteerde prompt-structuur (rol, context, instructies, criteria)"
+  - "Gedocumenteerde prompt-structuur (rol, context, instructies, voorbeelden, criteria, output)"
 ---
 
 ## Wat is Prompt Design?
 
-Prompt Design is de systematische praktijk van het ontwerpen, structureren, testen en verfijnen van prompts — inclusief rol, context, instructies, criteria en voorbeelden — om AI-modellen consistente, relevante en betrouwbare output te laten produceren.
+Een prompt is een instructie aan een AI-model: de tekst waarmee je aangeeft wat je wilt, in welke context, en aan welke criteria het resultaat moet voldoen. Prompt Design is de systematische praktijk van het ontwerpen, structureren, testen en verfijnen van die instructies — inclusief rol, context, voorbeelden en kwaliteitscriteria — om consistente, relevante en betrouwbare output te produceren.
 
 Prompt Design bepaalt *hoe* een AI-model een vraag interpreteert, *hoe* het redeneert en *welke kwaliteit* en reproduceerbaarheid de output heeft binnen een specifieke toepassing.
 
+## De evolutie van Prompt Design
+
+In het begin van het LLM-tijdperk moest je veel werk verzetten om een model de juiste kant op te sturen. "Je bent een expert in copywriting." "Handel als een data-analist." Rolzetting, uitgebreide checklists, strikte scopebeperking — het voelde als engineering, en zo noemden we het ook.
+
+Toen werden de modellen slimmer. Je hoeft Claude niet meer te vertellen dat het verstand heeft van copywriting als je een copywriting-vraag stelt. Het model snapt dat zelf. De conclusie leek logisch: prompt engineering is dood.
+
+Maar dat klopt niet. Wat minder nodig werd, is het *managen* van het model — de trucjes, de rolzetting, het inperken. Wat nooit is verdwenen, is het articuleren van **jouw verwachtingen**. Hoe je werkt. Welk resultaat je zoekt. Welke structuur je waardeert. Welke kwaliteitscriteria je hanteert. Die zijn uniek voor jou, en geen enkel model kan ze raden.
+
+Prompt Design is daarmee niet verdwenen — het is *gepromoveerd*. Van LLM-management naar het helder formuleren van wat je wilt bereiken en waarom.
+
+Dit heeft een praktische consequentie: de kern van goede promptspecificaties is **overdraagbaar**. Je verwachtingen, kwaliteitscriteria en schrijfstijl zijn niet gebonden aan één model of tool. Een helder gestructureerd document met wat je wilt bereiken, welke structuur je verwacht en welke kwaliteit je acceptabel vindt, neem je mee van Claude naar ChatGPT naar een AI-schrijftool die je voor het eerst uitprobeert.
+
+De nuance: *hoe* je die verwachtingen vormgeeft verschilt per model. Het ene model werkt beter met JSON-instructies, het andere met markdown of XML-tags. De optimale instructievolgorde kan verschillen, net als de mate van explicietheid die nodig is. Maar de kern — wat je wilt, waarom, en aan welke criteria het resultaat moet voldoen — blijft hetzelfde. Leg die kern vast als leesbare, modelonafhankelijke tekst. De vertaling naar een specifiek formaat is een implementatiedetail.
+
 ## In de praktijk
 
-Prompt design is geen eenmalige activiteit. Het is een continu verbeterproces waarin je leert van evaluaties, edge cases ontdekt en je instructies verfijnt. De beste prompts zijn niet de langste, maar de meest precieze — ze geven het model precies genoeg sturing zonder de creatieve ruimte onnodig te beperken.
+Prompt design is geen eenmalige activiteit. Het is een continu verbeterproces waarin je leert van evaluaties, onverwachte invoer ontdekt die het model op het verkeerde been zet, en je instructies verfijnt. De beste prompts zijn niet de langste, maar de meest precieze — ze geven het model precies genoeg sturing zonder de creatieve ruimte onnodig te beperken.
+
+Maar de echte waarde van prompt design zit niet alleen in de prompt of de output. Het zit in het **gesprek**. Het iteratieve proces van vragen stellen, output beoordelen, bijsturen en verfijnen dwingt je om steeds helderder te worden over wat je eigenlijk wilt. Hoe iets eruit moet zien. Hoe het moet werken.
+
+Dat denkproces is het eigenlijke product. De helderheid die je opbouwt in het gesprek met AI neem je mee naar je volgende gesprek — of dat nu met een model is of met een collega.

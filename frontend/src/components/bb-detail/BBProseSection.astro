@@ -28,7 +28,7 @@ const { eyebrow, title, sectionId } = Astro.props;
   .prose :global(h2) {
     font-size: 1.15rem;
     font-weight: 600;
-    color: var(--teal-light);
+    color: var(--accent, var(--teal-light));
     margin: 2.5rem 0 0.8rem;
     letter-spacing: -0.01em;
   }
@@ -51,7 +51,7 @@ const { eyebrow, title, sectionId } = Astro.props;
   }
 
   .prose :global(em) {
-    color: var(--teal-light);
+    color: var(--accent, var(--teal-light));
     font-style: italic;
   }
 </style>

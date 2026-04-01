@@ -55,7 +55,7 @@ const { code, name, tagline, slug, quote, quoteAuthor } = Astro.props;
   }
 
   .bb-hero-title :global(.bb-hero-icon) {
-    filter: drop-shadow(0 0 8px rgba(68, 194, 186, 0.4));
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent, var(--teal)) 40%, transparent));
   }
 
   .bb-hero-meta {
@@ -68,6 +68,11 @@ const { code, name, tagline, slug, quote, quoteAuthor } = Astro.props;
   .bb-hero-meta .eyebrow {
     margin-bottom: 0;
     flex-shrink: 0;
+    color: var(--accent, var(--teal));
+  }
+
+  .bb-hero-meta .eyebrow::after {
+    background: var(--accent, var(--teal));
   }
 
   .bb-hero-meta .page-intro {

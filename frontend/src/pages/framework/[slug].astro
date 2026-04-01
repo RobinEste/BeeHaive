@@ -12,6 +12,7 @@ import BBTableOfContents from '../../components/bb-detail/BBTableOfContents.astr
 import BBNavigation from '../../components/bb-detail/BBNavigation.astro';
 import { bbGuardrailLinks } from '../../lib/bb-guardrail-links';
 import { BB_SECTIONS } from '../../lib/bb-sections';
+import { bbAccentMap } from '../../lib/bb-accents';
 
 export async function getStaticPaths() {
   const blocks = await getCollection('building-blocks');
@@ -33,12 +34,14 @@ const { block, prevBlock, nextBlock, allBlocks } = Astro.props;
 const { data } = block;
 const { Content } = await render(block);
 const guardrailLinks = bbGuardrailLinks[block.id] || [];
+const accent = bbAccentMap[block.id] || 'var(--teal)';
 ---
 
 <BaseLayout
   title={`${data.name} — BeeHaive Framework`}
   description={data.tagline}
 >
+  <div class="bb-page" style={`--accent: ${accent};`}>
   <BBHero
     code={data.code}
     name={data.name}
@@ -82,6 +85,7 @@ const guardrailLinks = bbGuardrailLinks[block.id] || [];
     allBlocks={allBlocks}
     currentId={block.id}
   />
+  </div>
 </BaseLayout>
 
 <style>

@@ -12,25 +12,20 @@ const blocks = [
 ];
 ---
 
-<section class="blocks-section">
+<section class="blocks-section scroll-reveal">
   <div class="eyebrow">Bouwstenen</div>
   <h2 class="section-title">7 Building Blocks</h2>
+  <a href="/framework" class="btn-gold section-cta">Bekijk het framework →</a>
   <p class="section-intro">Elk AI-project bestaat uit dezelfde bouwstenen. BeeHaive maakt ze zichtbaar, meetbaar en verbeterbaar.</p>
 
-  <div class="blocks-grid">
-    <div class="block-card block-card-cta">
-      <h3>Begin met het framework</h3>
-      <p>Ontdek hoe de 7 bouwstenen samenwerken en start met je eerste AI-project.</p>
-      <a href="/framework" class="btn-gold" style="font-size: 0.85rem; padding: 0.65rem 1.4rem;">Bekijk het framework →</a>
-    </div>
-
+  <div class="blocks-grid scroll-reveal-stagger">
     {blocks.map((block) => (
-      <a href={`/framework/${block.slug}`} class="block-card">
-        <div class="block-gold-num">
-          <BBIcon slug={block.slug} size={18} class="block-icon" />
-          {block.num}
+      <a href={`/framework/${block.slug}`} class="block-card" data-bb={block.slug}>
+        <div class="block-header">
+          <BBIcon slug={block.slug} size={22} class="block-icon" />
+          <h3>{block.name}</h3>
+          <span class="block-num">{block.num}</span>
         </div>
-        <h3>{block.name}</h3>
         <p>{block.desc}</p>
         <span class="block-arrow">↗</span>
       </a>
@@ -61,107 +56,112 @@ const blocks = [
   .blocks-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
+    gap: 1rem;
+    margin-top: 0.5rem;
   }
 
+  .section-cta {
+    font-size: 0.85rem;
+    padding: 0.65rem 1.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── Per-BB kleur via data-attribuut ── */
+  .block-card[data-bb="knowledge"]       { --accent: var(--bb-knowledge); }
+  .block-card[data-bb="client-blueprint"]{ --accent: var(--bb-client-blueprint); }
+  .block-card[data-bb="dynamic-context"] { --accent: var(--bb-dynamic-context); }
+  .block-card[data-bb="prompt-design"]   { --accent: var(--bb-prompt-design); }
+  .block-card[data-bb="tool-integration"]{ --accent: var(--bb-tool-integration); }
+  .block-card[data-bb="model-engines"]   { --accent: var(--bb-model-engines); }
+  .block-card[data-bb="evaluation-loop"] { --accent: var(--bb-evaluation-loop); }
+
+  /* ── Card base ── */
   .block-card {
     background: var(--bg-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    border-left: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 14px;
     padding: 2.2rem 2.4rem;
     position: relative;
     cursor: pointer;
-    transition: background 0.3s;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
     display: block;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   }
 
-  .block-card::after {
+  /* Subtiele achtergrondtint per kleur */
+  .block-card::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--teal), var(--teal-light));
-    box-shadow: 0 0 10px var(--teal);
-    transition: width 0.4s ease;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0.5;
   }
 
-  .block-card:hover { background: var(--bg-3); }
-  .block-card:hover::after { width: 100%; }
-
-  .block-card-cta {
-    background: linear-gradient(135deg, rgba(68, 194, 186, 0.13) 0%, rgba(139, 230, 218, 0.06) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  /* ── Hover ── */
+  .block-card:hover {
+    background: var(--bg-3);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    border-left-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 30px color-mix(in srgb, var(--accent) 15%, transparent),
+      0 12px 32px rgba(0, 0, 0, 0.3);
   }
 
-  .block-card-cta:hover {
-    background: rgba(68, 194, 186, 0.18);
+  .block-card:hover::before {
+    opacity: 1;
   }
 
-  .block-card-cta h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--teal-light);
-    margin-bottom: 0.55rem;
-    letter-spacing: -0.02em;
-  }
-
-  .block-card-cta p {
-    font-size: 0.87rem;
-    color: var(--text-dim);
-    line-height: 1.65;
-    font-weight: 300;
-    margin-bottom: 1.5rem;
-    flex: 1;
-  }
-
-  .block-gold-num {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: rgba(233, 202, 98, 0.35);
-    letter-spacing: 0.12em;
-    margin-bottom: 1rem;
-    transition: color 0.3s;
+  /* ── Header ── */
+  .block-header {
     display: flex;
     align-items: center;
     gap: 0.55rem;
+    margin-bottom: 0.55rem;
+    position: relative;
   }
 
-  .block-gold-num :global(.block-icon) {
-    opacity: 0.65;
+  .block-header :global(.block-icon) {
+    opacity: 0.7;
     transition: opacity 0.3s, filter 0.3s;
   }
 
-  .block-card:hover .block-gold-num :global(.block-icon) {
+  .block-card:hover .block-header :global(.block-icon) {
     opacity: 1;
-    filter: drop-shadow(0 0 5px rgba(68, 194, 186, 0.6));
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 60%, transparent));
   }
 
-  .block-card:hover .block-gold-num {
-    color: var(--gold);
+  .block-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+    letter-spacing: 0.12em;
+    transition: color 0.3s;
   }
 
-  .block-card:not(.block-card-cta) h3 {
+  .block-card:hover .block-num {
+    color: var(--accent);
+  }
+
+  .block-card h3 {
     font-size: 1.05rem;
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 0.55rem;
     letter-spacing: -0.02em;
+    position: relative;
   }
 
-  .block-card:not(.block-card-cta) p {
+  .block-card p {
     font-size: 0.87rem;
     color: var(--text-muted);
     line-height: 1.65;
     font-weight: 300;
+    position: relative;
   }
 
   .block-arrow {
@@ -174,7 +174,7 @@ const blocks = [
   }
 
   .block-card:hover .block-arrow {
-    color: var(--teal);
+    color: var(--accent);
     transform: translate(3px, -3px);
   }
 

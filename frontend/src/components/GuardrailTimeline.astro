@@ -1,16 +1,16 @@
 ---
 const guardrails = [
-  { code: 'GR_01', name: 'Human Agency', desc: 'Menselijke controle en oversight als uitgangspunt.' },
-  { code: 'GR_02', name: 'Robustness', desc: 'Technische veerkracht en veiligheid in alle omstandigheden.' },
-  { code: 'GR_03', name: 'Privacy', desc: 'Privacy by design en verantwoorde datagovernance.' },
-  { code: 'GR_04', name: 'Fairness', desc: 'Non-discriminatie en inclusie in AI-systemen.' },
-  { code: 'GR_05', name: 'Transparency', desc: 'Uitlegbaarheid en openheid over hoe AI werkt.' },
-  { code: 'GR_06', name: 'Well-being', desc: 'Bijdrage aan maatschappelijk welzijn als kernwaarde.' },
-  { code: 'GR_07', name: 'Accountability', desc: 'Verantwoording en governance op alle niveaus.' },
+  { code: 'GR_01', name: 'Human Agency', slug: 'human-agency', desc: 'Menselijke controle en oversight als uitgangspunt.' },
+  { code: 'GR_02', name: 'Robustness', slug: 'robustness', desc: 'Technische veerkracht en veiligheid in alle omstandigheden.' },
+  { code: 'GR_03', name: 'Privacy', slug: 'privacy', desc: 'Privacy by design en verantwoorde datagovernance.' },
+  { code: 'GR_04', name: 'Fairness', slug: 'fairness', desc: 'Non-discriminatie en inclusie in AI-systemen.' },
+  { code: 'GR_05', name: 'Transparency', slug: 'transparency', desc: 'Uitlegbaarheid en openheid over hoe AI werkt.' },
+  { code: 'GR_06', name: 'Well-being', slug: 'well-being', desc: 'Bijdrage aan maatschappelijk welzijn als kernwaarde.' },
+  { code: 'GR_07', name: 'Accountability', slug: 'accountability', desc: 'Verantwoording en governance op alle niveaus.' },
 ];
 ---
 
-<section class="guardrails-section" id="guardrails">
+<section class="guardrails-section scroll-reveal" id="guardrails">
   <div class="guardrails-layout">
     <div class="guardrail-info">
       <div class="eyebrow">EU Trustworthy AI</div>
@@ -22,9 +22,9 @@ const guardrails = [
       </div>
     </div>
 
-    <div class="guardrail-timeline">
+    <div class="guardrail-timeline scroll-reveal-stagger">
       {guardrails.map((g) => (
-        <div class="g-item">
+        <div class="g-item" data-gr={g.slug}>
           <div class="g-dot"></div>
           <div class="g-code">{g.code}</div>
           <div class="g-name">{g.name}</div>
@@ -91,8 +91,26 @@ const guardrails = [
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(to bottom, var(--teal), rgba(68, 194, 186, 0.08));
+    background: linear-gradient(to bottom,
+      var(--gr-human-agency),
+      var(--gr-robustness),
+      var(--gr-privacy),
+      var(--gr-fairness),
+      var(--gr-transparency),
+      var(--gr-well-being),
+      var(--gr-accountability)
+    );
+    opacity: 0.5;
   }
+
+  /* Per-GR kleur via data-attribuut */
+  .g-item[data-gr="human-agency"]   { --gr-accent: var(--gr-human-agency); }
+  .g-item[data-gr="robustness"]     { --gr-accent: var(--gr-robustness); }
+  .g-item[data-gr="privacy"]        { --gr-accent: var(--gr-privacy); }
+  .g-item[data-gr="fairness"]       { --gr-accent: var(--gr-fairness); }
+  .g-item[data-gr="transparency"]   { --gr-accent: var(--gr-transparency); }
+  .g-item[data-gr="well-being"]     { --gr-accent: var(--gr-well-being); }
+  .g-item[data-gr="accountability"] { --gr-accent: var(--gr-accountability); }
 
   .g-item {
     position: relative;
@@ -110,32 +128,37 @@ const guardrails = [
     height: 14px;
     border-radius: 50%;
     background: var(--bg);
-    border: 2px solid var(--teal);
+    border: 2px solid var(--gr-accent);
     transition: background 0.3s, box-shadow 0.3s;
   }
 
   .g-item:hover .g-dot {
-    background: var(--teal);
-    box-shadow: 0 0 18px rgba(68, 194, 186, 0.6);
+    background: var(--gr-accent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--gr-accent) 60%, transparent);
   }
 
   .g-code {
     font-family: var(--font-mono);
     font-size: 0.66rem;
-    color: var(--text-muted);
+    color: color-mix(in srgb, var(--gr-accent) 60%, transparent);
     letter-spacing: 0.1em;
     margin-bottom: 0.2rem;
+    transition: color 0.25s;
+  }
+
+  .g-item:hover .g-code {
+    color: var(--gr-accent);
   }
 
   .g-name {
     font-size: 1.05rem;
     font-weight: 600;
-    color: var(--gold);
+    color: var(--text);
     margin-bottom: 0.3rem;
     transition: color 0.25s;
   }
 
-  .g-item:hover .g-name { color: var(--teal-light); }
+  .g-item:hover .g-name { color: var(--gr-accent); }
 
   .g-desc {
     font-size: 0.87rem;
