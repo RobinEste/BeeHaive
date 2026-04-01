@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 2 |
-| architectuur | 10 |
-| development | 13 |
+| architectuur | 12 |
+| development | 14 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **28** |
+| **Totaal** | **31** |
 
 ## Inzichten
 
@@ -46,3 +46,6 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-026 | Gedeelde constanten voor cross-component referenties | architectuur | 2026-03-30 | hoog |
 | KNW-2026-027 | Statische data als API-placeholder pattern | development | 2026-03-30 | hoog |
 | KNW-2026-028 | Framework-onderzoek als design-input | development | 2026-03-30 | hoog |
+| KNW-2026-029 | CSS custom property cascade als componenttheming | architectuur | 2026-04-01 | hoog |
+| KNW-2026-030 | Iteratieve content-review als ontwerpproces | development | 2026-04-01 | hoog |
+| KNW-2026-031 | data-attribuut patroon voor entity-specifieke CSS-variabelen | architectuur | 2026-04-01 | hoog |
