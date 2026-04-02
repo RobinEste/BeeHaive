@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-03-30
+**Laatst bijgewerkt:** 2026-04-02
 
 ---
 
@@ -40,6 +40,7 @@
 - [x] Stap 8c Fase A: BB detail-pagina's met 7 secties (#23) — Compleet: 7 pagina's, 10 componenten, guardrail-koppelingen, evidence, CTA, sticky ToC.
 - [ ] Stap 8c Fase B: Dynamische secties (Research, Guardrails API, Workflow) — wacht op backend API (#23)
 - [ ] Stap 8b: Workflow visualisatie met React Flow (#22)
+- [ ] Frontend: design nice-to-haves — framework overview, hero accent, nav active state (#27)
 - [ ] Stap 9: Blog systeem met content collecties (#9)
 
 ### Fase 4: Backend API 🔴
@@ -67,6 +68,7 @@
 - [ ] Architectuur consolidatie: dual session, config, paginatie (#20)
 - [ ] Privacy-by-design: AI Act transparantie, retentie, audit trail (#21)
 - [ ] Verbeteren context engineering: token budget, placement-strategie, degradatiepatronen (#25)
+- [ ] Content: Business Glossary — consistente terminologie across site, blogs en trainingen (#28)
 
 ---
 
