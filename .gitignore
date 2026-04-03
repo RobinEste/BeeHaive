@@ -69,3 +69,10 @@ backend/scripts/calibration-results.json
 # Temporary files
 *.tmp
 *.bak
+
+# Obsidian / Vault-only
+.sessies/
+.meetings/
+.notes.md
+.obsidian/
+.obsidianignore
