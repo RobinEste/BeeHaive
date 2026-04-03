@@ -7,11 +7,11 @@ order: 4
 quote: "Leadership is no longer about having answers. It is actually now about asking brilliant questions."
 quoteAuthor: "Claire MacIntyre"
 checklist:
-  - "Is er een heldere taakdefinitie?"
-  - "Is de prompt logisch opgebouwd (rol → context → instructies → criteria → output)?"
+  - "Is de betekenis helder — wat wil je bereiken en waarom?"
+  - "Is de prompt logisch opgebouwd (betekenis → context → instructies & verwachtingen → criteria → output)?"
   - "Is context correct en volledig ingevoegd?"
-  - "Zijn voorbeelden toegevoegd waar nodig (few-shot)?"
-  - "Is formatting en output-structuur duidelijk (JSON, Markdown, etc.)?"
+  - "Zijn voorbeelden toegevoegd waar nodig (few-shot — 3 voorbeelden verhoogt betrouwbaarheid van 71% naar 94%)?"
+  - "Is formatting en output-structuur duidelijk (XML-tags presteren 11% beter dan JSON op compliance)?"
   - "Is de prompt getest met edge cases (ongebruikelijke of extreme invoer)?"
   - "Wordt de prompt geregeld herzien op basis van evaluaties?"
   - "Zijn je verwachtingen en kwaliteitscriteria expliciet geformuleerd — los van het model?"
@@ -19,7 +19,7 @@ checklist:
 quickStart:
   - |
     Structureer je prompt:
-    Je bent een... (rol) binnen deze omgeving... (context). Ik wil dat je dit doet... (instructies + voorbeelden). Houd rekening met... (criteria). Het resultaat is... (output).
+    Dit is wat ik wil bereiken... (betekenis). Binnen deze omgeving... (context). Ik verwacht dat je... (instructies & verwachtingen). Houd rekening met... (criteria). Het resultaat is... (output).
   - |
     Test je prompt:
     Probeer dezelfde prompt met verschillende soorten content (kort/lang, simpel/complex, uitzonderingen) en controleer of het resultaat consistent blijft.
@@ -45,15 +45,29 @@ Prompt Design bepaalt *hoe* een AI-model een vraag interpreteert, *hoe* het rede
 
 In het begin van het LLM-tijdperk moest je veel werk verzetten om een model de juiste kant op te sturen. "Je bent een expert in copywriting." "Handel als een data-analist." Rolzetting, uitgebreide checklists, strikte scopebeperking — het voelde als engineering, en zo noemden we het ook.
 
-Toen werden de modellen slimmer. Je hoeft Claude niet meer te vertellen dat het verstand heeft van copywriting als je een copywriting-vraag stelt. Het model snapt dat zelf. De conclusie leek logisch: prompt engineering is dood.
+Toen werden de modellen slimmer. Je hoeft Claude niet meer te vertellen dat het verstand heeft van copywriting als je een copywriting-vraag stelt. Het model snapt dat zelf. Technieken die tot 2025 essentieel waren — uitgebreide persona-prompts, handmatig voorkauwen van redeneerstappen voor simpele taken — zijn nu onnodige overhead. De conclusie leek logisch: prompt engineering is dood.
 
-Maar dat klopt niet. Wat minder nodig werd, is het *managen* van het model — de trucjes, de rolzetting, het inperken. Wat nooit is verdwenen, is het articuleren van **jouw verwachtingen**. Hoe je werkt. Welk resultaat je zoekt. Welke structuur je waardeert. Welke kwaliteitscriteria je hanteert. Die zijn uniek voor jou, en geen enkel model kan ze raden.
+Maar dat klopt niet. Wat minder nodig werd, is het *managen* van het model — de trucjes, de rolzetting, het inperken. Wat nooit is verdwenen, is het articuleren van **jouw betekenis**. Niet *wie* het model moet zijn, maar *wat* je wilt bereiken en *waarom*. Welk resultaat je zoekt. Welke structuur je waardeert. Welke kwaliteitscriteria je hanteert. Die zijn uniek voor jou, en geen enkel model kan ze raden.
 
-Prompt Design is daarmee niet verdwenen — het is *gepromoveerd*. Van LLM-management naar het helder formuleren van wat je wilt bereiken en waarom.
+Prompt Design is daarmee niet verdwenen — het is *gepromoveerd*. Van LLM-management naar het helder formuleren van betekenis: wat je wilt bereiken, wat je verwacht, en aan welke criteria het moet voldoen.
+
+Maar er is een tweede verschuiving die minstens zo belangrijk is: van **één perfecte prompt** naar het **iteratieve gesprek**. De echte kracht van werken met AI zit niet in het eerste prompt, maar in de vervolgvragen. De vragen die alleen *jij* kunt stellen, omdat ze voortkomen uit je domeinkennis, proceskennis en ervaring — de kennis die je niet kunt opschrijven in een instructie, maar die eruit komt als je het resultaat ziet en weet wat er niet klopt, wat er mist, of wat beter kan. Dat is tacit knowledge in actie: je brengt het in via het gesprek, niet via de prompt.
 
 Dit heeft een praktische consequentie: de kern van goede promptspecificaties is **overdraagbaar**. Je verwachtingen, kwaliteitscriteria en schrijfstijl zijn niet gebonden aan één model of tool. Een helder gestructureerd document met wat je wilt bereiken, welke structuur je verwacht en welke kwaliteit je acceptabel vindt, neem je mee van Claude naar ChatGPT naar een AI-schrijftool die je voor het eerst uitprobeert.
 
 De nuance: *hoe* je die verwachtingen vormgeeft verschilt per model. Het ene model werkt beter met JSON-instructies, het andere met markdown of XML-tags. De optimale instructievolgorde kan verschillen, net als de mate van explicietheid die nodig is. Maar de kern — wat je wilt, waarom, en aan welke criteria het resultaat moet voldoen — blijft hetzelfde. Leg die kern vast als leesbare, modelonafhankelijke tekst. De vertaling naar een specifiek formaat is een implementatiedetail.
+
+## Vormen van prompt design
+
+Naarmate AI-toepassingen diverser worden, ontstaan er verschillende vormen die elk hun eigen aanpak vragen. Ze bouwen op dezelfde elementen (betekenis, context, instructies & verwachtingen, criteria, output), maar passen ze anders toe.
+
+**Single-turn prompts** — Eén vraag, één antwoord. De basis. Alle elementen zijn specifiek voor deze ene taak: je weet precies welke betekenis, welke context, welk resultaat. Voor veel taken is dit voldoende.
+
+**De system prompt** — Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Belangrijk patroon: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
+
+**Het iteratieve gesprek** — De vorm waar de meeste waarde zit voor domeinexperts. Niet de eerste prompt is beslissend, maar de vervolgvragen, gestuurd door jouw domeinkennis, proceskennis en ervaring. Dit is prompt design als dialoog.
+
+**Agent prompts** — Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chatprompt één antwoord oplevert, stuurt een agent-prompt een **cyclus** aan. Het kernverschil: je ontwerpt een **beslisboom**. Per situatie specificeer je een concreet pad; als de klant over facturatie vraagt, doe dit; als de input onduidelijk is, vraag eerst om verduidelijking; als er een fout optreedt, log en ga terug. Per stap van die boom bepaal je wat de agent mag doen en wat hij moet weigeren. Niet alles hoeft door het model beslist te worden: waar de logica voorspelbaar is, kun je deterministische scripts gebruiken in plaats van AI-beslissingen.
 
 ## In de praktijk
 

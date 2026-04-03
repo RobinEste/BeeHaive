@@ -69,6 +69,7 @@
 - [ ] Privacy-by-design: AI Act transparantie, retentie, audit trail (#21)
 - [ ] Verbeteren context engineering: token budget, placement-strategie, degradatiepatronen (#25)
 - [ ] Content: Business Glossary — consistente terminologie across site, blogs en trainingen (#28)
+- [ ] Content: Kennisbank verrijking per BB/GR — NI-artikelen + Bastionclaw use-cases, wekelijkse verwerking (#29)
 
 ---
 
