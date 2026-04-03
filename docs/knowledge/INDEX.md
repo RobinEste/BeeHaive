@@ -7,12 +7,12 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | Categorie | Aantal |
 |-----------|--------|
 | security | 1 |
-| avg-privacy | 2 |
-| architectuur | 12 |
-| development | 14 |
+| avg-privacy | 3 |
+| architectuur | 14 |
+| development | 15 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **31** |
+| **Totaal** | **35** |
 
 ## Inzichten
 
@@ -49,3 +49,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-029 | CSS custom property cascade als componenttheming | architectuur | 2026-04-01 | hoog |
 | KNW-2026-030 | Iteratieve content-review als ontwerpproces | development | 2026-04-01 | hoog |
 | KNW-2026-031 | data-attribuut patroon voor entity-specifieke CSS-variabelen | architectuur | 2026-04-01 | hoog |
+| KNW-2026-032 | Betekenis boven rol als prompt design paradigma | architectuur | 2026-04-03 | hoog |
+| KNW-2026-033 | Taxonomie-afbakening als content-sturingsbeslissing | architectuur | 2026-04-03 | hoog |
+| KNW-2026-034 | Tiered sources en two-source rule voor kennisbank-research | development | 2026-04-03 | hoog |
+| KNW-2026-035 | Parallel verwerkingspad vereist eigen doelbindingstoets | avg-privacy | 2026-04-03 | hoog |
