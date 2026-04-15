@@ -32,7 +32,7 @@ auditExample:
 evidence:
   - "Prompt-bibliotheek met versiebeheer en changelog"
   - "Testresultaten van prompt-varianten op dezelfde inputset"
-  - "Gedocumenteerde prompt-structuur (rol, context, instructies, voorbeelden, criteria, output)"
+  - "Gedocumenteerde prompt-structuur (betekenis, context, instructies & verwachtingen, voorbeelden, criteria, output)"
 ---
 
 import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
@@ -67,7 +67,7 @@ Prompt Design is daarmee niet verdwenen — het is *gepromoveerd*. Van LLM-manag
 
 ### Het iteratieve gesprek
 
-Er is een tweede verschuiving die minstens zo belangrijk is: van één perfecte prompt naar het iteratieve gesprek. De echte kracht van werken met AI zit niet in het eerste prompt, maar in de vervolgvragen. De vragen die alleen *jij* kunt stellen, omdat ze voortkomen uit je domeinkennis, proceskennis en ervaring — de kennis die je niet kunt opschrijven in een instructie, maar die eruit komt als je het resultaat ziet en weet wat er niet klopt, wat er mist, of wat beter kan. Dat is tacit knowledge in actie: je brengt het in via het gesprek, niet via de prompt.
+Er is een tweede verschuiving die minstens zo belangrijk is: van één perfecte prompt naar het iteratieve gesprek. De echte kracht van werken met AI zit niet in het eerste prompt, maar in de vervolgvragen. De vragen die alleen *jij* kunt stellen, omdat ze voortkomen uit je domeinkennis, proceskennis en ervaring — de kennis die je niet kunt opschrijven in een instructie, maar die eruit komt als je het resultaat ziet en weet wat er niet klopt, wat er mist, of wat beter kan. Dat is impliciete kennis (tacit knowledge) in actie: je brengt het in via het gesprek, niet via de prompt.
 
 ### Overdraagbaarheid
 
@@ -101,7 +101,7 @@ Een AI-agent stuurt geen enkel antwoord maar een hele cyclus aan: het model rede
 
 <BBDisclosure title="Agentic prompt design: flow engineering">
 
-Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chat-prompt één antwoord oplevert, stuurt een agent-prompt een hele *cyclus* aan — soms minuten, uren of tientallen model-calls lang. Dat vraagt een fundamenteel andere ontwerpdiscipline, die de industrie inmiddels "flow engineering" noemt: het ontwerpen van de control flow, state transitions en beslispunten *rondom* de model-calls, niet alleen de prompts zelf.
+Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chat-prompt één antwoord oplevert, stuurt een agent-prompt een hele *cyclus* aan — soms minuten, uren of tientallen model-calls lang. Dat vraagt een fundamenteel andere ontwerpdiscipline, die de industrie inmiddels "flow engineering" noemt: het ontwerpen van de workflow, toestandsovergangen en beslispunten *rondom* de model-calls, niet alleen de prompts zelf.
 
 ### Een cyclus, geen antwoord
 
@@ -116,7 +116,7 @@ In productie-agents is een vast patroon standaard geworden: elke stap produceert
 - **EXPECTED RESULT** — wat zou er moeten gebeuren?
 - **CONTINGENCY** — wat doe ik als dat mislukt?
 
-Dit maakt beslissingen auditeerbaar — je kunt achteraf zien *waarom* de agent iets deed — en dwingt de agent om vóór actie expliciet aannames te checken, wat hallucinations reduceert.
+Dit maakt beslissingen auditeerbaar — je kunt achteraf zien *waarom* de agent iets deed — en dwingt de agent om vóór actie expliciet aannames te checken, wat hallucinations (verzonnen feiten die het model als waar presenteert) reduceert.
 
 ### Stopcondities
 
@@ -126,7 +126,7 @@ Een agent zonder expliciete stopcondities blijft oneindig doorlopen — hij weet
 - **Staplimiet bereikt** — agent produceert PARTIAL met reden van voortijdig stoppen
 - **Onzekerheid over veiligheid** — agent stopt en escaleert naar een mens
 
-Deze stopcondities zijn niet alleen een technische hygiëne, ze zijn ook een guardrail-vereiste. De EU AI Act (Art. 14) eist dat een mens in staat is het systeem te onderbreken of de output te overschrijven. Een agent die ontworpen is zonder exit-mechanisme is niet alleen onveilig, maar potentieel non-compliant voor high-risk toepassingen.
+Deze stopcondities zijn niet alleen een technische hygiëne, ze zijn ook een guardrail-vereiste. De EU AI Act eist dat een mens in staat is het systeem te onderbreken of de output te overschrijven. Een agent die ontworpen is zonder exit-mechanisme is niet alleen onveilig, maar in risicovolle contexten mogelijk niet-compliant.
 
 ### Plan-Then-Execute
 
@@ -173,7 +173,7 @@ Pas als een nieuwe promptversie op alle drie de lagen goed scoort, mag hij door 
 
 ### Deployment en rollback
 
-Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. *"When a production prompt fails, that failure becomes a new test case"* — elke productie-fout wordt de volgende test, waardoor de testsuite continu beter wordt.
+Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments (gefaseerd uitrollen) zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. *"When a production prompt fails, that failure becomes a new test case"* — elke productie-fout wordt de volgende test, waardoor de testsuite continu beter wordt.
 
 In het huidige tooling-landschap zijn LangSmith, Langfuse en MLflow Prompt Registry gevestigde spelers.
 
