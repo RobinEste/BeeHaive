@@ -151,6 +151,38 @@ Niet alles hoeft door het model beslist te worden. Waar de logica voorspelbaar i
 
 </BBDisclosure>
 
+<BBDisclosure title="PromptOps: prompts beheren als code">
+
+Prompt Design stopt niet bij het schrijven van een goede prompt. In productie moeten prompts beheerd, getoetst en versioned worden — net als code. De industrie noemt deze discipline **PromptOps**: de levenscyclus van een prompt, van experiment tot productie en weer terug.
+
+### Van ad-hoc naar discipline
+
+De praktijk evolueert in drie stappen. Op het eerste niveau zijn prompts gewoon losse tekststrings in de code, zonder versiebeheer of evaluatie. Op het tweede niveau leven ze als versioned bestanden in Git, met pull requests, review en een changelog. Op het derde niveau zit er een registry tussen: een database die prompts bevat, met A/B testing, staged deployment en geautomatiseerde rollback.
+
+Teams die dit serieus nemen gebruiken een versienummering vergelijkbaar met software: *major* bij een gedragsverandering die bestaande output breekt, *minor* bij een verbetering die achterwaarts compatibel is, *patch* bij een kleine correctie.
+
+### Evaluatie in drie lagen
+
+Een gezonde evaluatie-pipeline combineert drie soorten metingen:
+
+- **Deterministische checks** — klopt het JSON-schema, zijn verplichte velden aanwezig, voldoet de output aan harde regels?
+- **Semantische kwaliteitsmeting** — een tweede model (LLM-as-judge, een beoordelende AI) scoort of het antwoord goed is; menselijke review voor steekproeven
+- **Bedrijfsmetrieken** — taak-succespercentage, gebruikerstevredenheid, kostprijs per interactie
+
+Pas als een nieuwe promptversie op alle drie de lagen goed scoort, mag hij door naar productie.
+
+### Deployment en rollback
+
+Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. *"When a production prompt fails, that failure becomes a new test case"* — elke productie-fout wordt de volgende test, waardoor de testsuite continu beter wordt.
+
+In het huidige tooling-landschap zijn LangSmith, Langfuse en MLflow Prompt Registry gevestigde spelers.
+
+### De koppeling met Evaluation Loop
+
+PromptOps is in de kern de operationalisering van de [Evaluation Loop](/framework/evaluation-loop) (BB_06): dezelfde cyclus van meten, analyseren, verbeteren en opnieuw meten — maar dan specifiek voor prompts in productie. Je kunt niet goed aan de Prompt Design-knop draaien zonder de Evaluation Loop-knop tegelijk te bedienen.
+
+</BBDisclosure>
+
 <BBDisclosure title="In de praktijk">
 
 ### Een continu verbeterproces
