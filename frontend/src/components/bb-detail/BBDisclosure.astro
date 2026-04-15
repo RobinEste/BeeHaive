@@ -16,10 +16,10 @@ function slugify(text: string): string {
 }
 
 const { title, defaultOpen = false, id } = Astro.props;
-const headingId = id || slugify(title);
+const detailsId = id || slugify(title);
 ---
 
-<details class="bb-disclosure" id={headingId} open={defaultOpen}>
+<details class="bb-disclosure" id={detailsId} open={defaultOpen}>
   <summary class="disclosure-summary">
     <h2 class="disclosure-heading">{title}</h2>
     <svg
@@ -41,6 +41,27 @@ const headingId = id || slugify(title);
     <slot />
   </div>
 </details>
+
+<script>
+  // Open the matching <details> when a URL hash points to it or a heading inside it.
+  // Without this, anchor links (e.g. #agentic-prompt-design-flow-engineering) scroll
+  // but leave the disclosure closed — hiding the content the user navigated to.
+  function openFromHash() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const target = document.getElementById(hash);
+    if (!target) return;
+    const details =
+      target instanceof HTMLDetailsElement ? target : target.closest('details');
+    if (details instanceof HTMLDetailsElement && !details.open) {
+      details.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+</script>
 
 <style>
   .bb-disclosure {
@@ -105,7 +126,6 @@ const headingId = id || slugify(title);
     animation: disclosureFadeIn 0.3s ease;
   }
 
-  /* Override margins van eerste/laatste block-element binnen de content */
   .disclosure-content :global(h2:first-child),
   .disclosure-content :global(h3:first-child),
   .disclosure-content :global(p:first-child) {

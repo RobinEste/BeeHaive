@@ -3,8 +3,10 @@
  * Interim solution until the Neo4j knowledge graph API provides dynamic links (Fase B).
  */
 
+export type GuardrailCode = 'GR_01' | 'GR_02' | 'GR_03' | 'GR_04' | 'GR_05' | 'GR_06' | 'GR_07';
+
 export interface GuardrailLink {
-  code: string;
+  code: GuardrailCode;
   name: string;
   slug: string;
   tagline: string;
@@ -12,7 +14,7 @@ export interface GuardrailLink {
   relevance: string;
 }
 
-const guardrails: Record<string, Omit<GuardrailLink, 'relevance'>> = {
+const guardrails: Record<GuardrailCode, Omit<GuardrailLink, 'relevance'>> = {
   GR_01: { code: 'GR_01', name: 'Human Agency', slug: 'human-agency', tagline: 'De mens houdt controle — AI ondersteunt, maar beslist niet.' },
   GR_02: { code: 'GR_02', name: 'Robustness', slug: 'robustness', tagline: 'Betrouwbaar gedrag onder alle omstandigheden.' },
   GR_03: { code: 'GR_03', name: 'Privacy', slug: 'privacy', tagline: 'Data bescherming als fundament, niet als bijzaak.' },
@@ -22,7 +24,7 @@ const guardrails: Record<string, Omit<GuardrailLink, 'relevance'>> = {
   GR_07: { code: 'GR_07', name: 'Accountability', slug: 'accountability', tagline: 'Duidelijk wie verantwoordelijk is — en hoe daarop wordt toegezien.' },
 };
 
-function link(code: string, relevance: string): GuardrailLink {
+function link(code: GuardrailCode, relevance: string): GuardrailLink {
   return { ...guardrails[code], relevance };
 }
 
