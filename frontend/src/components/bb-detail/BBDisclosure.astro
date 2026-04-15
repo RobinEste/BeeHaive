@@ -1,0 +1,127 @@
+---
+interface Props {
+  title: string;
+  defaultOpen?: boolean;
+}
+
+const { title, defaultOpen = false } = Astro.props;
+---
+
+<details class="bb-disclosure" open={defaultOpen}>
+  <summary class="disclosure-summary">
+    <h2 class="disclosure-heading">{title}</h2>
+    <svg
+      class="chevron"
+      aria-hidden="true"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <polyline points="4 6 8 10 12 6" />
+    </svg>
+  </summary>
+  <div class="disclosure-content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .bb-disclosure {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 0;
+    margin: 0;
+  }
+
+  .bb-disclosure:last-of-type {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .disclosure-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .disclosure-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure-summary:hover .disclosure-heading {
+    color: var(--accent, var(--teal));
+  }
+
+  .disclosure-heading {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent, var(--teal-light));
+    margin: 0;
+    letter-spacing: -0.01em;
+    flex: 1;
+    transition: color 0.2s ease;
+  }
+
+  .chevron {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 0.25s ease, color 0.2s ease;
+  }
+
+  .disclosure-summary:hover .chevron {
+    color: var(--accent, var(--teal));
+  }
+
+  .bb-disclosure[open] .chevron {
+    transform: rotate(180deg);
+  }
+
+  .bb-disclosure[open] .disclosure-heading {
+    color: var(--accent, var(--teal));
+  }
+
+  .disclosure-content {
+    padding-top: 1.25rem;
+    animation: disclosureFadeIn 0.3s ease;
+  }
+
+  /* Override margins van eerste/laatste block-element binnen de content */
+  .disclosure-content :global(h2:first-child),
+  .disclosure-content :global(h3:first-child),
+  .disclosure-content :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  .disclosure-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  @keyframes disclosureFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chevron,
+    .disclosure-heading {
+      transition: none;
+    }
+    .disclosure-content {
+      animation: none;
+    }
+  }
+</style>
