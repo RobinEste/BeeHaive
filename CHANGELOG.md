@@ -9,6 +9,21 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 ## [Unreleased]
 
 ### Toegevoegd
+- `MISSIE.md` v0.3 — projectmissie met drie-vlakken-samenhang (BB↔BB, GR↔GR, BB↔GR) en Noblesse Oblige principes (mens-centrisch, eerlijk over grenzen, readiness eerst, de hele organisatie een stem)
+- Deep research audit trail `docs/research/prompt-design-2026/` — 4 parallelle researchers (~40 bronnen) als basis voor de verrijking van BB_04
+- `resources/frameworks/prompt-design.md` atom — framework-snapshot voor cross-project gebruik
+- `BBDisclosure.astro` — herbruikbare component voor inklapbare secties met native `<details>/<summary>`, auto-slug id, deep-link auto-open, teal-accent styling
+- BB_04 Prompt Design — vijf uitklapbare inhoudssecties (Evolutie, Vormen, Agentic flow engineering, PromptOps, In de praktijk) met tussenkopjes in teal
+- Agentic prompt design-sectie met control flow (REASON/NEXT ACTION/EXPECTED RESULT/CONTINGENCY), verplichte stopcondities, Plan-Then-Execute, zes canonieke patronen, deterministisch-waar-mogelijk
+- PromptOps-sectie — versioning (Git → registry → CI/CD), 3-laags eval-pipeline, canary-deployments, koppeling met Evaluation Loop (BB_06)
+- `GuardrailCode` union type in `bb-guardrail-links.ts` voor compile-time typo-detectie
+
+### Gewijzigd
+- BB_04 Prompt Design narratief: onderscheid capability- vs context-rolzetting; onbevestigde iBuidl-statistieken vervangen door onderbouwde formuleringen; XML als Claude-specifieke best practice gepositioneerd
+- Guardrail-mapping voor Prompt Design: Fairness vervangen door Accountability; relevance-teksten aangescherpt zonder EU AI Act artikelnummers (toegankelijkheid boven technische accuratesse)
+- `BBProseSection.astro` CSS: H3-styling toegevoegd (1.1rem teal), custom teal bullets voor ul-lijsten, teal ::marker voor ol-lijsten, strong-labels in list-items in teal
+- CSS-selectors aangescherpt naar `.prose > :global(h2)` (direct child) zodat nested H2's binnen `<summary>` niet verborgen worden
+
 - Building Block detail-pagina's met 7 secties (#23, Fase A)
   - Dynamic routing: `/framework/{slug}` voor alle 7 BBs
   - Hero met SVG/PNG icons uit gedeelde `bb-icons.ts`, breadcrumb, quote
