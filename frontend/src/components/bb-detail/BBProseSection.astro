@@ -38,11 +38,54 @@ const { eyebrow, title, sectionId } = Astro.props;
   }
 
   .prose :global(h3) {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--accent, var(--teal-light));
     margin: 1.75rem 0 0.6rem;
     letter-spacing: -0.01em;
+  }
+
+  .prose :global(li > strong:first-child) {
+    color: var(--accent, var(--teal-light));
+    font-weight: 600;
+  }
+
+  .prose :global(ul) {
+    list-style: none;
+    padding-left: 0;
+    margin: 0.8rem 0 1.4rem;
+  }
+
+  .prose :global(ul li) {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose :global(ul li::before) {
+    content: "•";
+    position: absolute;
+    left: 0.3rem;
+    top: 0;
+    color: var(--accent, var(--teal));
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.85;
+  }
+
+  .prose :global(ol) {
+    padding-left: 1.4rem;
+    margin: 0.8rem 0 1.4rem;
+  }
+
+  .prose :global(ol li) {
+    margin-bottom: 0.5rem;
+    padding-left: 0.3rem;
+  }
+
+  .prose :global(ol li::marker) {
+    color: var(--accent, var(--teal));
+    font-weight: 600;
   }
 
   .prose :global(p) {

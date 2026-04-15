@@ -95,7 +95,59 @@ De vorm waar de meeste waarde zit voor domeinexperts. Niet de eerste prompt is b
 
 ### Agent prompts
 
-Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chatprompt één antwoord oplevert, stuurt een agent-prompt een **cyclus** aan. Het kernverschil: je ontwerpt een **beslisboom**. Per situatie specificeer je een concreet pad; als de klant over facturatie vraagt, doe dit; als de input onduidelijk is, vraag eerst om verduidelijking; als er een fout optreedt, log en ga terug. Per stap van die boom bepaal je wat de agent mag doen en wat hij moet weigeren. Niet alles hoeft door het model beslist te worden: waar de logica voorspelbaar is, kun je deterministische scripts gebruiken in plaats van AI-beslissingen.
+Een AI-agent stuurt geen enkel antwoord maar een hele cyclus aan: het model redeneert, gebruikt tools en bepaalt op basis van resultaten vervolgstappen. Dit is een eigen ontwerpdiscipline geworden — zie de sectie [Agentic prompt design: flow engineering](#agentic-prompt-design-flow-engineering) hieronder voor de diepte.
+
+</BBDisclosure>
+
+<BBDisclosure title="Agentic prompt design: flow engineering">
+
+Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chat-prompt één antwoord oplevert, stuurt een agent-prompt een hele *cyclus* aan — soms minuten, uren of tientallen model-calls lang. Dat vraagt een fundamenteel andere ontwerpdiscipline, die de industrie inmiddels "flow engineering" noemt: het ontwerpen van de control flow, state transitions en beslispunten *rondom* de model-calls, niet alleen de prompts zelf.
+
+### Een cyclus, geen antwoord
+
+Bij een chat-prompt is de centrale vraag "hoe formuleer ik dit het beste?" Bij een agent-prompt verschuift de kernvraag naar: *welke stappen, beslissingen en overgangen sturen het gedrag van deze agent?* en *wanneer mag welke tool ingezet worden?* De prompt blijft belangrijk, maar is slechts één onderdeel van een groter ontwerp waarin toestandsbeheer (bijhouden waar de agent in het proces zit), foutafhandeling en stopcondities even kritisch zijn.
+
+### Control flow per stap
+
+In productie-agents is een vast patroon standaard geworden: elke stap produceert een gestructureerde redenering met vier onderdelen:
+
+- **REASON** — wat weet ik, wat is de huidige state?
+- **NEXT ACTION** — wat ga ik doen en waarom?
+- **EXPECTED RESULT** — wat zou er moeten gebeuren?
+- **CONTINGENCY** — wat doe ik als dat mislukt?
+
+Dit maakt beslissingen auditeerbaar — je kunt achteraf zien *waarom* de agent iets deed — en dwingt de agent om vóór actie expliciet aannames te checken, wat hallucinations reduceert.
+
+### Stopcondities
+
+Een agent zonder expliciete stopcondities blijft oneindig doorlopen — hij weet niet wanneer de taak klaar is, wanneer hij moet afbreken, of wanneer hij moet escaleren. Drie stopcondities zijn verplicht:
+
+- **Taak voltooid** — agent produceert FINAL en stopt
+- **Staplimiet bereikt** — agent produceert PARTIAL met reden van voortijdig stoppen
+- **Onzekerheid over veiligheid** — agent stopt en escaleert naar een mens
+
+Deze stopcondities zijn niet alleen een technische hygiëne, ze zijn ook een guardrail-vereiste. De EU AI Act (Art. 14) eist dat een mens in staat is het systeem te onderbreken of de output te overschrijven. Een agent die ontworpen is zonder exit-mechanisme is niet alleen onveilig, maar potentieel non-compliant voor high-risk toepassingen.
+
+### Plan-Then-Execute
+
+Een krachtig patroon om prompt injection tegen te gaan: **scheid de planfase van de uitvoeringsfase**. In de planfase krijgt het model de taak en ontwerpt het een concreet stappenplan; pas in de uitvoeringsfase komen user-content en tool-resultaten in beeld. Hierdoor kan kwaadaardige input uit een gebruiker het plan niet meer manipuleren — het is al vastgelegd.
+
+### Zes patronen in productie
+
+De industrie heeft in 2025–2026 zes canonieke agentic design patterns benoemd. Welke je kiest hangt af van de taak:
+
+- **Prompt Chaining** — een sequentiële ketting van stappen waarbij het resultaat van de ene stap de invoer is voor de volgende
+- **Routing** — herken het type vraag en stuur het door naar een gespecialiseerde handler (bijvoorbeeld: facturatie-vraag naar de finance-agent, technische vraag naar de support-agent)
+- **Parallelization** — splits een taak in onafhankelijke stukken die tegelijk uitgevoerd worden, of laat dezelfde vraag meerdere keren beantwoorden en kies daarna het meest consistente antwoord
+- **Orchestrator-Workers** — een centraal coördinerend model deelt de taak op in stukken en verdeelt ze over gespecialiseerde worker-agents, zoals een projectleider met een team
+- **Evaluator-Optimizer** — de agent schrijft een antwoord, beoordeelt het zelf kritisch en verbetert het — een cyclus met een maximum aantal rondes om oneindig doorgaan te voorkomen
+- **ReAct (Reason + Act)** — het model wisselt tussenstappen van redeneren af met het gebruiken van tools (bijvoorbeeld: eerst nadenken over welke informatie nodig is, dan een zoekopdracht uitvoeren, dan het resultaat weer beredeneren). Dit is de meest gebruikte bouwsteen
+
+Production-agents combineren typisch meerdere patronen. Een customer-service bot kan Routing gebruiken om inkomende vragen te classificeren, dan Evaluator-Optimizer voor het opstellen van een antwoord, en Plan-Then-Execute als overkoepelende veiligheidslaag.
+
+### Deterministisch waar mogelijk
+
+Niet alles hoeft door het model beslist te worden. Waar de logica voorspelbaar is, zijn deterministische scripts betrouwbaarder, sneller en goedkoper dan AI-beslissingen. Goede agent-architectuur vraagt constant: *is deze stap een AI-beslissing of een code-beslissing?* Een agent die elke berekening, conversie of lookup door een LLM laat doen, is een agent die onnodig duur en foutgevoelig is.
 
 </BBDisclosure>
 

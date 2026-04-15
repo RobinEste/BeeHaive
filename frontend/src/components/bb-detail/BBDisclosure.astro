@@ -2,12 +2,24 @@
 interface Props {
   title: string;
   defaultOpen?: boolean;
+  id?: string;
 }
 
-const { title, defaultOpen = false } = Astro.props;
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
+const { title, defaultOpen = false, id } = Astro.props;
+const headingId = id || slugify(title);
 ---
 
-<details class="bb-disclosure" open={defaultOpen}>
+<details class="bb-disclosure" id={headingId} open={defaultOpen}>
   <summary class="disclosure-summary">
     <h2 class="disclosure-heading">{title}</h2>
     <svg
