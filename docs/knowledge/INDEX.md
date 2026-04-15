@@ -9,10 +9,10 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | security | 1 |
 | avg-privacy | 3 |
 | architectuur | 14 |
-| development | 15 |
+| development | 18 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **35** |
+| **Totaal** | **38** |
 
 ## Inzichten
 
@@ -53,3 +53,6 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-033 | Taxonomie-afbakening als content-sturingsbeslissing | architectuur | 2026-04-03 | hoog |
 | KNW-2026-034 | Tiered sources en two-source rule voor kennisbank-research | development | 2026-04-03 | hoog |
 | KNW-2026-035 | Parallel verwerkingspad vereist eigen doelbindingstoets | avg-privacy | 2026-04-03 | hoog |
+| KNW-2026-036 | Disjoint dimensies voorkomen dubbel werk bij parallelle researchers | development | 2026-04-15 | hoog |
+| KNW-2026-037 | Native `<details>` + progressive enhancement voor anchor-link auto-open | development | 2026-04-15 | hoog |
+| KNW-2026-038 | Content consistency-pass na narrative-updates | development | 2026-04-15 | hoog |
