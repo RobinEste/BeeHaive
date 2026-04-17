@@ -18,6 +18,7 @@ from app.graph.queries import find_item_by_source_url, find_items_by_fuzzy_title
 from app.ingestion.fetcher import fetch_source
 from app.ingestion.llm import classify_text
 from app.ingestion.pii import scan_pii
+from app.ingestion.summarizer import generate_nl_summary
 from app.models.ingestion import (
     IngestionResult,
     IngestionSource,
@@ -178,6 +179,14 @@ def ingest(
             mappings=mappings,
             pii_report=pii_report if pii_report.has_pii else None,
         )
+
+    # --- Step 4b: Generate NL summary (unless caller provided one) ---
+    if source.summary_nl is None:
+        generated = generate_nl_summary(text=text, title=source.title)
+        if generated:
+            source = source.model_copy(update={"summary_nl": generated})
+        else:
+            logger.warning("No NL summary generated for '%s' — proceeding without", source.title)
 
     # --- Step 5: Persist to knowledge graph ---
     logger.info("Creating KnowledgeItem with %d relations", len(mappings))

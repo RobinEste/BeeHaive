@@ -41,18 +41,24 @@ def create_knowledge_item_with_relations(session, source, mappings):
                 ki.title = $title,
                 ki.title_lower = toLower($title),
                 ki.source_type = $source_type,
+                ki.summary_nl = $summary_nl,
+                ki.curation_score = coalesce($curation_score, 0),
                 ki.is_current = true,
                 ki.created_at = datetime()
             ON MATCH SET
                 ki.title = $title,
                 ki.title_lower = toLower($title),
                 ki.source_type = $source_type,
+                ki.summary_nl = coalesce($summary_nl, ki.summary_nl),
+                ki.curation_score = coalesce($curation_score, ki.curation_score),
                 ki.updated_at = datetime()
             RETURN ki
             """,
             title=source.title,
             source_url=str(source.url),
             source_type=source.source_type,
+            summary_nl=source.summary_nl,
+            curation_score=source.curation_score,
         )
         record = result.single()
         if not record:

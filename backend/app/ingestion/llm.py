@@ -16,15 +16,12 @@ import os
 import time
 from typing import Any
 
-from google import genai
 from google.genai import types
 
+from app.ingestion.gemini_client import get_gemini_client
 from app.models.ingestion import EntityType, SourceType, TaxonomyMapping
 
 logger = logging.getLogger(__name__)
-
-# Gemini client — initialised lazily
-_client: genai.Client | None = None
 
 # Model for classification
 _CLASSIFY_MODEL = os.getenv("GEMINI_CLASSIFY_MODEL", "gemini-3.1-pro-preview")
@@ -259,20 +256,6 @@ _RESPONSE_SCHEMA = types.Schema(
 )
 
 
-def _get_client() -> genai.Client:
-    """Get or create the Gemini client (lazy init)."""
-    global _client
-    if _client is None:
-        api_key = os.getenv("GEMINI_API_KEY", "")
-        if not api_key:
-            raise ValueError(
-                "GEMINI_API_KEY is not set. "
-                "Get a key at https://aistudio.google.com/apikey"
-            )
-        _client = genai.Client(api_key=api_key)
-    return _client
-
-
 def _validate_mapping(raw: dict[str, Any]) -> TaxonomyMapping | None:
     """Validate and convert a raw mapping dict to a TaxonomyMapping.
 
@@ -351,7 +334,7 @@ def classify_text(
     last_error: str | None = None
     for attempt in range(_MAX_RETRIES + 1):
         try:
-            client = _get_client()
+            client = get_gemini_client()
             response = client.models.generate_content(
                 model=_CLASSIFY_MODEL,
                 contents=user_prompt,

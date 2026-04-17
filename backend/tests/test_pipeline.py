@@ -72,6 +72,7 @@ def _mappings():
 
 
 class TestPipelineHappyPath:
+    @patch("app.ingestion.pipeline.generate_nl_summary", return_value="NL samenvatting")
     @patch("app.ingestion.pipeline._ingest_to_lightrag")
     @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
     @patch("app.ingestion.pipeline.classify_text")
@@ -80,7 +81,7 @@ class TestPipelineHappyPath:
     @patch("app.ingestion.pipeline.fetch_source")
     def test_full_commit_flow(
         self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
-        mock_classify, mock_create, mock_rag,
+        mock_classify, mock_create, mock_rag, mock_summary,
     ):
         mock_fetch.return_value = _fetch_ok()
         mock_dedup_url.return_value = None
@@ -94,6 +95,8 @@ class TestPipelineHappyPath:
         assert len(result.mappings) == 2
         mock_create.assert_called_once()
         mock_rag.assert_called_once()
+        mock_summary.assert_called_once()
+        assert mock_create.call_args.args[1].summary_nl == "NL samenvatting"
 
     @patch("app.ingestion.pipeline.classify_text")
     @patch("app.ingestion.pipeline.find_items_by_fuzzy_title")
@@ -112,6 +115,7 @@ class TestPipelineHappyPath:
         assert result.status == "preview"
         assert len(result.mappings) == 2
 
+    @patch("app.ingestion.pipeline.generate_nl_summary", return_value="NL samenvatting")
     @patch("app.ingestion.pipeline._ingest_to_lightrag")
     @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
     @patch("app.ingestion.pipeline.classify_text")
@@ -120,7 +124,7 @@ class TestPipelineHappyPath:
     @patch("app.ingestion.pipeline.fetch_source")
     def test_skip_rag_flag(
         self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
-        mock_classify, mock_create, mock_rag,
+        mock_classify, mock_create, mock_rag, mock_summary,
     ):
         mock_fetch.return_value = _fetch_ok()
         mock_dedup_url.return_value = None
@@ -219,6 +223,7 @@ class TestPipelineErrors:
 
 
 class TestLightRAGIngest:
+    @patch("app.ingestion.pipeline.generate_nl_summary", return_value="NL samenvatting")
     @patch("app.ingestion.pipeline._ingest_to_lightrag")
     @patch("app.ingestion.pipeline.create_knowledge_item_with_relations")
     @patch("app.ingestion.pipeline.classify_text")
@@ -227,7 +232,7 @@ class TestLightRAGIngest:
     @patch("app.ingestion.pipeline.fetch_source")
     def test_lightrag_failure_does_not_block(
         self, mock_fetch, mock_dedup_url, mock_dedup_fuzzy,
-        mock_classify, mock_create, mock_rag,
+        mock_classify, mock_create, mock_rag, mock_summary,
     ):
         """LightRAG failure should not prevent KnowledgeItem creation."""
         mock_fetch.return_value = _fetch_ok()

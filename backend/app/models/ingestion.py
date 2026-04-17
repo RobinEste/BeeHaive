@@ -27,6 +27,10 @@ class IngestionSource(BaseModel):
     url: HttpUrl
     title: str = Field(min_length=1)
     source_type: SourceType
+    # Optional overrides: if None, the pipeline generates summary_nl via LLM
+    # and leaves curation_score at its existing value (0 for new items).
+    summary_nl: str | None = None
+    curation_score: int | None = None
 
 
 class FetchResult(BaseModel):

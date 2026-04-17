@@ -134,7 +134,7 @@ class TestValidateMapping:
 
 
 class TestClassifyText:
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_basic_classification(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -152,7 +152,7 @@ class TestClassifyText:
         types_found = {m.entity_type for m in result}
         assert types_found == {"BuildingBlock", "Guardrail", "Topic", "Author"}
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_confidence_threshold_filtering(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -167,7 +167,7 @@ class TestClassifyText:
         assert len(result) == 1
         assert result[0].entity_type == "BuildingBlock"
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_custom_confidence_threshold(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -183,7 +183,7 @@ class TestClassifyText:
         assert len(result) == 1
         assert result[0].confidence == 0.5
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_invalid_building_block_filtered_out(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -197,19 +197,19 @@ class TestClassifyText:
         assert len(result) == 1
         assert result[0].entity_type == "Guardrail"
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_empty_text_returns_empty(self, mock_get_client):
         result = classify_text("", "paper", "Test")
         assert result == []
         mock_get_client.assert_not_called()
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_whitespace_only_text_returns_empty(self, mock_get_client):
         result = classify_text("   \n\t  ", "paper", "Test")
         assert result == []
 
     @patch("app.ingestion.llm.time.sleep")  # don't actually sleep in tests
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_api_error_returns_empty_after_retries(self, mock_get_client, mock_sleep):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -221,7 +221,7 @@ class TestClassifyText:
         # 1 initial + 2 retries = 3 calls
         assert mock_client.models.generate_content.call_count == 3
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_empty_mappings_from_api(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -231,7 +231,7 @@ class TestClassifyText:
 
         assert result == []
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_all_match_methods_are_llm(self, mock_get_client):
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
@@ -245,7 +245,7 @@ class TestClassifyText:
         for mapping in result:
             assert mapping.match_method == "llm"
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_topics_and_authors_accept_any_name(self, mock_get_client):
         """Topics and Authors are free-form — any name should be accepted."""
         mock_client = MagicMock()
@@ -261,7 +261,7 @@ class TestClassifyText:
         assert result[0].matched_name == "Completely Novel Topic"
         assert result[1].matched_name == "Unknown Author XYZ"
 
-    @patch("app.ingestion.llm._get_client")
+    @patch("app.ingestion.llm.get_gemini_client")
     def test_duplicate_mappings_deduplicated(self, mock_get_client):
         """Multiple mappings for same (entity_type, matched_name) keep highest confidence."""
         mock_client = MagicMock()
