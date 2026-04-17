@@ -27,9 +27,11 @@ class Author(BaseModel):
 class KnowledgeItem(BaseModel):
     title: str
     content: str
+    summary_nl: str | None = None
     source_url: str | None = None
     source_type: str | None = None
     is_current: bool | None = None
+    curation_score: int = 0
 
 
 class KnowledgeItemDetail(KnowledgeItem):

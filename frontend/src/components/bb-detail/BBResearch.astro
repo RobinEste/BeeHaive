@@ -1,0 +1,191 @@
+---
+import { BB_SECTIONS } from '../../lib/bb-sections';
+import type { KnowledgeItem } from '../../lib/api';
+
+interface Props {
+  items: KnowledgeItem[];
+  bbName: string;
+  limit?: number;
+}
+
+const { items, bbName, limit = 3 } = Astro.props;
+
+const SOURCE_TYPE_LABELS: Record<string, string> = {
+  regulation: 'Regelgeving',
+  guideline: 'Guideline',
+  paper: 'Paper',
+  best_practice: 'Best practice',
+};
+
+function sourceTypeLabel(type: string | null): string {
+  if (!type) return 'Bron';
+  return SOURCE_TYPE_LABELS[type] ?? type;
+}
+
+function snippet(content: string, max = 220): string {
+  if (content.length <= max) return content;
+  const slice = content.slice(0, max);
+  const lastSpace = slice.lastIndexOf(' ');
+  return `${lastSpace > 0 ? slice.slice(0, lastSpace) : slice}…`;
+}
+
+const topItems = items.slice(0, limit);
+---
+
+{topItems.length > 0 && (
+  <section class="bb-research bb-section" id={BB_SECTIONS.RESEARCH.id}>
+    <div class="eyebrow">Research</div>
+    <h2 class="section-title">Uit onze kennisbank</h2>
+    <p class="section-intro">
+      Top {topItems.length} gecureerde bron{topItems.length === 1 ? '' : 'nen'} die de basis vormen voor {bbName}.
+    </p>
+
+    <ul class="research-list">
+      {topItems.map((item) => (
+        <li class="research-card">
+          <div class="research-meta">
+            <span class="source-type">{sourceTypeLabel(item.source_type)}</span>
+            {item.is_current === false && <span class="dated">Gedateerd</span>}
+          </div>
+          <h3>
+            {item.source_url ? (
+              <a href={item.source_url} target="_blank" rel="noopener noreferrer">
+                {item.title}
+                <span class="arrow" aria-hidden="true">↗</span>
+              </a>
+            ) : (
+              item.title
+            )}
+          </h3>
+          <p>{snippet(item.summary_nl ?? item.content)}</p>
+        </li>
+      ))}
+    </ul>
+
+    <a class="research-more" href={`/kennisbank?bb=${encodeURIComponent(bbName)}`}>
+      Alle bronnen voor {bbName} <span aria-hidden="true">→</span>
+    </a>
+  </section>
+)}
+
+<style>
+  .research-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .research-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .research-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--gold), rgba(233, 202, 98, 0.25));
+    box-shadow: 0 0 10px rgba(233, 202, 98, 0.22);
+  }
+
+  .research-card:hover {
+    border-color: var(--border-2);
+  }
+
+  .research-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .source-type {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(233, 202, 98, 0.08);
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+  }
+
+  .dated {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+  }
+
+  .research-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.6rem;
+  }
+
+  .research-card h3 a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .research-card h3 a:hover {
+    color: var(--gold);
+  }
+
+  .research-card h3 .arrow {
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: 0.8em;
+    color: var(--text-muted);
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .research-card h3 a:hover .arrow {
+    color: var(--gold);
+    transform: translate(2px, -2px);
+  }
+
+  .research-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .research-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .research-more:hover {
+    border-bottom-color: var(--teal);
+  }
+</style>

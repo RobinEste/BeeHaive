@@ -192,6 +192,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "EU AI Act - Trustworthy AI Framework",
         "content": "The EU AI Act establishes a comprehensive framework for trustworthy artificial intelligence, defining requirements for high-risk AI systems and promoting human-centric AI development across the European Union.",
+        "summary_nl": "De EU AI Act is het eerste brede wettelijke kader voor betrouwbare AI. Het classificeert AI-systemen op risico, stelt harde eisen aan hoog-risico toepassingen en legt de basis voor menswaardige inzet van AI in Europa.",
+        "curation_score": 10,
         "source_url": "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence",
         "source_type": "regulation",
         "is_current": True,
@@ -203,6 +205,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Ethics Guidelines for Trustworthy AI (HLEG)",
         "content": "The High-Level Expert Group on AI defines seven key requirements for trustworthy AI: human agency and oversight, technical robustness and safety, privacy and data governance, transparency, diversity/non-discrimination/fairness, societal and environmental well-being, and accountability.",
+        "summary_nl": "De High-Level Expert Group definieert zeven kernvereisten voor betrouwbare AI — menselijke controle, robuustheid, privacy, transparantie, diversiteit, welzijn en verantwoording. De directe bron voor de zeven guardrails die BeeHaive hanteert.",
+        "curation_score": 9,
         "source_url": "https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai",
         "source_type": "regulation",
         "is_current": True,
@@ -214,6 +218,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "ALTAI - Assessment List for Trustworthy AI",
         "content": "The ALTAI is a practical checklist tool for organisations to self-assess the trustworthiness of their AI systems under development. It operationalises the seven requirements of the Ethics Guidelines into concrete assessment questions.",
+        "summary_nl": "Een praktische self-assessment checklist waarmee organisaties hun AI-systemen kunnen toetsen tegen de zeven kernvereisten. Maakt de abstracte HLEG-richtlijnen concreet en toepasbaar voor audit en governance.",
+        "curation_score": 8,
         "source_url": "https://digital-strategy.ec.europa.eu/en/library/assessment-list-trustworthy-artificial-intelligence-altai-self-assessment",
         "source_type": "regulation",
         "is_current": True,
@@ -614,16 +620,20 @@ def seed_knowledge_items(tx):
             """
             MERGE (ki:KnowledgeItem {title: $title})
             SET ki.content = $content,
+                ki.summary_nl = $summary_nl,
                 ki.source_url = $source_url,
                 ki.source_type = $source_type,
                 ki.is_current = $is_current,
+                ki.curation_score = $curation_score,
                 ki.created_at = datetime()
             """,
             title=item["title"],
             content=item["content"],
+            summary_nl=item.get("summary_nl"),
             source_url=item["source_url"],
             source_type=item["source_type"],
             is_current=item["is_current"],
+            curation_score=item.get("curation_score", 0),
         )
 
         # Create Topic nodes and relationships

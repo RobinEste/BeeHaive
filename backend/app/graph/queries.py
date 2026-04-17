@@ -75,11 +75,15 @@ def get_guardrail(session, name):
 
 
 def get_items_by_building_block(session, name):
-    """Return KnowledgeItems linked to a BuildingBlock via RELATES_TO."""
+    """Return KnowledgeItems linked to a BuildingBlock via RELATES_TO.
+
+    Ordered by curation_score DESC (editorial priority), then title.
+    Missing curation_score is treated as 0.
+    """
     def _query(tx):
         result = tx.run(
             "MATCH (ki:KnowledgeItem)-[:RELATES_TO]->(b:BuildingBlock {name: $name}) "
-            "RETURN ki ORDER BY ki.title",
+            "RETURN ki ORDER BY coalesce(ki.curation_score, 0) DESC, ki.title",
             name=name,
         )
         return [dict(record["ki"]) for record in result]

@@ -8,16 +8,22 @@ import BBQuickStart from '../../components/bb-detail/BBQuickStart.astro';
 import BBUseCases from '../../components/bb-detail/BBUseCases.astro';
 import BBCallToAction from '../../components/bb-detail/BBCallToAction.astro';
 import BBGuardrails from '../../components/bb-detail/BBGuardrails.astro';
+import BBResearch from '../../components/bb-detail/BBResearch.astro';
 import BBTableOfContents from '../../components/bb-detail/BBTableOfContents.astro';
 import BBNavigation from '../../components/bb-detail/BBNavigation.astro';
 import { bbGuardrailLinks } from '../../lib/bb-guardrail-links';
 import { BB_SECTIONS } from '../../lib/bb-sections';
 import { bbAccentMap } from '../../lib/bb-accents';
+import { fetchBBItems } from '../../lib/api';
 
 export async function getStaticPaths() {
   const blocks = await getCollection('building-blocks');
   const sorted = blocks.sort((a, b) => a.data.order - b.data.order);
   const allBlocks = sorted.map((b) => ({ name: b.data.name, id: b.id }));
+
+  const researchByBB = await Promise.all(
+    sorted.map((b) => fetchBBItems(b.data.name))
+  );
 
   return sorted.map((block, index) => ({
     params: { slug: block.id },
@@ -26,11 +32,12 @@ export async function getStaticPaths() {
       prevBlock: index > 0 ? allBlocks[index - 1] : undefined,
       nextBlock: index < sorted.length - 1 ? allBlocks[index + 1] : undefined,
       allBlocks,
+      researchItems: researchByBB[index],
     },
   }));
 }
 
-const { block, prevBlock, nextBlock, allBlocks } = Astro.props;
+const { block, prevBlock, nextBlock, allBlocks, researchItems } = Astro.props;
 const { data } = block;
 const { Content } = await render(block);
 const guardrailLinks = bbGuardrailLinks[block.id] || [];
@@ -68,6 +75,8 @@ const accent = bbAccentMap[block.id] || 'var(--teal)';
       )}
 
       <BBUseCases auditExample={data.auditExample} />
+
+      <BBResearch items={researchItems} bbName={data.name} />
 
       <BBGuardrails links={guardrailLinks} bbName={data.name} />
 
