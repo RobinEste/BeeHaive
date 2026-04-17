@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 3 |
-| architectuur | 14 |
-| development | 18 |
+| architectuur | 15 |
+| development | 21 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **38** |
+| **Totaal** | **42** |
 
 ## Inzichten
 
@@ -56,3 +56,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-036 | Disjoint dimensies voorkomen dubbel werk bij parallelle researchers | development | 2026-04-15 | hoog |
 | KNW-2026-037 | Native `<details>` + progressive enhancement voor anchor-link auto-open | development | 2026-04-15 | hoog |
 | KNW-2026-038 | Content consistency-pass na narrative-updates | development | 2026-04-15 | hoog |
+| KNW-2026-039 | Inhoudelijke vs redactionele relaties in kennisgraaf | architectuur | 2026-04-17 | hoog |
+| KNW-2026-040 | CSS Columns boven Grid voor lijsten met variabele itemlengte | development | 2026-04-17 | hoog |
+| KNW-2026-041 | Build-time API fetch met graceful empty-state fallback | development | 2026-04-17 | hoog |
+| KNW-2026-042 | Code-review bevindingen — bewust parallel vs duplicatie | development | 2026-04-17 | hoog |
