@@ -1,0 +1,179 @@
+---
+import { BB_SECTIONS } from '../../lib/bb-sections';
+import type { Tool, ToolCategory } from '../../lib/api';
+
+interface Props {
+  tools: Tool[];
+  bbName: string;
+  limit?: number;
+}
+
+const { tools, bbName, limit = 4 } = Astro.props;
+
+const CATEGORY_LABELS: Record<ToolCategory, string> = {
+  open_source: 'Open source',
+  framework: 'Framework',
+  enterprise: 'Enterprise',
+  saas: 'SaaS',
+};
+
+const topTools = tools.slice(0, limit);
+---
+
+{topTools.length > 0 && (
+  <section class="bb-tools bb-section" id={BB_SECTIONS.TOOLS.id}>
+    <div class="eyebrow">Tools & Products</div>
+    <h2 class="section-title">Hiermee werk je in de praktijk</h2>
+    <p class="section-intro">
+      Gecureerde selectie van tools en platforms die {bbName} concreet ondersteunen.
+    </p>
+
+    <ul class="tool-grid">
+      {topTools.map((tool) => (
+        <li class="tool-card">
+          <div class="tool-meta">
+            <span class={`category cat-${tool.category}`}>{CATEGORY_LABELS[tool.category]}</span>
+          </div>
+          <h3>
+            <a href={tool.url} target="_blank" rel="noopener noreferrer">
+              {tool.name}
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </h3>
+          <p>{tool.description}</p>
+        </li>
+      ))}
+    </ul>
+
+    <a class="tool-more" href={`/tools?bb=${encodeURIComponent(bbName)}`}>
+      Alle tools voor {bbName} <span aria-hidden="true">→</span>
+    </a>
+  </section>
+)}
+
+<style>
+  .tool-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 720px) {
+    .tool-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tool-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--teal), rgba(68, 194, 186, 0.25));
+    box-shadow: 0 0 10px rgba(68, 194, 186, 0.22);
+  }
+
+  .tool-card:hover {
+    border-color: var(--border-2);
+  }
+
+  .tool-meta {
+    margin-bottom: 0.75rem;
+  }
+
+  .category {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+    background: rgba(68, 194, 186, 0.08);
+    color: var(--teal);
+  }
+
+  .category.cat-enterprise,
+  .category.cat-saas {
+    background: rgba(233, 202, 98, 0.08);
+    color: var(--gold);
+  }
+
+  .category.cat-framework {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+  }
+
+  .tool-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.6rem;
+  }
+
+  .tool-card h3 a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .tool-card h3 a:hover {
+    color: var(--teal-light);
+  }
+
+  .tool-card h3 .arrow {
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: 0.8em;
+    color: var(--text-muted);
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .tool-card h3 a:hover .arrow {
+    color: var(--teal-light);
+    transform: translate(2px, -2px);
+  }
+
+  .tool-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .tool-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .tool-more:hover {
+    border-bottom-color: var(--teal);
+  }
+</style>

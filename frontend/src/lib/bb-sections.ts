@@ -7,6 +7,7 @@ export const BB_SECTIONS = {
   CHECKLIST: { id: 'checklist', label: 'Checklist' },
   QUICK_START: { id: 'quick-start', label: 'Quick Start' },
   VOORBEELD: { id: 'voorbeeld', label: 'Voorbeeld' },
+  TOOLS: { id: 'tools', label: 'Tools' },
   RESEARCH: { id: 'research', label: 'Research' },
   GUARDRAILS: { id: 'guardrails', label: 'Guardrails' },
   CONTACT: { id: 'contact', label: 'Aan de slag' },

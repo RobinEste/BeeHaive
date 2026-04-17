@@ -8,8 +8,9 @@ from app.graph.queries import (
     get_all_building_blocks,
     get_building_block,
     get_items_by_building_block,
+    get_tools_for_building_block,
 )
-from app.models.schemas import BuildingBlock, KnowledgeItem
+from app.models.schemas import BuildingBlock, KnowledgeItem, Tool
 
 router = APIRouter(prefix="/building-blocks", tags=["building-blocks"])
 
@@ -33,3 +34,11 @@ def list_items_for_building_block(name: str, db: Session = Depends(get_db)):
     if bb is None:
         raise HTTPException(status_code=404, detail=f"BuildingBlock '{name}' not found")
     return get_items_by_building_block(db, name)
+
+
+@router.get("/{name}/tools", response_model=list[Tool])
+def list_tools_for_building_block(name: str, db: Session = Depends(get_db)):
+    bb = get_building_block(db, name)
+    if bb is None:
+        raise HTTPException(status_code=404, detail=f"BuildingBlock '{name}' not found")
+    return get_tools_for_building_block(db, name)

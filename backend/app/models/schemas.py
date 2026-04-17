@@ -1,6 +1,14 @@
 """Pydantic response models for the BeeHaive API."""
 
+from typing import Literal
+
 from pydantic import BaseModel
+
+ToolCategory = Literal["open_source", "framework", "enterprise", "saas"]
+
+# Used as the fallback value when a Tool-DISPLAYED_ON relation has no
+# display_order — sorts such tools to the back of the list.
+DEFAULT_DISPLAY_ORDER = 99
 
 
 class BuildingBlock(BaseModel):
@@ -39,3 +47,12 @@ class KnowledgeItemDetail(KnowledgeItem):
     guardrails: list[Guardrail]
     topics: list[Topic]
     authors: list[Author]
+
+
+class Tool(BaseModel):
+    slug: str
+    name: str
+    category: ToolCategory
+    url: str
+    description: str
+    display_order: int = DEFAULT_DISPLAY_ORDER

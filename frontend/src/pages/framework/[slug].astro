@@ -9,21 +9,23 @@ import BBUseCases from '../../components/bb-detail/BBUseCases.astro';
 import BBCallToAction from '../../components/bb-detail/BBCallToAction.astro';
 import BBGuardrails from '../../components/bb-detail/BBGuardrails.astro';
 import BBResearch from '../../components/bb-detail/BBResearch.astro';
+import BBTools from '../../components/bb-detail/BBTools.astro';
 import BBTableOfContents from '../../components/bb-detail/BBTableOfContents.astro';
 import BBNavigation from '../../components/bb-detail/BBNavigation.astro';
 import { bbGuardrailLinks } from '../../lib/bb-guardrail-links';
 import { BB_SECTIONS } from '../../lib/bb-sections';
 import { bbAccentMap } from '../../lib/bb-accents';
-import { fetchBBItems } from '../../lib/api';
+import { fetchBBItems, fetchBBTools } from '../../lib/api';
 
 export async function getStaticPaths() {
   const blocks = await getCollection('building-blocks');
   const sorted = blocks.sort((a, b) => a.data.order - b.data.order);
   const allBlocks = sorted.map((b) => ({ name: b.data.name, id: b.id }));
 
-  const researchByBB = await Promise.all(
-    sorted.map((b) => fetchBBItems(b.data.name))
-  );
+  const [researchByBB, toolsByBB] = await Promise.all([
+    Promise.all(sorted.map((b) => fetchBBItems(b.data.name))),
+    Promise.all(sorted.map((b) => fetchBBTools(b.data.name))),
+  ]);
 
   return sorted.map((block, index) => ({
     params: { slug: block.id },
@@ -33,11 +35,12 @@ export async function getStaticPaths() {
       nextBlock: index < sorted.length - 1 ? allBlocks[index + 1] : undefined,
       allBlocks,
       researchItems: researchByBB[index],
+      tools: toolsByBB[index],
     },
   }));
 }
 
-const { block, prevBlock, nextBlock, allBlocks, researchItems } = Astro.props;
+const { block, prevBlock, nextBlock, allBlocks, researchItems, tools } = Astro.props;
 const { data } = block;
 const { Content } = await render(block);
 const guardrailLinks = bbGuardrailLinks[block.id] || [];
@@ -75,6 +78,8 @@ const accent = bbAccentMap[block.id] || 'var(--teal)';
       )}
 
       <BBUseCases auditExample={data.auditExample} />
+
+      <BBTools tools={tools} bbName={data.name} />
 
       <BBResearch items={researchItems} bbName={data.name} />
 

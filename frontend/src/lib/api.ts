@@ -30,6 +30,17 @@ export interface Guardrail {
   checklist: string[];
 }
 
+export type ToolCategory = 'open_source' | 'framework' | 'enterprise' | 'saas';
+
+export interface Tool {
+  slug: string;
+  name: string;
+  category: ToolCategory;
+  url: string;
+  description: string;
+  display_order: number;
+}
+
 async function apiGet<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${API_BASE}${path}`);
@@ -54,4 +65,10 @@ export async function fetchBBItems(bbName: string): Promise<KnowledgeItem[]> {
   const encoded = encodeURIComponent(bbName);
   const items = await apiGet<KnowledgeItem[]>(`/api/building-blocks/${encoded}/items`);
   return items ?? [];
+}
+
+export async function fetchBBTools(bbName: string): Promise<Tool[]> {
+  const encoded = encodeURIComponent(bbName);
+  const tools = await apiGet<Tool[]>(`/api/building-blocks/${encoded}/tools`);
+  return tools ?? [];
 }

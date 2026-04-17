@@ -8,6 +8,8 @@ Convention:
 - Single-item functions return None when not found
 """
 
+from app.models.schemas import DEFAULT_DISPLAY_ORDER
+
 
 # --- Node listing queries ---
 
@@ -87,6 +89,32 @@ def get_items_by_building_block(session, name):
             name=name,
         )
         return [dict(record["ki"]) for record in result]
+    return session.execute_read(_query)
+
+
+def get_tools_for_building_block(session, name):
+    """Return Tools editorially displayed on a BuildingBlock page.
+
+    Uses the DISPLAYED_ON relationship (curation) rather than RELATES_TO
+    (inhoudelijke link) so only explicitly-selected tools appear on-page.
+    Ordered by display_order on the relationship.
+    """
+    def _query(tx):
+        result = tx.run(
+            """
+            MATCH (t:Tool)-[r:DISPLAYED_ON]->(b:BuildingBlock {name: $name})
+            RETURN t, coalesce(r.display_order, $default_order) AS display_order
+            ORDER BY display_order, t.name
+            """,
+            name=name,
+            default_order=DEFAULT_DISPLAY_ORDER,
+        )
+        tools = []
+        for record in result:
+            data = dict(record["t"])
+            data["display_order"] = record["display_order"]
+            tools.append(data)
+        return tools
     return session.execute_read(_query)
 
 

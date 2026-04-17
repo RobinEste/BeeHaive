@@ -5,6 +5,7 @@ CONSTRAINTS = [
     ("Guardrail", "name"),
     ("KnowledgeItem", "title"),
     ("KnowledgeItem", "source_url"),
+    ("Tool", "slug"),
     ("Topic", "name"),
     ("Author", "name"),
 ]

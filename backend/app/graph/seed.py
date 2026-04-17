@@ -5,6 +5,8 @@ with related Topics and Author nodes sourced from the BeeHaive
 Notion knowledge base.
 """
 
+from app.models.schemas import DEFAULT_DISPLAY_ORDER
+
 BUILDING_BLOCKS = [
     {
         "name": "Knowledge",
@@ -643,6 +645,77 @@ KNOWLEDGE_ITEMS = [
 ]
 
 
+# Tools live in ~/ODIN/resources/tools/ (cross-project); this list is the
+# current hand-curated selection for the BeeHaive website. Later we'll move
+# the source of truth to vault notes + an ingest_tool.py script.
+#
+# building_blocks: inhoudelijke relatie (tool is relevant voor deze BB)
+# displayed_on:    redactionele keuze (verschijnt op de BB-pagina)
+# display_order:   {bb_name: int} — volgorde binnen die BB-pagina
+TOOLS = [
+    {
+        "slug": "langsmith",
+        "name": "LangSmith",
+        "category": "saas",
+        "url": "https://smith.langchain.com/",
+        "description": "End-to-end platform voor prompt-ontwikkeling: versiebeheer, A/B-testing, monitoring en evaluatie met custom metrics.",
+        "building_blocks": ["Prompt Design", "Evaluation Loop", "Tool Integration"],
+        "guardrails": ["Accountability", "Robustness"],
+        "sources": ["https://smith.langchain.com/"],
+        "displayed_on": ["Prompt Design"],
+        "display_order": {"Prompt Design": 1},
+    },
+    {
+        "slug": "langfuse",
+        "name": "Langfuse",
+        "category": "open_source",
+        "url": "https://langfuse.com/",
+        "description": "Open-source LLM observability en prompt management. Self-hosted alternatief voor LangSmith, met tracing, evals en prompt-versioning.",
+        "building_blocks": ["Prompt Design", "Evaluation Loop"],
+        "guardrails": ["Accountability", "Transparency"],
+        "sources": [],
+        "displayed_on": ["Prompt Design"],
+        "display_order": {"Prompt Design": 2},
+    },
+    {
+        "slug": "promptfoo",
+        "name": "Promptfoo",
+        "category": "open_source",
+        "url": "https://www.promptfoo.dev/",
+        "description": "Open-source framework voor geautomatiseerde prompt-evaluatie. Vergelijkt varianten op kwaliteit, veiligheid en regressie — CI/CD-integreerbaar.",
+        "building_blocks": ["Prompt Design", "Evaluation Loop"],
+        "guardrails": ["Robustness", "Accountability"],
+        "sources": [],
+        "displayed_on": ["Prompt Design"],
+        "display_order": {"Prompt Design": 3},
+    },
+    {
+        "slug": "guardrails-ai",
+        "name": "Guardrails AI",
+        "category": "framework",
+        "url": "https://www.guardrailsai.com/",
+        "description": "Python-framework voor input/output-validatie rond prompts. Structuur-garanties, PII-filtering en jailbreak-detectie als code-level guardrails.",
+        "building_blocks": ["Prompt Design", "Tool Integration"],
+        "guardrails": ["Privacy", "Robustness"],
+        "sources": [],
+        "displayed_on": ["Prompt Design"],
+        "display_order": {"Prompt Design": 4},
+    },
+    {
+        "slug": "anthropic-workbench",
+        "name": "Anthropic Workbench",
+        "category": "saas",
+        "url": "https://console.anthropic.com/workbench",
+        "description": "Interactieve prompt-omgeving voor Claude: system prompts itereren, variabelen testen, modelvergelijking en direct exporten naar code.",
+        "building_blocks": ["Prompt Design", "Model Engines"],
+        "guardrails": ["Transparency"],
+        "sources": [],
+        "displayed_on": ["Prompt Design"],
+        "display_order": {"Prompt Design": 5},
+    },
+]
+
+
 def seed_building_blocks(tx):
     """Create or update BuildingBlock nodes."""
     for bb in BUILDING_BLOCKS:
@@ -751,6 +824,80 @@ def seed_knowledge_items(tx):
     return len(KNOWLEDGE_ITEMS), len(topics), len(authors)
 
 
+def seed_tools(tx):
+    """Create Tool nodes with taxonomy + curation relationships. Idempotent via MERGE."""
+    for tool in TOOLS:
+        tx.run(
+            """
+            MERGE (t:Tool {slug: $slug})
+            SET t.name = $name,
+                t.category = $category,
+                t.url = $url,
+                t.description = $description,
+                t.updated_at = datetime()
+            """,
+            slug=tool["slug"],
+            name=tool["name"],
+            category=tool["category"],
+            url=tool["url"],
+            description=tool["description"],
+        )
+
+        # RELATES_TO: inhoudelijke link met BuildingBlocks
+        for bb in tool.get("building_blocks", []):
+            tx.run(
+                """
+                MATCH (t:Tool {slug: $slug})
+                MATCH (b:BuildingBlock {name: $bb_name})
+                MERGE (t)-[:RELATES_TO]->(b)
+                """,
+                slug=tool["slug"],
+                bb_name=bb,
+            )
+
+        # ADDRESSES: Guardrails het tool mitigeert/ondersteunt
+        for gr in tool.get("guardrails", []):
+            tx.run(
+                """
+                MATCH (t:Tool {slug: $slug})
+                MATCH (g:Guardrail {name: $gr_name})
+                MERGE (t)-[:ADDRESSES]->(g)
+                """,
+                slug=tool["slug"],
+                gr_name=gr,
+            )
+
+        # REFERENCES: links naar KnowledgeItems (via source_url)
+        for source_url in tool.get("sources", []):
+            tx.run(
+                """
+                MATCH (t:Tool {slug: $slug})
+                MATCH (ki:KnowledgeItem {source_url: $url})
+                MERGE (t)-[:REFERENCES]->(ki)
+                """,
+                slug=tool["slug"],
+                url=source_url,
+            )
+
+        # DISPLAYED_ON: redactionele keuze per BB-pagina, met display_order
+        display_order = tool.get("display_order", {})
+        for bb in tool.get("displayed_on", []):
+            order = display_order.get(bb, DEFAULT_DISPLAY_ORDER)
+            tx.run(
+                """
+                MATCH (t:Tool {slug: $slug})
+                MATCH (b:BuildingBlock {name: $bb_name})
+                MERGE (t)-[r:DISPLAYED_ON]->(b)
+                SET r.display_order = $order
+                """,
+                slug=tool["slug"],
+                bb_name=bb,
+                order=order,
+            )
+
+    return len(TOOLS)
+
+
 def seed_all(session):
     """Run all seed functions. Idempotent via MERGE statements."""
     total = 0
@@ -768,6 +915,10 @@ def seed_all(session):
     print(f"  Topics: {topics}")
     print(f"  Authors: {authors}")
     total += items + topics + authors
+
+    count = session.execute_write(seed_tools)
+    print(f"  Tools: {count}")
+    total += count
 
     print(f"\n  Total: {total} nodes seeded")
     return total
