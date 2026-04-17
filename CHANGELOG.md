@@ -8,6 +8,27 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 
 ## [Unreleased]
 
+### Toegevoegd (sessie 2026-04-17)
+- Research-sectie dynamisch op BB-detailpagina (#23 Fase B deel 1) — build-time fetch van KnowledgeItems uit Neo4j, top 3 per BB gesorteerd op `curation_score DESC, title`, graceful fallback op lege state bij API-uitval
+- `KnowledgeItem` uitgebreid met `curation_score` (int, default 0) + `summary_nl` (str, optional); alle 34 seed-items voorzien van Nederlandse samenvatting en editorial score
+- `Tool` node-label in Neo4j met `DISPLAYED_ON` curation-relatie (met `display_order` op de edge) naast `RELATES_TO` / `ADDRESSES` / `REFERENCES` — scheidt redactionele keuze van inhoudelijke breedte
+- Tools & Products sectie op BB-detailpagina (2-koloms card-grid, max 4 op de pagina + "Alle tools voor X" link) — 5 tools voor Prompt Design: LangSmith, Langfuse, Promptfoo, Guardrails AI, Anthropic Workbench
+- Automatische NL-samenvatting in ingestion pipeline via Gemini (stap 4b tussen classify en persist); `ingest_item.py` ondersteunt `--summary-nl` en `--curation-score` CLI-overrides
+- `gemini_client.py` shared helper — lazy client-init hergebruikt door taxonomie-classifier en summarizer
+- `ToolCategory` als Pydantic `Literal[open_source, framework, enterprise, saas]`, matching frontend union
+- `DEFAULT_DISPLAY_ORDER` constant gedeeld tussen seed, Cypher query en Pydantic schema
+- Build-time parallel fetch in `getStaticPaths`: Research + Tools per BB via nested `Promise.all`
+
+### Gewijzigd (sessie 2026-04-17)
+- BB-detailpagina sectie-volgorde: UseCases → Tools → Guardrails → Research (eerst "hoe", dan "grenzen", dan "verdieping")
+- Checklist layout: CSS Grid (2-kol row-major) → CSS Columns (per-kolom verticaal) — items van ongelijke lengte botsen niet meer naast elkaar
+- Section-titles geharmoniseerd: "Hiermee werk je in de praktijk" → "Uit onze toolkit" (parallel met "Uit onze kennisbank"); hardcoded "AI-Readiness Audit" → "Een voorbeeld uit de praktijk"
+- Strong in prose: `color: inherit` i.p.v. `var(--text)` zodat H3-kopjes visueel blijven primen boven bold body-fragmenten
+- `get_items_by_building_block` sorteert nu op `coalesce(curation_score, 0) DESC, title`
+- `IngestionSource` uitgebreid met optionele `summary_nl` + `curation_score` (None-sentinel beschermt bestaande editorial keuzes bij re-ingest via `coalesce` in `ON MATCH SET`)
+- Prompt Design content-consistency: body "MLflow Prompt Registry" → "Promptfoo" (matcht Tools-sectie); checklist items 4 en 5 ingekort; few-shot terminologie verhuisd van checklist naar disclosure "De system prompt"
+- Guardrails AI tool-beschrijving gebruikt nu eigen positionering "The AI Reliability Platform" om verwarring met BeeHaive EU-guardrails te vermijden
+
 ### Toegevoegd
 - `MISSIE.md` v0.3 — projectmissie met drie-vlakken-samenhang (BB↔BB, GR↔GR, BB↔GR) en Noblesse Oblige principes (mens-centrisch, eerlijk over grenzen, readiness eerst, de hele organisatie een stem)
 - Deep research audit trail `docs/research/prompt-design-2026/` — 4 parallelle researchers (~40 bronnen) als basis voor de verrijking van BB_04

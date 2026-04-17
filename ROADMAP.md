@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-04-02
+**Laatst bijgewerkt:** 2026-04-17
 
 ---
 
@@ -38,7 +38,11 @@
 
 - [x] Stap 8: Astro frontend opzetten met basis pagina's (#8) — Compleet: 4 pagina's, 8 componenten, Luminous Dark design system, Tailwind, self-hosted fonts.
 - [x] Stap 8c Fase A: BB detail-pagina's met 7 secties (#23) — Compleet: 7 pagina's, 10 componenten, guardrail-koppelingen, evidence, CTA, sticky ToC.
-- [ ] Stap 8c Fase B: Dynamische secties (Research, Guardrails API, Workflow) — wacht op backend API (#23)
+- [x] Stap 8c Fase B deel 1: Research-sectie dynamisch (#23) — Build-time fetch uit Neo4j, top 3 per BB op curation_score, NL-samenvattingen, graceful fallback.
+- [x] Stap 8c Fase B deel 2: Tools & Products sectie (#23) — Tool node-label met DISPLAYED_ON curatie-relatie, 2-koloms card-grid met max 4 + "alle tools" link.
+- [ ] Stap 8c Fase B deel 3: BB↔GR relaties dynamiseren (#23) — wacht tot alle BBs zijn ingevuld via 5-stappen ritme.
+- [x] Prompt Design volledig af volgens 5-stappen ritme — deep research, bronnen, teksten, consistency-pass, tools.
+- [ ] Overige BBs uitbouwen via 5-stappen ritme — Knowledge, Client Blueprint, Dynamic Context, Tool Integration, Model Engines, Evaluation Loop.
 - [ ] Stap 8b: Workflow visualisatie met React Flow (#22)
 - [ ] Frontend: design nice-to-haves — framework overview, hero accent, nav active state (#27)
 - [ ] Stap 9: Blog systeem met content collecties (#9)
@@ -70,6 +74,7 @@
 - [ ] Verbeteren context engineering: token budget, placement-strategie, degradatiepatronen (#25)
 - [ ] Content: Business Glossary — consistente terminologie across site, blogs en trainingen (#28)
 - [ ] Content: Kennisbank verrijking per BB/GR — NI-artikelen + Bastionclaw use-cases, wekelijkse verwerking (#29)
+- [ ] Bronnen migreren naar canonical schema — NL keys, flat tags, taxonomie-namespace (#30)
 
 ---
 
@@ -77,9 +82,9 @@
 
 Wat moet er nu gebeuren om vooruit te komen?
 
-1. **Eerstvolgende:** Workflow visualisatie met React Flow (#22)
-2. **Daarna:** Blog systeem met content collecties (#9)
-3. **Vervolgens:** BB detail-pagina's Fase B — dynamische secties na backend API (#23)
+1. **Eerstvolgende:** Overige BBs uitbouwen via 5-stappen ritme — deep research → bronnen → teksten → consistency-pass → tools
+2. **Daarna:** BB↔GR relaties dynamiseren in knowledge graph (#23 Fase B deel 3)
+3. **Vervolgens:** Workflow visualisatie met React Flow (#22), Blog systeem (#9), Bastionclaw Use Cases koppelen
 
 ---
 
