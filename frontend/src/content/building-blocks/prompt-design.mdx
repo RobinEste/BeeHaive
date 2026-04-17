@@ -10,8 +10,8 @@ checklist:
   - "Is de betekenis helder — wat wil je bereiken en waarom?"
   - "Is de prompt logisch opgebouwd (betekenis → context → instructies & verwachtingen → criteria → output)?"
   - "Is context correct en volledig ingevoegd?"
-  - "Zijn voorbeelden toegevoegd waar nodig (few-shot — 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel)?"
-  - "Is de output-structuur duidelijk gespecificeerd en getoond in een voorbeeld (Claude werkt goed met XML-tags; Gemini en GPT accepteren XML of Markdown — tonen werkt beter dan beschrijven)?"
+  - "Zijn voorbeeldinteracties toegevoegd waar nodig?"
+  - "Is de output-structuur duidelijk gespecificeerd en getoond in een voorbeeld?"
   - "Is de prompt getest met edge cases (ongebruikelijke of extreme invoer)?"
   - "Wordt de prompt geregeld herzien op basis van evaluaties?"
   - "Zijn je verwachtingen en kwaliteitscriteria expliciet geformuleerd — los van het model?"
@@ -87,7 +87,7 @@ Eén vraag, één antwoord. De basis. Alle elementen zijn specifiek voor deze en
 
 ### De system prompt
 
-Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Belangrijk patroon: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
+Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Dit patroon heet in de literatuur **few-shot prompting** — 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel. Belangrijk patroon daarnaast: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
 
 ### Het iteratieve gesprek
 
@@ -175,7 +175,7 @@ Pas als een nieuwe promptversie op alle drie de lagen goed scoort, mag hij door 
 
 Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments (gefaseerd uitrollen) zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. *"When a production prompt fails, that failure becomes a new test case"* — elke productie-fout wordt de volgende test, waardoor de testsuite continu beter wordt.
 
-In het huidige tooling-landschap zijn LangSmith, Langfuse en MLflow Prompt Registry gevestigde spelers.
+In het huidige tooling-landschap zijn LangSmith, Langfuse en Promptfoo gevestigde spelers.
 
 ### De koppeling met Evaluation Loop
 

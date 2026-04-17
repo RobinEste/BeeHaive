@@ -694,7 +694,7 @@ TOOLS = [
         "name": "Guardrails AI",
         "category": "framework",
         "url": "https://www.guardrailsai.com/",
-        "description": "Python-framework voor input/output-validatie rond prompts. Structuur-garanties, PII-filtering en jailbreak-detectie als code-level guardrails.",
+        "description": "The AI Reliability Platform — Python-framework voor input/output-validatie rond prompts en agents: structuur-garanties, PII-filtering en jailbreak-detectie.",
         "building_blocks": ["Prompt Design", "Tool Integration"],
         "guardrails": ["Privacy", "Robustness"],
         "sources": [],

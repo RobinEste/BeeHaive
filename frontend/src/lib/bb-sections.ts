@@ -8,8 +8,8 @@ export const BB_SECTIONS = {
   QUICK_START: { id: 'quick-start', label: 'Quick Start' },
   VOORBEELD: { id: 'voorbeeld', label: 'Voorbeeld' },
   TOOLS: { id: 'tools', label: 'Tools' },
-  RESEARCH: { id: 'research', label: 'Research' },
   GUARDRAILS: { id: 'guardrails', label: 'Guardrails' },
+  RESEARCH: { id: 'research', label: 'Research' },
   CONTACT: { id: 'contact', label: 'Aan de slag' },
 } as const;
 

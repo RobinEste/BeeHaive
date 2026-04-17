@@ -38,12 +38,9 @@ const { items, evidence } = Astro.props;
 </section>
 
 <style>
-  .bb-checklist {}
-
   .checklist-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
+    column-count: 2;
+    column-gap: 2rem;
     margin-top: 0.5rem;
   }
 
@@ -55,6 +52,9 @@ const { items, evidence } = Astro.props;
     line-height: 1.6;
     color: var(--text-dim);
     font-weight: 300;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1.2rem;
   }
 
   .check-icon {
@@ -108,7 +108,7 @@ const { items, evidence } = Astro.props;
 
   @media (max-width: 960px) {
     .checklist-grid {
-      grid-template-columns: 1fr;
+      column-count: 1;
     }
   }
 </style>
