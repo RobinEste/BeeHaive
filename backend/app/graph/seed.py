@@ -232,6 +232,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Lakera.ai Ultimate Guide to Prompt Engineering 2025",
         "content": "Comprehensive guide covering advanced prompt engineering techniques with strong emphasis on safety and enterprise applications. Includes adversarial attack prevention, bias detection, evaluation frameworks, and systematic prompt structuring from basics to advanced.",
+        "summary_nl": "Brede gids voor prompt engineering met sterke focus op enterprise-veiligheid: adversarial attack-preventie, bias-detectie, evaluatiekaders en systematische promptstructurering. Praktisch startpunt voor teams die prompts productierijp willen maken.",
+        "curation_score": 9,
         "source_url": "https://www.lakera.ai/blog/prompt-engineering-guide",
         "source_type": "guideline",
         "is_current": True,
@@ -243,6 +245,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "PARTS Framework for Educational AI Prompting",
         "content": "Scientific research introducing the PARTS framework (Persona, Aim, Recipients, Theme, Structure) for designing educational AI prompts. Demonstrates how systematic prompt structuring with rubrics and exemplars significantly improves AI feedback quality.",
+        "summary_nl": "Wetenschappelijk onderzoek dat het PARTS-framework introduceert (Persona, Aim, Recipients, Theme, Structure) voor educatieve AI-prompts. Laat zien dat systematische prompt-structuur met rubrics en voorbeelden de kwaliteit van AI-feedback aantoonbaar verbetert.",
+        "curation_score": 5,
         "source_url": "https://www.tandfonline.com/doi/full/10.1080/00405841.2025.2528545",
         "source_type": "paper",
         "is_current": True,
@@ -254,6 +258,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Anthropic Constitutional AI Methodology",
         "content": "Technical guide on implementing Constitutional AI — a method where AI models use a set of ethical principles (a 'constitution') to self-evaluate and improve their outputs. Covers self-critique mechanisms, two-phase training, and natural language constitutions for responsible AI.",
+        "summary_nl": "Methodologie waarin een AI-model een expliciete 'grondwet' van ethische principes gebruikt om zijn eigen output te beoordelen en verbeteren. Beschrijft self-critique, twee-fasen-training en hoe natuurlijke taal-constituties verantwoorde AI operationaliseren.",
+        "curation_score": 7,
         "source_url": "https://www.anthropic.com/constitutional-ai",
         "source_type": "guideline",
         "is_current": True,
@@ -265,6 +271,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "IBM Prompt Engineering Best Practices 2025",
         "content": "Enterprise guide for systematic prompt engineering implementation. Covers progressive disclosure methodology, prompt lifecycle management (design-test-deploy-monitor), version control for prompts, governance structures, compliance monitoring, and scalability strategies.",
+        "summary_nl": "Enterprise-gids voor het professionaliseren van prompt engineering: lifecycle-management (design→test→deploy→monitor), versiebeheer, governance en compliance-monitoring. Behandelt prompts als productie-artefact in plaats van losse tekststring.",
+        "curation_score": 8,
         "source_url": "https://www.ibm.com/think/prompt-engineering",
         "source_type": "guideline",
         "is_current": True,
@@ -276,6 +284,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Prompt Engineering for Generative AI (O'Reilly)",
         "content": "Comprehensive handbook covering prompt engineering from theory to practice for GPT-4, Gemini, and Claude. Includes NLP fundamentals, multimodal prompting, code generation, token optimization, context management, few-shot learning, and fine-tuning vs prompting trade-offs.",
+        "summary_nl": "Handboek dat prompt engineering breed behandelt — van NLP-fundamenten tot multimodaal prompten, codegeneratie, tokenoptimalisatie en de keuze tussen prompting en fine-tuning. Geschikt als naslagwerk over model- en promptgedrag heen.",
+        "curation_score": 7,
         "source_url": "https://www.oreilly.com/library/view/prompt-engineering-for/9781098153427/",
         "source_type": "guideline",
         "is_current": True,
@@ -288,6 +298,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "DataNucleus Enterprise RAG Guide 2025",
         "content": "Enterprise guide for Retrieval Augmented Generation covering hybrid search (lexical + vector), reranking with cross-encoders, security trimming for document-level access control, metadata enrichment, grounding with citations, and continuous update strategies for dynamic knowledge bases.",
+        "summary_nl": "Compleet enterprise-kader voor RAG: hybrid search (lexicaal + vector), cross-encoder reranking, security trimming op documentniveau, metadata-verrijking, citaten-grounding en update-strategieën voor dynamische kennisbanken. Moet-lezen voor context-architecten.",
+        "curation_score": 9,
         "source_url": "https://datanucleus.dev/rag-and-agentic-ai/what-is-rag-enterprise-guide-2025",
         "source_type": "guideline",
         "is_current": True,
@@ -299,6 +311,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "DataCamp Context Engineering Guide",
         "content": "Technical guide introducing context engineering as the evolution beyond prompt engineering. Covers conversational workflows with context retention, memory-building techniques for stateful AI, agentic RAG patterns, multi-agent systems with context retention, and context poisoning prevention.",
+        "summary_nl": "Introductie van context engineering als volgende stap na prompt engineering: context-retentie in conversaties, memory-opbouw voor stateful AI, agentic RAG-patronen en bescherming tegen context-poisoning. Goed startpunt voor het conceptuele onderscheid.",
+        "curation_score": 7,
         "source_url": "https://www.datacamp.com/blog/context-engineering",
         "source_type": "guideline",
         "is_current": True,
@@ -310,6 +324,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Dynamic Context Tuning Research (2025)",
         "content": "Research introducing Dynamic Context Tuning (DCT) combining attention-based context caching, LoRA-based retrieval for dynamic tool selection, and efficient context compression. Shows how agentic retrieval patterns use conversation history as context-aware input with parallel subquery execution.",
+        "summary_nl": "Onderzoek naar Dynamic Context Tuning: attention-based context-caching, LoRA-gebaseerde retrieval voor tool-selectie en efficiënte context-compressie. Laat zien hoe agentic retrieval conversatiegeschiedenis gebruikt met parallelle subquery-uitvoering.",
+        "curation_score": 6,
         "source_url": "https://arxiv.org/html/2506.11092v1",
         "source_type": "paper",
         "is_current": True,
@@ -321,6 +337,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "EdenAI 2025 RAG Guide — Graph RAG and Self-RAG",
         "content": "Comprehensive overview of 2025 RAG innovations including Graph RAG integrating knowledge graphs for coherent responses, Golden-Retriever frameworks with reflection-based query augmentation, Self-RAG where models autonomously decide when retrieval is needed, and hybrid architectures.",
+        "summary_nl": "Overzicht van de RAG-innovaties in 2025: Graph RAG met kennisgraph-integratie, Golden-Retriever met reflectie-gebaseerde query-augmentatie en Self-RAG waarin het model zelf bepaalt of retrieval nodig is. Bruikbaar om architectuurkeuzes te framen.",
+        "curation_score": 6,
         "source_url": "https://www.edenai.co/post/the-2025-guide-to-retrieval-augmented-generation-rag",
         "source_type": "guideline",
         "is_current": True,
@@ -332,6 +350,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Dynamic Knowledge Graphs Research (2025)",
         "content": "Peer-reviewed research on Dynamic Knowledge Graphs (DKGs) supporting continuous knowledge updates for temporal context management. Covers temporal relationship modeling, event-driven updates, time-aware reasoning, dynamic entity resolution, and predictive relationship modeling.",
+        "summary_nl": "Peer-reviewed onderzoek naar Dynamic Knowledge Graphs die continue kennisupdates en temporele context ondersteunen. Behandelt temporele relatiemodellering, event-driven updates, time-aware reasoning en voorspellende relatiemodellen.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/html/2310.04835v3",
         "source_type": "paper",
         "is_current": True,
@@ -343,6 +363,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Graph-Based Memory for Dynamic Context Management (Stanford)",
         "content": "Stanford research on graph-based memory systems for language models. Covers evolving semantic links, temporal knowledge graph integration, adaptive memory architectures, memory consolidation strategies, forgetting mechanisms, and context retrieval optimization using graph neural networks.",
+        "summary_nl": "Stanford-onderzoek naar graph-based memory voor taalmodellen: evoluerende semantische links, temporele kennisgraph-integratie, adaptieve geheugen-architecturen en vergeetmechanismen. Theoretisch fundament voor stateful agent-geheugen.",
+        "curation_score": 5,
         "source_url": "https://cs224r.stanford.edu/projects/pdfs/224r_final_project_report.pdf",
         "source_type": "paper",
         "is_current": True,
@@ -354,6 +376,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Squirro Enterprise RAG Implementations",
         "content": "Enterprise case studies showing measurable RAG impact: European Bank saving €20M in 3 years through automated compliance, LinkedIn achieving 28.6% faster issue resolution, and Deutsche Telekom realizing 14% improvement in customer recommendations. Includes implementation timelines and ROI calculations.",
+        "summary_nl": "Enterprise-casestudy's met meetbare RAG-impact: €20M besparing bij een Europese bank, 28,6% snellere issue-resolutie bij LinkedIn, 14% betere aanbevelingen bij Deutsche Telekom. Inclusief implementatie-tijdlijnen en ROI-berekeningen — nuttig voor business case-materiaal.",
+        "curation_score": 4,
         "source_url": "https://www.compuvate.com/how-retrieval-augmented-generation-rag-systems-transform-enterprise-knowledge-management-in-2025/",
         "source_type": "best_practice",
         "is_current": True,
@@ -366,6 +390,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Why Language Models Hallucinate (OpenAI)",
         "content": "OpenAI research analyzing the root causes of LLM hallucinations, distinguishing between training data gaps, reasoning failures, and confidence calibration issues. Provides insights into mitigation strategies including grounding, verification chains, and uncertainty quantification.",
+        "summary_nl": "OpenAI-onderzoek naar de oorzaken van hallucinaties: gaten in trainingsdata, redeneerfouten en slecht gekalibreerd vertrouwen. Beschrijft mitigatie via grounding, verificatieketens en onzekerheidskwantificatie — essentieel om modelgedrag te begrijpen.",
+        "curation_score": 9,
         "source_url": "https://openai.com/research/language-models-hallucinate",
         "source_type": "paper",
         "is_current": True,
@@ -378,6 +404,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Microsoft PyRIT — Python Risk Identification Toolkit",
         "content": "Open source toolkit for systematic AI safety testing. Provides automated red-teaming with thousands of adversarial prompts, bias detection across demographic groups, compliance reporting for EU AI Act, pre-built attack scenarios (prompt injection, jailbreaking, data extraction), and CI/CD integration.",
+        "summary_nl": "Open-source toolkit voor systematisch AI-safety testen: geautomatiseerd red-teaming met duizenden adversarial prompts, bias-detectie, EU AI Act compliance-rapportage en kant-en-klare aanvalsscenario's (prompt injection, jailbreaking). CI/CD-integreerbaar.",
+        "curation_score": 8,
         "source_url": "https://github.com/Azure/PyRIT",
         "source_type": "best_practice",
         "is_current": True,
@@ -389,6 +417,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Building AI Agents Safely: PII, Jailbreaks, and Real Guardrails",
         "content": "Practical guide on securing AI agents in production covering PII detection and prevention, jailbreak mitigation techniques, implementing real guardrails using the Guardrails AI framework, and protecting customer-facing chatbots and agents across industries.",
+        "summary_nl": "Praktische gids om AI-agents veilig in productie te brengen: PII-detectie, jailbreak-mitigatie, concrete guardrails via het Guardrails AI-framework en bescherming van klantgerichte chatbots. Focus op operationele controles in plaats van theorie.",
+        "curation_score": 7,
         "source_url": "https://jettro.dev/building-ai-agents-safely-pii-jailbreaks-and-real-guardrails-a52245a5c624",
         "source_type": "guideline",
         "is_current": True,
@@ -401,6 +431,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "LangSmith — Prompt Development Lifecycle Platform",
         "content": "Professional platform for developing, testing and monitoring prompts in production. Provides version control for prompts, A/B testing for variant comparison, real-time performance monitoring, collaborative workflows, automated evaluation with custom metrics, and full AI workflow tracing.",
+        "summary_nl": "Professioneel platform voor de prompt-lifecycle: versiebeheer, A/B-testing, real-time monitoring, geautomatiseerde evaluatie met custom metrics en end-to-end AI-workflow tracing. Brug tussen prompt-ontwikkeling en productie-observability.",
+        "curation_score": 9,
         "source_url": "https://smith.langchain.com/",
         "source_type": "best_practice",
         "is_current": True,
@@ -413,6 +445,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Qdrant — Privacy-First Vector Database",
         "content": "Open source, self-hosted vector database prioritizing data sovereignty. Features advanced payload filtering, multi-vector support, distributed clustering, GDPR-compliant data handling, quantization for storage efficiency, fine-grained access controls, audit logging, and EU data residency guarantees.",
+        "summary_nl": "Open-source, self-hosted vectordatabase met focus op datasoevereiniteit: payload-filtering, multi-vector support, AVG-conforme dataverwerking, fine-grained toegangscontrole en EU data residency. Directe keuze voor Europese RAG-implementaties.",
+        "curation_score": 6,
         "source_url": "https://qdrant.tech/",
         "source_type": "best_practice",
         "is_current": True,
@@ -425,6 +459,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Hyacinth AI: 8 Essential Steps of AI Solution Design",
         "content": "Structured methodology for designing AI solutions covering problem framing, data assessment, architecture selection, prototype development, evaluation criteria definition, deployment planning, monitoring setup, and continuous improvement loops.",
+        "summary_nl": "Gestructureerde methodologie voor het ontwerpen van AI-oplossingen: probleemafbakening, data-assessment, architectuurkeuze, prototyping, evaluatiecriteria, deployment en verbeterloops. Compact raamwerk voor de blueprint-fase van een project.",
+        "curation_score": 9,
         "source_url": "https://hyacinth.ai/8-essential-steps-of-ai-solution-design/",
         "source_type": "guideline",
         "is_current": True,
@@ -436,6 +472,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Sparkco AI-Validated Templates Enterprise Blueprint 2025",
         "content": "Enterprise blueprint templates validated by AI for component identification checklists, stakeholder review processes, value proposition assessment, and implementation decision frameworks (buy vs. build). Provides ready-to-use templates for AI solution design and deployment.",
+        "summary_nl": "Kant-en-klare enterprise-blueprint templates voor component-identificatie, stakeholder-review, value proposition en buy-vs-build beslissingen. Versnelt het opzetten van een gestructureerd klantvoorstel zonder vanaf nul te beginnen.",
+        "curation_score": 8,
         "source_url": "https://sparkco.ai/blog/ai-validated-templates-enterprise-blueprint-2025",
         "source_type": "best_practice",
         "is_current": True,
@@ -448,6 +486,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Microsoft Azure Search RAG Overview",
         "content": "Official Microsoft guide for production-ready RAG on Azure covering document processing pipelines, embedding generation strategies, hybrid search implementations (lexical + semantic), semantic ranking, security integration with Azure AD, monitoring and analytics for production systems.",
+        "summary_nl": "Officiële Microsoft-gids voor productierijpe RAG op Azure: documentverwerking, embeddings, hybrid search, semantic ranking, Azure AD-integratie en monitoring. Concrete referentie voor teams die binnen het Microsoft-ecosysteem werken.",
+        "curation_score": 7,
         "source_url": "https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview",
         "source_type": "guideline",
         "is_current": True,
@@ -459,6 +499,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "O'Reilly Radar: Context Engineering with Drew Breunig",
         "content": "Expert podcast with Context Engineering Handbook author Drew Breunig discussing practical context engineering in enterprise environments, subject-matter expertise importance, common implementation challenges, organizational change requirements, human-AI collaboration, and quality assurance at scale.",
+        "summary_nl": "Expertgesprek met Drew Breunig over context engineering in de praktijk: het belang van domeinexpertise, implementatieobstakels, organisatieverandering en mens-AI samenwerking op schaal. Strategische inzichten die de verbinding leggen tussen Knowledge en Dynamic Context.",
+        "curation_score": 8,
         "source_url": "https://www.oreilly.com/radar/podcast/generative-ai-in-the-real-world-context-engineering-with-drew-breunig/",
         "source_type": "guideline",
         "is_current": True,
@@ -471,6 +513,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "AgentIR: Reasoning-Aware Retrieval for Deep Research Agents",
         "content": "Introduces a reasoning-aware retrieval paradigm for AI research agents that jointly embeds reasoning traces alongside search queries. The AgentIR-4B model achieves 68% accuracy on BrowseComp-Plus with open-weight agents, compared to 50% with conventional embedding models twice its size. Includes DR-Synth for generating training data from standard QA datasets.",
+        "summary_nl": "Onderzoekspaper die reasoning-aware retrieval introduceert voor research-agents: redeneersporen worden samen met zoekqueries geëmbed. AgentIR-4B haalt 68% accuracy op BrowseComp-Plus — bijna 20 punten beter dan tweemaal zo grote conventionele modellen.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/abs/2603.04384",
         "source_type": "paper",
         "is_current": True,
@@ -482,6 +526,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "τ-Knowledge: Evaluating Conversational Agents over Unstructured Knowledge",
         "content": "Benchmarking framework for assessing conversational agents in knowledge-intensive settings with large unstructured document collections. Introduces τ-Banking (fintech customer support with ~700 interconnected documents). Even advanced models achieve only 25.5% success rates, revealing challenges in document retrieval from densely linked knowledge bases.",
+        "summary_nl": "Benchmark voor conversationele agents op grote ongestructureerde documentcollecties. τ-Banking simuleert fintech-support met ~700 onderling verbonden documenten — zelfs toonaangevende modellen halen slechts 25,5% succesratio. Toont hoe zwaar retrieval in dichte kennisgrafen is.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/abs/2603.04370",
         "source_type": "paper",
         "is_current": True,
@@ -493,6 +539,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Robustness of Agentic AI via Adversarially-Aligned Jacobian Regularization",
         "content": "Proposes AAJR for robust training of autonomous multi-agent LLM systems. Controls model sensitivity along adversarial directions rather than globally, permitting a larger class of policies while reducing performance loss. Establishes theoretical conditions for training stability and decouples robustness from expressivity limitations.",
+        "summary_nl": "Onderzoek naar robuuste training van multi-agent LLM-systemen via Adversarially-Aligned Jacobian Regularization. Stuurt gevoeligheid gericht bij in plaats van globaal, zodat robuustheid niet ten koste gaat van expressiviteit. Relevant voor agent-betrouwbaarheid in productie.",
+        "curation_score": 7,
         "source_url": "https://arxiv.org/abs/2603.04378",
         "source_type": "paper",
         "is_current": True,
@@ -504,6 +552,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Dual-Helix Governance for Reliable Agentic AI",
         "content": "Governance framework addressing five critical LLM limitations: context constraints, cross-session forgetting, stochasticity, instruction failure, and adaptation rigidity. Uses a knowledge graph structured around Knowledge, Behavior, and Skills tracks. Achieved 51% reduction in cyclomatic complexity in WebGIS application. Open-source via AgentLoom toolkit.",
+        "summary_nl": "Governance-framework dat vijf LLM-beperkingen adresseert (contextlimiet, cross-session forgetting, stochasticiteit, instructie-falen, adaptatie-rigiditeit) via een kennisgraph rond Knowledge, Behavior en Skills. Boekte 51% minder complexiteit in een WebGIS-case. Open source via AgentLoom.",
+        "curation_score": 7,
         "source_url": "https://arxiv.org/abs/2603.04390",
         "source_type": "paper",
         "is_current": True,
@@ -515,6 +565,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Memex(RL): Scaling Long-Horizon LLM Agents via Indexed Experience Memory",
         "content": "Indexed memory system for long-horizon LLM agents that avoids lossy compression. Maintains compact working context with structured summaries and stable indices while storing full-fidelity interactions in external database. MemexRL reinforcement learning framework optimizes storage and retrieval behaviors under context constraints.",
+        "summary_nl": "Indexed memory-systeem voor long-horizon agents zonder lossy compression: compacte werkende context plus volledige interacties in een externe database. MemexRL optimaliseert opslag- en ophaalgedrag onder contextlimieten via reinforcement learning.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/abs/2603.04257",
         "source_type": "paper",
         "is_current": True,
@@ -526,6 +578,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "A Rubric-Supervised Critic from Sparse Real-World Outcomes",
         "content": "Framework for learning critic models from limited real-world interaction data. Introduces Critic Rubrics with 24 behavioral features from human-agent logs. Demonstrates effectiveness in best-of-N reranking on SWE-bench (15.9 point gain), early stopping with 83% fewer attempts, and training-time data curation through critic-selected trajectories.",
+        "summary_nl": "Framework om critic-modellen te trainen op beperkte real-world data via Critic Rubrics met 24 gedragskenmerken. Levert 15,9 punt winst op SWE-bench reranking en 83% minder pogingen bij early stopping. Interessant voor evaluatieloops zonder groot gelabeld dataset.",
+        "curation_score": 6,
         "source_url": "https://arxiv.org/abs/2603.03800",
         "source_type": "paper",
         "is_current": True,
@@ -537,6 +591,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "Towards Realistic Personalization: Long-Horizon Preference Following",
         "content": "Introduces RealPref benchmark with 100 user profiles and 1,300 personalized preferences expressed through direct statements to subtle cues. Reveals that model performance deteriorates as conversations lengthen and preferences become nuanced. Models struggle to apply learned preferences to novel situations. Establishes groundwork for personalized AI assistants.",
+        "summary_nl": "RealPref-benchmark met 100 gebruikersprofielen en 1.300 voorkeuren, van expliciet tot subtiel. Toont aan dat modelprestaties afnemen bij langere gesprekken en nuance — voorkeuren worden slecht toegepast op nieuwe situaties. Fundament voor realistische AI-assistenten.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/abs/2603.04191",
         "source_type": "paper",
         "is_current": True,
@@ -548,6 +604,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "DMAST: Adversarial Safety Training for Multimodal Web Agents",
         "content": "Framework for robustifying multimodal web agents against cross-modal attacks. Discovers that attacks including visual components far outperform text-only injections. DMAST models agent-attacker dynamics through three training stages: imitation learning, supervised fine-tuning with zero-acknowledgment strategy, and adversarial reinforcement learning. Doubles task completion efficiency while mitigating risks.",
+        "summary_nl": "Framework voor adversarial safety training van multimodale web-agents. Laat zien dat aanvallen met visuele componenten veel effectiever zijn dan text-only injection. Drie trainingsfases (imitation, supervised fine-tuning, adversarial RL) verdubbelen taakvoltooiing én mitigeren risico.",
+        "curation_score": 6,
         "source_url": "https://arxiv.org/abs/2603.04364",
         "source_type": "paper",
         "is_current": True,
@@ -559,6 +617,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "EU AI Act 2026: Compliance Requirements for High-Risk AI Systems",
         "content": "From August 2, 2026, the EU AI Act's core framework becomes fully operational with comprehensive requirements for high-risk AI systems: risk management, data governance, technical documentation, record-keeping, transparency, human oversight, accuracy, robustness, and cybersecurity. Non-compliance can result in fines up to €35M or percentage of global turnover.",
+        "summary_nl": "Operationele checklist voor de EU AI Act vanaf 2 augustus 2026: risicobeheer, datagovernance, technische documentatie, transparantie, menselijke controle, robuustheid en cybersecurity. Boetes tot €35M of een percentage van de wereldwijde omzet — directe input voor evaluatie en compliance.",
+        "curation_score": 9,
         "source_url": "https://www.complianceandrisks.com/blog/eu-ai-act-compliance-requirements-for-companies-what-to-prepare-for-2026/",
         "source_type": "regulation",
         "is_current": True,
@@ -570,6 +630,8 @@ KNOWLEDGE_ITEMS = [
     {
         "title": "A-RAG: Scaling Agentic RAG via Hierarchical Retrieval Interfaces",
         "content": "Agentic RAG framework that exposes hierarchical retrieval interfaces directly to the model, representing a shift from static retrieval pipelines toward agent-driven, dynamic retrieval. The model autonomously decides how to traverse and query multiple retrieval layers for optimal information gathering.",
+        "summary_nl": "Agentic RAG-framework dat hiërarchische retrieval-interfaces rechtstreeks aan het model blootstelt. Schuift van statische retrieval-pipelines naar agent-gedreven, dynamische retrieval waarin het model zelf bepaalt welke laag te bevragen.",
+        "curation_score": 5,
         "source_url": "https://arxiv.org/abs/2602.03442",
         "source_type": "paper",
         "is_current": True,
