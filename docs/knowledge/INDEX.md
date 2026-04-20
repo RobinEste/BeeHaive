@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 3 |
-| architectuur | 15 |
-| development | 21 |
+| architectuur | 16 |
+| development | 23 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **42** |
+| **Totaal** | **45** |
 
 ## Inzichten
 
@@ -60,3 +60,6 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-040 | CSS Columns boven Grid voor lijsten met variabele itemlengte | development | 2026-04-17 | hoog |
 | KNW-2026-041 | Build-time API fetch met graceful empty-state fallback | development | 2026-04-17 | hoog |
 | KNW-2026-042 | Code-review bevindingen — bewust parallel vs duplicatie | development | 2026-04-17 | hoog |
+| KNW-2026-043 | Skill-fork pattern bij 1M-parent-context | development | 2026-04-20 | hoog |
+| KNW-2026-044 | Vault-migratie van gedeelde resources vereist dependency-audit | development | 2026-04-20 | midden |
+| KNW-2026-045 | BB_01 Knowledge vs BB_03 Dynamic Context — mens-laag vs informatie-laag | architectuur | 2026-04-20 | hoog |
