@@ -71,8 +71,9 @@ backend/scripts/calibration-results.json
 *.bak
 
 # Obsidian / Vault-only
-.sessies/
-.meetings/
+sessies/
+meetings/
 .notes.md
+ideeën.md
 .obsidian/
 .obsidianignore
