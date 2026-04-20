@@ -8,6 +8,8 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-20
+
 ### Toegevoegd (sessie 2026-04-17)
 - Research-sectie dynamisch op BB-detailpagina (#23 Fase B deel 1) — build-time fetch van KnowledgeItems uit Neo4j, top 3 per BB gesorteerd op `curation_score DESC, title`, graceful fallback op lege state bij API-uitval
 - `KnowledgeItem` uitgebreid met `curation_score` (int, default 0) + `summary_nl` (str, optional); alle 34 seed-items voorzien van Nederlandse samenvatting en editorial score
