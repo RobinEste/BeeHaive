@@ -8,11 +8,11 @@ Overzicht van alle vastgelegde sessie-inzichten.
 |-----------|--------|
 | security | 1 |
 | avg-privacy | 3 |
-| architectuur | 16 |
-| development | 23 |
+| architectuur | 17 |
+| development | 26 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **45** |
+| **Totaal** | **49** |
 
 ## Inzichten
 
@@ -63,3 +63,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-043 | Skill-fork pattern bij 1M-parent-context | development | 2026-04-20 | hoog |
 | KNW-2026-044 | Vault-migratie van gedeelde resources vereist dependency-audit | development | 2026-04-20 | midden |
 | KNW-2026-045 | BB_01 Knowledge vs BB_03 Dynamic Context — mens-laag vs informatie-laag | architectuur | 2026-04-20 | hoog |
+| KNW-2026-046 | Stijlgids distilleren uit correctierondes, niet vooraf | development | 2026-04-21 | hoog |
+| KNW-2026-047 | Inline uitleg eerst, glossary-links pas na rijpheid | development | 2026-04-21 | hoog |
+| KNW-2026-048 | Single source voor terminologie voedt pagina + inline links | architectuur | 2026-04-21 | hoog |
+| KNW-2026-049 | Check route-bestaan vóór inline-links in content-MDX | development | 2026-04-21 | midden |
