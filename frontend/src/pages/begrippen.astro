@@ -1,0 +1,314 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  BEGRIPPEN,
+  CATEGORIE_LABELS,
+  CATEGORIE_INTROS,
+  CATEGORIE_VOLGORDE,
+  termenByCategorie,
+} from '../data/begrippen';
+---
+
+<BaseLayout title="Begrippen — BeeHaive">
+  <section class="page-hero">
+    <div class="eyebrow">Begrippen</div>
+    <h1>AI-taal,<br/>in gewone taal.</h1>
+    <p class="page-intro">Korte uitleg van de vaktermen die we op deze site gebruiken. Geschreven voor professionals die AI willen inzetten zonder eerst een ingenieursopleiding te volgen.</p>
+  </section>
+
+  <section class="toc-section">
+    <nav class="toc" aria-label="Inhoudsopgave">
+      <div class="toc-head">Inhoud</div>
+      <ul>
+        {CATEGORIE_VOLGORDE.map((cat) => (
+          <li><a href={`#${cat}`}>{CATEGORIE_LABELS[cat]}</a> <span class="count">({termenByCategorie(cat).length})</span></li>
+        ))}
+      </ul>
+      <p class="toc-note">In totaal {BEGRIPPEN.length} termen. De lijst groeit per bouwsteen en guardrail die we uitwerken.</p>
+    </nav>
+  </section>
+
+  <section class="begrippen-content">
+    {CATEGORIE_VOLGORDE.map((cat) => (
+      <section class="categorie" id={cat}>
+        <div class="cat-eyebrow">{CATEGORIE_LABELS[cat]}</div>
+        <h2>{CATEGORIE_LABELS[cat]}</h2>
+        <p class="cat-intro">{CATEGORIE_INTROS[cat]}</p>
+
+        <dl class="terms">
+          {termenByCategorie(cat).map((term) => (
+            <div class="term" id={term.slug}>
+              <dt>
+                <a href={`#${term.slug}`} class="term-anchor" aria-label={`Permalink naar ${term.naam}`}>
+                  {term.naam}
+                  {term.engels && <span class="engels"> — <em>{term.engels}</em></span>}
+                </a>
+              </dt>
+              <dd>
+                <p>{term.uitleg}</p>
+                {term.zieOok && term.zieOok.length > 0 && (
+                  <p class="zie-ook">
+                    <span class="zie-ook-label">Zie ook:</span>
+                    {term.zieOok.map((slug, i) => {
+                      const ref = BEGRIPPEN.find((t) => t.slug === slug);
+                      if (!ref) return null;
+                      return (
+                        <>
+                          {i > 0 && <span class="sep">·</span>}
+                          <a href={`#${slug}`}>{ref.naam}</a>
+                        </>
+                      );
+                    })}
+                  </p>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
+  </section>
+
+  <section class="cta-strip">
+    <div class="cta-inner">
+      <h3>Meer context nodig?</h3>
+      <p>Elk begrip komt terug in een <a href="/framework">bouwsteen of guardrail</a>. De bouwsteen-pagina's leggen uit hoe de termen samen een werkend systeem vormen.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 5% 2rem;
+  }
+
+  .page-intro {
+    max-width: 46rem;
+    color: var(--text-dim);
+    font-size: 1.04rem;
+    line-height: 1.65;
+  }
+
+  .toc-section {
+    padding: 1.5rem 5% 2rem;
+  }
+
+  .toc {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem 2rem;
+    max-width: 46rem;
+  }
+
+  .toc-head {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.6rem;
+  }
+
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .toc a:hover {
+    color: var(--teal-light);
+  }
+
+  .count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .toc-note {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .begrippen-content {
+    padding: 1.5rem 5% 5rem;
+  }
+
+  .categorie {
+    margin-bottom: 4.5rem;
+    max-width: 54rem;
+  }
+
+  .categorie:last-child {
+    margin-bottom: 2rem;
+  }
+
+  .cat-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+
+  .categorie h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+  }
+
+  .cat-intro {
+    color: var(--text-dim);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 42rem;
+  }
+
+  .terms {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .term {
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--border);
+    scroll-margin-top: 6rem;
+    transition: border-color 0.3s;
+  }
+
+  .term:target {
+    border-left-color: var(--gold);
+  }
+
+  .term:hover {
+    border-left-color: var(--teal);
+  }
+
+  .term dt {
+    margin-bottom: 0.5rem;
+  }
+
+  .term-anchor {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  .term-anchor:hover {
+    color: var(--teal-light);
+  }
+
+  .engels {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .term dd {
+    margin: 0;
+  }
+
+  .term dd p {
+    font-size: 0.94rem;
+    line-height: 1.72;
+    color: var(--text-dim);
+    margin: 0 0 0.6rem;
+    font-weight: 300;
+  }
+
+  .zie-ook {
+    font-size: 0.82rem !important;
+    color: var(--text-muted) !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .zie-ook-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-right: 0.5rem;
+  }
+
+  .zie-ook a {
+    color: var(--teal);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .zie-ook a:hover {
+    color: var(--teal-light);
+    text-decoration: underline;
+  }
+
+  .sep {
+    margin: 0 0.35rem;
+    color: var(--border-2);
+  }
+
+  .cta-strip {
+    background: linear-gradient(rgba(12, 30, 29, 0.92), rgba(12, 30, 29, 0.96));
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+  }
+
+  .cta-inner {
+    max-width: 46rem;
+  }
+
+  .cta-inner h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--gold);
+  }
+
+  .cta-inner p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.72;
+  }
+
+  .cta-inner a {
+    color: var(--teal);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .cta-inner a:hover {
+    border-bottom-color: var(--teal);
+  }
+
+  @media (max-width: 720px) {
+    .toc ul {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .categorie h2 {
+      font-size: 1.4rem;
+    }
+  }
+</style>
