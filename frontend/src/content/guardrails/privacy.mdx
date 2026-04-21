@@ -44,3 +44,12 @@ De meeste AI-systemen falen niet op beleid, maar op implementatie. Een Privacy G
 ## In de praktijk
 
 De vraag is niet óf je met privacy te maken krijgt, maar wanneer. Bouw privacy in vanaf het begin — het achteraf toevoegen is tien keer duurder en altijd incompleet.
+
+## Koppeling met Dynamic Context
+
+Het concrete raakvlak met [BB_03 Dynamic Context](/framework/dynamic-context) bepaalt waar Privacy operationeel wordt:
+
+- **PII in RAG lekt stilzwijgend.** Vector-stores bewaren wat ze krijgen. Zonder pre-indexering redactie worden persoonsgegevens opgehaald door queries die er nooit op gericht waren. Post-retrieval filtering is een last line of defense, geen eerste.
+- **GraphRAG verandert het risicoprofiel.** Graph-structuur vermindert raw-text leakage maar vergroot de kans op extractie van entiteit-relatie-informatie. Onderzoek uit 2025 (arXiv:2508.17222) toont dit expliciet — de upgrade naar GraphRAG is niet automatisch een privacy-upgrade.
+- **Differentiële privacy (DP-RAG)** is de formal guarantee-route voor gereguleerde sectoren. Bij ε ≈ 10 overtreft het zelfs de non-RAG baseline: privacy-by-design hoeft geen performance-straf te zijn.
+- **Data-lineage is GDPR-architectuurvereiste.** Elke respons traceerbaar naar brondocument, embedding-timestamp en verwijderings-audittrail. Zonder deze infrastructuur is het recht op vergetelheid niet afdwingbaar op AI-antwoorden.

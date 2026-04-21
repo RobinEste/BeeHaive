@@ -42,3 +42,10 @@ Fail-safes, rollback-mechanismen en incidentprocessen klinken bureaucratisch, ma
 ## In de praktijk
 
 Een AI-systeem zonder teststraat is als een auto zonder remmen. Het rijdt prima — tot het moment dat het niet meer doet. Investeer in geautomatiseerde tests, monitoring en incident-response voordat je live gaat, niet erna.
+
+## Koppeling met Dynamic Context
+
+Robuustheid reikt tot in de context-laag. Twee [BB_03 Dynamic Context](/framework/dynamic-context)-faalmodi zijn systemisch en stil:
+
+- **Context rot** — alle 18 frontier-modellen in Chroma's 2025-onderzoek degraderen bij groeiende context. Informatie in het midden van de context verliest 30%+ accuracy (Liu et al., TACL 2024). Dit is geen model-bug die training oplost, maar een architectonische eigenschap van transformer-attention. Robuustheid vraagt ontwerp *rondom* deze constraint: bundle-precisie, sub-agent isolatie, stopcondities.
+- **Stale context** — een verouderde kennisbank geeft geen error. Het geeft een antwoord, correct van vorm maar fout van inhoud. Robuuste RAG-systemen monitoren vier freshness-dimensies (content age, embedding lag, stale retrieval rate, coverage drift) en triggeren op `last_verified`-drempels die per documentcategorie verschillen.

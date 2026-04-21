@@ -4,35 +4,319 @@ name: Dynamic Context
 tagline: "De juiste informatie op het juiste moment."
 icon: "🔄"
 order: 3
-quote: "Know your subject matter. The better you know the context, nuances, history, and other critical aspects of your subject matter, the more value you can extract out of AI."
-quoteAuthor: "Tanyth Lloyd"
+quote: "Context engineering is the art of providing all the context for the task to be plausibly solvable by the LLM."
+quoteAuthor: "Tobi Lütke"
 checklist:
-  - "Zijn alle bronbestanden, datasets en documenten actueel?"
-  - "Is duidelijk welke context wanneer wordt ingevoegd?"
-  - "Wordt irrelevante of verouderde context uitgesloten?"
-  - "Zijn privacy- en datakwaliteitsaspecten geborgd?"
-  - "Is duidelijk hoe context wordt gestructureerd en opgeslagen?"
-  - "Wordt context automatisch of handmatig geactualiseerd?"
-  - "Is de hoeveelheid context afgestemd op het model (tokens, limits)?"
+  - "Is helder welke informatie het model op welk moment nodig heeft — en welke juist niet?"
+  - "Worden chunks contextueel verrijkt vóór indexering (titel, bron, periode, kern), zodat ze in isolatie betekenisvol blijven?"
+  - "Wordt hybride retrieval (semantisch + keyword + reranker) gebruikt in plaats van alleen vector-search?"
+  - "Staat kritieke informatie aan het begin of einde van de context, niet in het midden?"
+  - "Zijn staleness-drempels per documentcategorie gedefinieerd (compliance: 0, beleid: 24u, referentie: 30d, achtergrond: 90d)?"
+  - "Worden bronnen event-triggered herindexed bij wijzigingen, niet alleen op schema?"
+  - "Wordt PII pre-indexering geredigeerd of deterministisch getokeniseerd — niet pas post-retrieval gefilterd?"
+  - "Zijn RAGAS-metrics (faithfulness > 0.90, context recall > 0.80) continu gemeten en zichtbaar?"
+  - "Is elk antwoord terug te leiden naar brondocument, embedding-timestamp en verwijderingslog?"
+  - "Is de memory-laag gescheiden: working memory in context, episodic extern persistent, semantic afgeleid?"
 quickStart:
-  - "Inventariseer welke informatie je AI nodig heeft om relevante antwoorden te geven."
-  - "Zet een simpele RAG-pipeline op met je belangrijkste documenten."
-  - "Plan een wekelijks updatemoment voor je kennisbronnen."
+  - |
+    Begin met chunking, niet met model-keuze:
+    Splits documenten op sectie- of alineagrens (256-512 tokens algemene tekst; 1000-1500 tokens technische docs). Review 50 willekeurige chunks handmatig — als meer dan 1 op 5 losstaand onbegrijpelijk is, zijn ze te klein of ontbreekt overlap.
+  - |
+    Voeg contextuele annotatie toe vóór indexering:
+    Prepend 50-100 tokens context per chunk ("dit is een SEC-filing van ACME Corp over Q2 2023"). Dit reduceert retrieval-fouten met 35-49% — en met reranker tot 67%.
+  - |
+    Definieer staleness per documentcategorie:
+    Niet één uniforme drempel, maar gedifferentieerd. Compliance-documenten: nul tolerantie. Beleid: 24 uur. Referentie: 30 dagen. Achtergrond: 90 dagen. Zonder deze differentiatie is je systeem ofwel te streng, ofwel te nalatig.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We verzamelen wekelijks use cases van over de hele wereld als referentiemateriaal. Deze worden doorzoekbaar gemaakt via RAG, zodat het systeem tijdens interviews en analyses altijd toegang heeft tot actuele, relevante voorbeelden."
+  description: "We verzamelen wekelijks use cases van over de hele wereld als referentiemateriaal. Deze worden doorzoekbaar gemaakt via hybride retrieval met contextual embeddings en reranking, zodat het systeem tijdens interviews en analyses altijd toegang heeft tot actuele, relevante voorbeelden. Nieuwe cases triggeren incrementele re-indexing; oude cases krijgen een freshness-flag wanneer ze 90 dagen zonder review zijn."
 evidence:
-  - "Inventarisatie van alle kennisbronnen met actualiteitsstatus"
-  - "Werkende RAG-pipeline met meetbare retrieval-kwaliteit"
-  - "Updateschema voor contextbronnen (wie, wanneer, hoe)"
+  - "Inventarisatie van kennisbronnen met per-document eigenaar, last_verified-timestamp en staleness-drempel"
+  - "Werkende retrieval-pipeline met gemeten RAGAS-scores (faithfulness, recall, precision) op een evaluatieset van ≥150 queries"
+  - "Event-triggered re-indexing op document-change events (niet alleen nightly batch)"
+  - "PII-redactielog en data-lineage: elk antwoord traceerbaar naar bronfragment, embedding-timestamp en verwijderings-audittrail"
+  - "Freshness-dashboard met composite score en alerts bij <85%"
 ---
+
+import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
 
 ## Wat is Dynamic Context?
 
-Dynamic context is de actuele, taak- of domeinspecifieke informatie die een AI-oplossing tijdens uitvoering ontvangt uit een knowledge base, dataset of externe bron, en die direct wordt gebruikt om relevantere, nauwkeurigere en situationeel passende outputs te genereren.
+Dynamic context is de actuele, taak-, proces-, organisatie- of domeinspecifieke informatie die een AI-oplossing tijdens uitvoering ontvangt uit een knowledge base, dataset of externe bron, en die direct wordt gebruikt om relevantere, nauwkeurigere en situationeel passende outputs te genereren.
 
-Het vormt de variabele laag bovenop het vaste systeemontwerp: de inhoud (gegevens, regels, feiten, casuïstiek, klant- of domeingegevens) kan voortdurend worden aangepast, aangevuld of vernieuwd, waardoor de AI-oplossing meegroeit met veranderende kennis, beleid, casussen of context.
+Het vormt de variabele laag bovenop het vaste systeemontwerp: de inhoud (gegevens, regels, feiten, casuïstiek, etc.) kan voortdurend worden aangepast, aangevuld of vernieuwd, waardoor de AI-oplossing meegroeit met veranderende kennis, beleid, casussen of context.
 
-## In de praktijk
+Dynamic Context en [Prompt Design](/framework/prompt-design) werken samen: Prompt Design bepaalt *hoe* je vraagt; Dynamic Context bepaalt *waarmee* je het model voedt. Zonder goede context levert de beste prompt onbetrouwbare antwoorden. Zonder goede prompt wordt de beste context verspild.
 
-Een AI-systeem zonder goede context is als een consultant die het bedrijf niet kent. Dynamic context zorgt ervoor dat je model niet alleen slim is, maar ook relevant. De uitdaging zit in het balanceren: te weinig context geeft generieke antwoorden, te veel context verbruikt tokens en vertroebelt de focus.
+<BBDisclosure title="De evolutie: van prompt engineering naar context engineering">
+
+Tot medio 2025 ging het gesprek over AI-kwaliteit vooral over prompt engineering — de kunst van de juiste instructie. Sinds juni 2025, toen Tobi Lütke (CEO Shopify) context engineering definieerde als *"the art of providing all the context for the task to be plausibly solvable by the LLM"*, is de focus verschoven. In juli 2025 verklaarde Gartner dat context engineering de prioriteit is geworden boven prompt engineering.
+
+De aanleiding is pijnlijk concreet: MIT's State of AI in Business 2025 rapporteerde dat 95% van enterprise AI-pilots geen meetbare ROI oplevert. De hoofdoorzaak was niet modelkeuze of prompting-kwaliteit, maar **gebrek aan context**.
+
+### Waarom prompt engineering niet genoeg is
+
+Moderne modellen zijn slim genoeg om een taak te interpreteren. Wat ze niet weten, is wat jouw organisatie bedoelt met *"top-10 klanten"*. Voor Verkoop is dat contractwaarde; voor Productmanagement is het adoptie; voor Klantenservice is het de kans dat een klant blijft. Elk team heeft een eigen definitie en wanneer er geen definitie bekend is, zal het model er zelf één verzinnen. Een verkeerde definitie kan leiden tot slechte antwoorden, kortingen die goed worden gekeurd op basis van niet-correcte criteria, klantvragen die bij verkeerde teams terecht komen of contracten die worden gegenereerd met verkeerde voorwaarden.
+
+Context engineering richt zich op dat gat: het ontwerpen van systemen die **dynamisch de juiste informatie, tools en institutioneel geheugen samenstellen** in het [context window](/begrippen#context-window) van het model, afgestemd op de taak.
+
+### Zes componenten van context
+
+Een volwassen context-laag bestaat uit meer dan opgehaalde documenten:
+
+- **Systeeminstructies & rol-definities** — wie is de [agent](/begrippen#agent), wat mag hij wel/niet
+- **Semantische & structurele context** — definities (de losse afspraken over wat een term betekent), business glossaries (de organisatiebrede begrippenlijst waarin die definities gebundeld en beheerd worden) en [data-herkomst](/begrippen#data-lineage)
+- **Operationele context & procedureel geheugen** — beslissingen, uitzonderingslogica en goedkeuringsroutes (wie moet waarvoor toestemming geven)
+- **Gespreks- & temporele context** — wat is gezegd, hoe oud is deze data
+- **Retrieval & integratie** — [RAG](/begrippen#rag), live data (realtime-gegevens uit bronsystemen) en het [MCP](/begrippen#mcp) — het Model Context Protocol
+- **Tool-toegang & actie-capaciteiten** — welke tools mag de agent gebruiken, onder welke voorwaarden
+
+### Vijf failure-modes om te herkennen
+
+Een context-laag faalt typisch op vijf manieren: **missing** (informatie-gat → hallucinatie), **stale** (verouderd → zelfverzekerd fout antwoord), **conflicting** (verschillende definities per bron → inconsistent), **irrelevant** (noise → aandacht verdund), en **permission-violated** (access control omzeild). Dit zijn diagnostische categorieën, geen implementatiefouten: elke organisatie herkent minstens drie ervan in de eigen omgeving.
+
+</BBDisclosure>
+
+<BBDisclosure title="Context rot — waarom grotere windows geen oplossing zijn">
+
+Een hardnekkig misverstand in 2025–2026: als modellen grotere [context windows](/begrippen#context-window) krijgen (1M [tokens](/begrippen#token), 10M tokens), verdwijnt het context-probleem. Het empirisch bewijs zegt het tegenovergestelde. Chroma's onderzoek uit 2025 testte **18 frontier-modellen** — inclusief GPT-4.1, Claude Opus 4, Gemini 2.5 Pro en Qwen3-235B — en vond dat *elk model* [degradeert](/begrippen#degradeert) naarmate de context groeit. Dit fenomeen heet [context rot](/begrippen#context-rot).
+
+### Drie mechanismen werken samen
+
+[**Lost-in-the-middle**](/begrippen#lost-in-the-middle) — Liu et al. (Stanford, TACL 2024) toonden aan dat modellen een U-curve vertonen: informatie aan begin en einde van de context krijgt hoge aandacht, maar informatie in het midden krijgt 30%+ lagere nauwkeurigheid. De 30%-cijfers komen van 2024-modellen; Chroma herbevestigde het U-curve-patroon in 2025 op 18 frontier-modellen (inclusief GPT-4.1, Claude Opus 4 en Gemini 2.5 Pro). Absolute percentages schuiven per modelversie, het patroon blijft — het is een structurele eigenschap van transformer-aandacht, geen bug die training oplost.
+
+**Attention dilution** — een taalmodel werkt intern met *attention* (aandacht): voor elke token berekent het hoe relevant alle andere tokens zijn. Die berekening groeit kwadratisch (exponentieel: twee keer zoveel context = vier keer zoveel rekenwerk): bij 10.000 tokens zijn er 100 miljoen token-paren om te vergelijken, bij 100.000 tokens 10 miljard, bij 1 miljoen tokens een biljoen. De model-interne weegfunctie (softmax-normalisatie) verdeelt de totale aandacht over álle tokens, dus elke individuele token krijgt proportioneel minder gewicht naarmate er meer context bijkomt. In gewonemensentaal: hoe meer tekst je het model voert, hoe minder aandacht elke zin afzonderlijk krijgt.
+
+**Distractor interference** — semantisch vergelijkbare maar feitelijk irrelevante content (denk: oude versies van beleid naast de huidige, of een klantdossier met vier verschillende adressen uit vier verschillende jaren) versterkt het lost-in-the-middle-effect nog verder. Opmerkelijk: Chroma vond dat goed gestructureerde, coherente documenten *moeilijker* te doorzoeken zijn dan willekeurig geordende, omdat coherentie meer plausibele "bijna-goede" antwoorden creëert.
+
+### Meetbare degradatie op complexe taken
+
+Adobe Research (februari 2025) mat hoe nauwkeurig modellen een vraag beantwoorden die twee stappen vereist — een feit uit de context combineren met algemene kennis. Voorbeeld: *"welke klant zit in onze grootste groeiregio?"* (vraagt zowel "wat staat er in het dossier?" als "welke regio groeit het hardst?"). Bij een korte prompt halen de meeste modellen 85–99%; bij 32K tokens aan context zakken ze fors:
+
+| Model | Nauwkeurigheid korte prompt | Nauwkeurigheid bij 32K tokens | Daling |
+|-------|------------------------------|--------------------------------|--------|
+| GPT-4o | 99% | 70% | −29% |
+| Claude 3.5 Sonnet | 88% | 30% | −58% |
+| Gemini 2.5 Flash | 94% | 48% | −46% |
+| Llama 4 Scout | 82% | 22% | −60% |
+
+De exacte cijfers zijn inmiddels meer dan een jaar oud en gelden voor 2024-2025-modelversies; modernere modellen (Claude 4.7, GPT-5.4, Gemini 3) presteren doorgaans beter op hetzelfde type taken, maar de *richting* is consistent: langere context = lagere nauwkeurigheid op redeneertaken. Doorsnee enterprise-queries consumeren 50K–100K tokens aan setup-context voordat de eigenlijke vraag begint.
+
+### De fix is niet meer context, maar minder ruis
+
+Achteraf samenvatten (post-hoc compressie: *"we vatten de conversatie samen zodra het context window voor 95% vol zit"*) komt te laat — de schade is dan al aangericht. Een **sub-agent architectuur** werkt wel: één lead-agent (coördinerend AI-systeem) delegeert deelvragen aan meerdere subagents (AI-systemen met elk hun eigen, schone context). Anthropic's multi-agent research systeem (Opus als lead + Sonnet-subagents) scoorde **90,2% hoger** op onderzoekstaken dan dezelfde Opus die in zijn eentje werkte — bijna een verdubbeling van de succes-score. Niet omdat subagents slimmer zijn: de lead-agent krijgt alleen gecondenseerde samenvattingen van ~50–200 tokens (ongeveer 40–150 woorden) terug, en hoeft nooit de 15+ verkende bestanden zelf door te spitten. Minder context, hogere signaal-dichtheid.
+
+Praktisch voor Dynamic Context: méér ruimte in het context window lost het probleem niet op. Drie ontwerpdisciplines blijven cruciaal, ongeacht hoe groot de context windows van toekomstige modellen worden:
+
+- **bundle-engineering** — bewust samenstellen welke stukjes context (chunks, documenten, voorbeelden) je op welk moment aan het model aanbiedt
+- **chunk-precisie** — documenten zó opknippen dat elk stukje zelfstandig betekenisvol is en niet halverwege een alinea afbreekt
+- **context-isolatie** — subvragen in aparte context-sessies afhandelen zodat hun zoek- en verwerpfase de hoofdcontext niet vervuilt
+
+Dit raakt direct aan de **Robustness**-guardrail (GR_02: betrouwbaarheid onder alle omstandigheden): context rot geeft geen foutmelding, het geeft een plausibel maar verkeerd antwoord. Juist daarom moet een robuust AI-systeem vooraf ontworpen zijn om deze stille faalmodus op te vangen — monitoren kan niet wat niet zichtbaar faalt.
+
+</BBDisclosure>
+
+<BBDisclosure title="Retrieval-architecturen — van simpele RAG naar context engines">
+
+[RAG](/begrippen#rag) is in 2025–2026 geëvolueerd van een vaste ophaal-pijplijn naar een intelligente context-engine. De naïeve versie — *splits documenten in blokjes, maak er [vector-representaties](/begrippen#embedding) van en haal de top-K meest gelijkende op bij elke vraag* — haalt in productie niet het kwaliteitsniveau dat zakelijke toepassingen vragen.
+
+### Chunking is de meest onderschatte kwaliteitsvariabele
+
+Chunking — het opknippen van documenten in [stukjes](/begrippen#chunks) voor retrieval — heeft **meer impact op prestaties dan modelkeuze of embedding-model**. Simpel splitsen elke 512 tokens (ongeveer 350 woorden) zonder acht te slaan op zinsgrenzen is snel en consistent middelmatig. Een zin die halverwege wordt afgekapt, een tabel die over twee chunks is verdeeld, of een alinea zonder onderwerp zorgt dat retrieval faalt nog vóór het model aan bod komt.
+
+Richtlijnen per documenttype:
+
+| Documenttype | Chunk-grootte | Overlap tussen chunks |
+|--------------|---------------|------------------------|
+| Algemene tekst (blogs, rapporten) | 256–512 tokens (ca. 180–350 woorden) | 20–30% |
+| Beleid & procedure-documenten | Hiërarchisch: alinea indexeren, hele sectie retourneren bij generatie | n.v.t. |
+| Technische documentatie | 1.000–1.500 tokens (ca. 700–1.050 woorden) | 10–20% |
+| Chatgesprekken | 200–400 tokens (ca. 140–280 woorden) | minimaal |
+
+Kwaliteitstest: pak 50 willekeurige chunks en lees ze los van hun document. Als meer dan 1 op 5 in isolatie betekenisloos is (*"de vennootschap groeide 3% het vorige kwartaal"* — welke vennootschap?), zijn je chunks te klein of ontbreekt er overlap.
+
+### Contextual Retrieval — 67% minder fouten
+
+Anthropic publiceerde in 2024 *Contextual Retrieval*, een methode die het chunk-probleem oplost door per stukje een korte contextuele annotatie (50–100 tokens, ongeveer 40–75 woorden) te genereren vóór indexering. Die annotatie plakt het document, de periode en het onderwerp aan de chunk — zodat *"de vennootschap groeide 3%"* in de index staat als *"ACME Corp — Q2 2023 — jaarverslag: de vennootschap groeide 3%"*.
+
+| Aanpak | Reductie retrieval-fouten |
+|--------|---------------------------|
+| Basis vector-search | baseline |
+| + contextuele annotaties per chunk | −35% |
+| + BM25 (keyword-match) er bovenop ([hybride zoeken](/begrippen#hybrid-search)) | −49% |
+| + [reranker](/begrippen#reranker) | −67% |
+
+Kosten via prompt caching (resultaten van eerdere modelcalls hergebruiken): ongeveer €1,02 per miljoen document-tokens aan eenmalige voorbewerking. Economisch haalbaar op bedrijfsschaal. De cijfers komen uit Anthropic's onderzoek op peer-reviewed datasets in 2024; het effect is sindsdien in meerdere onafhankelijke tests gerepliceerd.
+
+### Hybride retrieval is de standaard
+
+Pure vector-search (zoeken op semantische gelijkenis) verdunt exacte matches. Als een medewerker zoekt naar *"foutcode TS-999"* of *"AVG Artikel 17"*, wil je dat de exacte term hard meetelt — niet dat je een semantisch-vergelijkbaar document krijgt over foutcodes in het algemeen. BM25 (een klassiek keyword-matching-algoritme) vindt die exacte matches wel. [Hybride zoeken](/begrippen#hybrid-search) combineert beide: typisch 75% semantisch + 25% keyword, met een [reranker](/begrippen#reranker) over de top-10 resultaten die vraag en document sámen leest om fijnere relevantie te bepalen.
+
+### Eén regel is absoluut
+
+**Gebruik hetzelfde embedding-model voor indexering én bevraging.** Beide bewerkingen produceren vector-representaties in dezelfde wiskundige ruimte. Modellen mixen, of zelfs upgraden naar een nieuwere versie terwijl het systeem draait, breekt die ruimte en maakt je index onbruikbaar. Als je wilt migreren naar een ander embedding-model: volledig opnieuw indexeren — geen mengvorm.
+
+### RAG is niet voor elke toepassing
+
+Voor kennisbanken onder de 200.000 tokens (ongeveer 500 pagina's): zet het geheel in de prompt en laat de model-aanbieder het cachen. Geen RAG nodig, minder fouten, sneller antwoord.
+
+Voor complexe meervoudige relaties ("welke klanten werken samen met welke leveranciers in welke projecten?"): [GraphRAG](/begrippen#graphrag) — RAG met een kennisgraaf als tussenlaag — kan toegevoegde waarde hebben (zie ook [Knowledge](/framework/knowledge), BB_02: de onderliggende kennisbronnen en hun kwaliteit). Maar let op: grafenstructuur verhoogt het [PII](/begrippen#pii)-lekrisico, zie de Privacy-sectie verderop.
+
+Voor classificatie- en routeringstaken met 5–20 categorieën (*"welk team moet deze vraag oppakken?"*): semantische routering via RAG — aangeduid als het REIC-patroon, gepubliceerd door Amazon op EMNLP 2025 — presteert beter dan een fijn-afgestemd classificatiemodel, en past zich aan nieuwe categorieën aan zonder opnieuw te trainen.
+
+</BBDisclosure>
+
+<BBDisclosure title="Freshness — de stille faalmodus">
+
+De meeste RAG-failures zijn geen retrieval-failures. Het zijn **[actualiteits-failures](/begrippen#stale-context)**, en de meeste teams hebben geen manier om ze te meten.
+
+Een kapotte auth-service geeft een 403. Een netwerk-timeout geeft een error. Een verouderde kennisbank geeft een *antwoord* — structureel correct, zelfverzekerd van toon, gebaseerd op informatie die uren, dagen of weken achterhaald is. Er is geen staleness-flag in de retrieval-response. Het model kan een actueel document niet onderscheiden van een verouderd. Het genereert uit wat er gegeven is.
+
+Standaard RAG-metrics (faithfulness, answer relevancy, context recall) hebben geen temporele component. Een systeem kan 95% scoren op alle drie — en toch 22 uur lang verouderde informatie serveren.
+
+### Vier dimensies, apart te meten
+
+Actualiteit in een kennisbank is geen enkel getal maar vier samenhangende metingen, die elk een ander faalscenario vangen:
+
+- **Leeftijd van de inhoud** (*content age*) — hoe lang geleden is het bron-document voor het laatst door een mens gecontroleerd of bijgewerkt?
+- **Indexering-vertraging** (*embedding lag*) — hoeveel tijd zit er tussen het moment dat een document wijzigt en het moment dat de nieuwe vector in de index staat?
+- **Verouderingspercentage** (*stale retrieval rate*) — welk deel van de live vragen levert een document terug waarvan de vector ouder is dan het document zelf? De meest operationeel kritieke meting — dit vertelt of eindgebruikers op dit moment verouderde antwoorden krijgen.
+- **Corpusdrift** (*coverage drift*) — welk deel van de totale kennisbank is inmiddels ouder dan de afgesproken houdbaarheidsgrens? Een vooruitziende meting: ook documenten die nu niet bevraagd worden tellen mee.
+
+### Houdbaarheid is niet uniform
+
+Eén universele verouderingsgrens is ofwel te streng voor achtergrondmateriaal, ofwel te nalatig voor compliance. Differentieer per categorie:
+
+| Documentcategorie | Maximale verouderdheid |
+|-------------------|------------------------|
+| Compliance-documenten, actuele prijslijsten, veiligheidsprotocollen | Nul tolerantie — onmiddellijk herindexeren |
+| Beleid, procedures, productspecificaties | 24 uur |
+| Referentiedocumenten en standaarden | 30 dagen |
+| Achtergrond- en historisch materiaal | 90 dagen |
+
+Een samengestelde score over deze vier dimensies onder de 85% triggert automatische waarschuwingen; onder de 70% toont het systeem actief aan eindgebruikers dat de opgehaalde informatie mogelijk niet meer actueel is.
+
+### Reageren op wijzigingen is beter dan wachten op de klok
+
+Drie aanpakken voor het bijwerken van de index, met hun typische achterstand:
+
+- **Nachtelijke batch-verwerking** — tot 24 uur verouderd voordat een wijziging zichtbaar is
+- **Uurlijkse batch** — tot 60 minuten verouderd
+- **Realtime verwerken op wijziging** (via [CDC — Change Data Capture](/begrippen#cdc)) — enkele seconden verouderd, maar alleen voor bronnen die change-events publiceren
+
+Het patroon dat in productie wint: incrementeel herindexeren getriggerd door document-wijzigingen in de bron (pagina bijgewerkt in Confluence, bestand aangepast in SharePoint), niet door een schema.
+
+### Metadata is een voorwaarde, geen optie
+
+Actualiteit meten lukt alleen als elk document drie velden draagt: wanneer voor het laatst gecontroleerd (`last_verified`), wanneer voor het laatst gewijzigd (`updated_at`), en wie de inhoudelijke eigenaar is (`owner`). Daarnaast moet per bevraging worden vastgelegd wanneer de vector is aangemaakt. Zonder die onderliggende registratie is een dashboard dat rood kleurt geen waarschuwing maar een dood bericht: je ziet het probleem, niemand weet wat eraan te doen.
+
+Dit raakt direct aan twee andere onderdelen van het framework:
+
+- [Evaluation Loop](/framework/evaluation-loop) (BB_06: meten, analyseren, verbeteren en opnieuw meten) — dezelfde cyclus, toegepast op context-kwaliteit.
+- **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is — en hoe daarop wordt toegezien). Zonder een aanwijsbare eigenaar per document blijft hercertificering liggen, en degradeert de kennisbank in stilte.
+
+</BBDisclosure>
+
+<BBDisclosure title="Geheugen dat verder reikt dan één gesprek">
+
+Wanneer een AI-systeem gebruikt wordt over meerdere sessies, dagen of maanden, wordt geheugen een aparte ontwerpdiscipline. Een [agent](/begrippen#agent) die elk gesprek bij nul begint, is feitelijk een chatbot die telkens wordt teruggezet — iedere keer opnieuw uitleggen wie je bent, wat je eerder hebt besproken en welke voorkeuren je hebt. Een agent die alles onthoudt, raakt binnen enkele uren vervuild door [context rot](/begrippen#context-rot).
+
+### Drie lagen geheugen
+
+In volwassen AI-systemen wordt geheugen opgesplitst in drie lagen, elk met een andere levensduur en een andere functie:
+
+- [**Werkgeheugen**](/begrippen#werkgeheugen) (*working memory*) — de huidige gespreksstatus, zoals die op dit moment in het context window van het model zit. Vluchtig, verdwijnt na de sessie. Te vergelijken met wat een medewerker op een notitieblokje schrijft tijdens één klantgesprek.
+- [**Ervaringsgeheugen**](/begrippen#ervaringsgeheugen) (*episodic memory*) — losse gebeurtenissen en eerdere gesprekken, bewaard in een externe database. Doorzoekbaar, gekoppeld aan een gebruiker of dossier. Te vergelijken met een archief van klantcontacten.
+- [**Kennisgeheugen**](/begrippen#kennisgeheugen) (*semantic memory*) — patronen en voorkeuren die uit het ervaringsgeheugen zijn gedestilleerd. Het langstlevend; dit is waar institutioneel geheugen zit ("deze klant wil altijd per mail worden benaderd, nooit telefonisch").
+
+Deze scheiding is geen theoretische luxe. Zonder haar vervuilt het werkgeheugen met irrelevante geschiedenis, en wordt afgeleide kennis ongrijpbaar omdat alles op één hoop wordt gegooid als "recent gesprek".
+
+### Twee volwassen oplossingen met verschillende filosofieën
+
+**Mem0** is een geheugen-laag die je toevoegt aan een bestaand AI-systeem. Het werkt passief: je stuurt gesprekken door, Mem0 haalt er zelf de belangrijke feiten uit en past die slim aan — verhuist een klant, dan verdwijnt het oude adres automatisch en komt het nieuwe ervoor in de plaats. In de onafhankelijke LongMemEval-benchmark (2025) scoort Mem0 49,0%. Vergeleken met de alternatieve aanpak "stuur de hele gespreksgeschiedenis mee aan het model": **26% hogere nauwkeurigheid, 91% lagere responstijd, en meer dan 90% besparing op tokenkosten**. Beschikbaar onder SOC 2 en HIPAA-compliance. De inbedding is licht — als je later wilt overstappen, raak je alleen de geheugen-aanroepen aan, niet je hele AI-infrastructuur.
+
+**Letta** (eerder MemGPT genoemd) is een stap verder: het hele AI-systeem draait binnen Letta. De agent onderhoudt zelf zijn geheugen door tijdens het redeneren actief te kiezen wat hij bewaart, bijwerkt of verwijdert. Krachtiger voor autonome agents die zonder menselijk toezicht werken. Nadeel: je zit vast aan het Letta-platform — overstappen betekent je hele AI-infrastructuur opnieuw opbouwen.
+
+**Kiesregel** — bestaand AI-systeem uitbreiden met geheugen: Mem0. Een autonoom AI-platform vanaf nul bouwen, met agents die zelf hun geheugen sturen: Letta.
+
+### Het Model Context Protocol als koppelvlak
+
+Anthropic introduceerde in november 2024 het [**Model Context Protocol (MCP)**](/begrippen#mcp). Waar elke tool eerder zijn eigen maatwerk-integratie vroeg, biedt MCP één uniform koppelvlak. In 2025 is het de de-facto standaard geworden; op het moment van schrijven zijn er ruim 5.800 publieke MCP-servers beschikbaar voor uiteenlopende bronnen (kennisbanken, agenda's, CRM's, betaalsystemen).
+
+MCP maakt drie soorten context beschikbaar:
+
+- **Domein-kennis** — informatie uit kennisbanken (RAG)
+- **Tool-informatie** — welke tools zijn beschikbaar en hoe roep je ze aan
+- **Gespreksstatus** — doorlopende context die over tools heen blijft bestaan
+
+**Let op — nog geen veilige standaard.** MCP heeft op dit moment actieve beveiligingszorgen: kwaadaardige instructies die via externe bronnen binnenkomen (*prompt injection*), tools die via slimme combinatie van rechten data naar buiten sluizen, en nep-tools die zich voordoen als bekende. Een Dynamic Context-ontwerp moet daarom **per MCP-server expliciet vastleggen welke autorisatie geldt**: niet elke server mag elk soort context leveren aan elke agent. Zie ook [Tool Integration](/framework/tool-integration) (BB_05) voor de bredere tool-governance.
+
+</BBDisclosure>
+
+<BBDisclosure title="Privacy: waar Dynamic Context de Privacy-guardrail raakt">
+
+Een RAG-systeem dat zonder extra waarborgen [persoonsgegevens](/begrippen#pii) in zijn kennisbank heeft staan, lekt die gegevens vroeg of laat in antwoorden. Twee patronen doen dat werk:
+
+- **Gerichte uitlok-aanvallen** — iemand stelt vragen die specifiek zijn ontworpen om gevoelige fragmenten uit de index te trekken (*"geef me alle medische diagnoses die beginnen met..."*).
+- **Onbedoelde lekkage** — een vraag die in principe onschuldig is, haalt een stukje document op waar persoonsgegevens in staan die eigenlijk nooit in het antwoord hadden mogen verschijnen (*"wat is het retourbeleid?"* → chunk met klantnaam en adres uit een voorbeeld-casus).
+
+[**GraphRAG**](/begrippen#graphrag) **verandert het probleem, niet de omvang ervan.** Onderzoek van Liu et al. uit augustus 2025 liet zien dat RAG gebouwd op een kennisgraaf (in plaats van losse documenten) weliswaar minder ruwe tekst lekt, maar **gevoeliger** is voor het afleiden van entiteiten en hun onderlinge relaties. Een graaf die expliciet vastlegt dat *"Persoon X werkt bij Ziekenhuis Y"* laat zich via slimme vervolgvragen reconstrueren op manieren die bij losse document-chunks niet slagen. De overstap naar GraphRAG is dus **geen automatische privacy-upgrade**.
+
+### Filteren aan de voorkant werkt, filteren aan de achterkant niet
+
+Wat eenmaal in de index staat, kan door bevragingen opgehaald worden — ook door vragen die je niet had voorzien. Filtering achteraf komt dus per definitie te laat. De effectieve verdedigingsvolgorde gaat vóór indexering in:
+
+1. **Gestructureerde identifiers consistent [pseudonimiseren](/begrippen#pseudonimisering)** — BSN, e-mailadres, IBAN en klantnummer worden op een voorspelbare manier vervangen door pseudoniemen voordat de tekst wordt geïndexeerd. Voorspelbaar betekent: dezelfde BSN krijgt elke keer hetzelfde pseudoniem, zodat verbanden tussen documenten blijven werken.
+2. **Persoonsgegevens in vrije tekst redigeren** — [entiteitsherkenning (NER)](/begrippen#ner) gecombineerd met regelgebaseerde filters haalt persoonsgegevens weg in samenhang met hun omgeving.
+3. **Retrieval-filter als tweede linie** — op het moment van bevragen alsnog gevoelige entiteiten uitsluiten. Valt een stap 1 of 2 door de mand, dan is dit de laatste kans.
+4. **Goedkeuringsproces voor nieuwe kennisbronnen** — geen document komt in de productie-index zonder expliciete privacy-check. Dit is organisatorisch, niet technisch.
+
+### Differentiële privacy als formele garantie
+
+Voor gereguleerde sectoren (zorg, financiën, overheid) waar contractuele of wettelijke privacy-garanties vereist zijn, bestaat een stap verder: [**DP-RAG**](/begrippen#dp-rag), gepubliceerd door Koga et al. in december 2024, laatst herzien november 2025. Het slimme: in plaats van het hele privacy-budget aan elk token te besteden, gebruikt het algoritme alleen bij tokens die echt gevoelige informatie bevatten het beveiligde model; voor de overige tekst wordt het normale model gebruikt. Bij een realistisch budget (in vakjargon *ε ≈ 10*, een gangbare industriestandaard) haalt DP-RAG zelfs betere antwoorden dan een systeem zónder RAG. Privacy-bij-ontwerp hoeft dus geen straf op prestaties te zijn.
+
+### Herkomst van elk antwoord is een AVG-architectuurvereiste
+
+Voor elk antwoord dat het systeem geeft, moet achteraf aantoonbaar zijn:
+
+- **Welke bronnen zijn opgehaald?** (document-herkomst)
+- **Wanneer is de vector gemaakt?** Dit maakt verouderde indexen opspoorbaar — ook als het document zelf intussen is gewijzigd.
+- **Welke vectoren zijn verwijderd na een verwijderverzoek?** (recht op vergetelheid — AVG Artikel 17)
+- **Past het gebruik bij het oorspronkelijke verzameldoel?** (doelbinding — AVG Artikel 5)
+
+Zonder deze registratie is Dynamic Context niet AVG-conform voor organisaties die onder de AVG of sectorspecifieke toezichthouders (bijv. DNB, NVWA, Autoriteit Persoonsgegevens) vallen. Dit is het raakvlak met twee guardrails:
+
+- **Privacy**-guardrail (GR_03: databescherming als fundament, niet als bijzaak) — hier is het geen optie maar een architectuurvoorwaarde.
+- **Transparency**-guardrail (GR_05: helder hoe AI werkt, wat het doet, en waarom) — bronverwijzingen bij antwoorden worden pas betekenisvol als de onderliggende retrieval-laag ze ook daadwerkelijk kan leveren.
+
+</BBDisclosure>
+
+<BBDisclosure title="In de praktijk">
+
+### Kwaliteit wint van volume
+
+Een groter context window (de hoeveelheid tekst die een model in één keer kan verwerken) is geen oplossing, maar een grotere ruimte om te vervuilen. De vraag die Dynamic Context systematisch stelt is niet *"past alles erin?"* maar *"is wat erin zit signaal of ruis?"*. Een bewust samengesteld pakket van 4.000 tokens (ongeveer 3.000 woorden, de omvang van een kort memo) met precies de juiste informatie verslaat een pakket van 400.000 tokens waarin alles-en-de-keukenkraan is gegooid.
+
+### Actualiteit is een inhoudelijke rol, geen IT-rol
+
+Zolang het actueel houden van de kennisbank wordt gezien als *"af en toe draait IT een nieuwe indexering"*, mislukt het. Het werkt pas wanneer elk document een inhoudelijke eigenaar heeft — iemand die bij een verouderings-waarschuwing wordt gecontacteerd om het document opnieuw te valideren. De samengestelde actualiteitsscore uit de Freshness-sectie is pas betekenisvol als er een proces aan hangt: wie wordt gebeld, wat gebeurt er, binnen welke termijn.
+
+### Bouw voor zichtbaarheid
+
+De lastigste faalmodi van Dynamic Context zijn **stille**: plausibele maar verkeerde antwoorden op basis van verouderde, irrelevante of onvolledig opgehaalde chunks. Zonder logging van elke bevraging (welke chunks zijn opgehaald, met welke score, op basis van welke embedding-versie) is elk incident een zoektocht in het donker. Bouw deze zichtbaarheid vanaf dag één in, niet pas nadat er iets misgegaan is — achteraf reconstrueren lukt zelden.
+
+### Het koppelpunt met andere bouwstenen en guardrails
+
+Dynamic Context staat niet op zichzelf. De bouwsteen levert input aan andere bouwstenen en raakt vier guardrails direct:
+
+- [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie) — de prompt is context-gevoelig; zonder goede context levert de beste prompt onbetrouwbare antwoorden
+- [Knowledge](/framework/knowledge) (BB_02: de onderliggende kennisbronnen en hun kwaliteit) — Dynamic Context kan niet beter zijn dan wat Knowledge aanlevert
+- [Evaluation Loop](/framework/evaluation-loop) (BB_06: meten, analyseren, verbeteren, opnieuw meten) — meet antwoord-kwaliteit, context-relevantie en actualiteit
+- **Privacy**-guardrail (GR_03: databescherming als fundament) — persoonsgegevens, AVG, data-herkomst
+- **Robustness**-guardrail (GR_02: betrouwbaarheid onder alle omstandigheden) — context rot en verouderde kennisbanken als stille faalmodi
+- **Transparency**-guardrail (GR_05: helder hoe AI werkt, wat het doet en waarom) — document-herkomst en betrouwbaarheidsscore bij elk antwoord
+- **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is) — eigenaar per document, en een audit-spoor van elke bevraging
+
+Aan één knop draaien zonder de andere te controleren is zelden productief. Dynamic Context werkt alleen als systeem, niet als losse techniek.
+
+</BBDisclosure>

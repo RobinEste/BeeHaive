@@ -40,9 +40,10 @@ export const bbGuardrailLinks: Record<string, GuardrailLink[]> = {
     link('GR_07', 'Rollen, verantwoordelijkheden en escalatiepaden worden in de blueprint vastgelegd.'),
   ],
   'dynamic-context': [
-    link('GR_03', 'Context bevat vaak gevoelige data — privacy-by-design is essentieel.'),
-    link('GR_02', 'Verouderde of onjuiste context leidt tot onbetrouwbare output.'),
-    link('GR_04', 'Eenzijdige bronnen in je context kunnen bias versterken.'),
+    link('GR_03', 'PII in RAG lekt stilzwijgend: pre-indexering redactie, DP-RAG en data-lineage zijn privacy-architectuurvereisten, niet optionele filters.'),
+    link('GR_02', 'Context rot en stale context zijn stille faalmodi — alle frontier-modellen degraderen bij groeiende context, en verouderde kennisbanken geven geen error maar een plausibel fout antwoord.'),
+    link('GR_05', 'Document-provenance, embedding-timestamp en confidence-fallback in de retrieval-laag zijn voorwaarden voor betekenisvolle bronverwijzingen bij AI-antwoorden.'),
+    link('GR_07', 'Elk bron-document heeft een `owner` voor recertificatie bij staleness; retrieval-audit trails maken incident-analyse mogelijk en tonen AVG-doelbinding aan.'),
   ],
   'prompt-design': [
     link('GR_05', 'Een prompt bepaalt wat het model doet en hoe. In productie moet die instructie navolgbaar en uitlegbaar zijn, zodat gebruikers de output kunnen interpreteren.'),

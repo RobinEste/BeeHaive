@@ -42,3 +42,13 @@ Data lineage is hierin cruciaal. Een rapport dat zegt "de organisatie scoort laa
 ## In de praktijk
 
 Begin met bronverwijzingen bij elke AI-output. Dat alleen al is een enorme stap vooruit ten opzichte van de meeste AI-implementaties. Bouw van daaruit verder naar volledige traceerbaarheid als je systeem complexer wordt.
+
+## Koppeling met Dynamic Context
+
+Transparantie op antwoord-niveau begint bij traceerbaarheid in de retrieval-laag. Drie minimale velden per antwoord vanuit [BB_03 Dynamic Context](/framework/dynamic-context):
+
+- **Document-provenance** — welke bronnen zijn opgehaald, met welke retrieval-score?
+- **Embedding-timestamp** — wanneer is de vector aangemaakt? Verouderde embeddings zijn zo opspoorbaar, ook als het document intussen is ge-updatet.
+- **Confidence-fallback** — bij retrieval-score < 0.55 geeft het systeem een eerlijk "geen betrouwbaar antwoord gevonden" terug in plaats van te gokken.
+
+Zonder deze drie velden is elke "bronverwijzing onder het antwoord" een cosmetische laag. De technische traceerbaarheid zit in de Dynamic Context-infrastructuur, niet in de UI.

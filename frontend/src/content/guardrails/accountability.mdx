@@ -44,3 +44,10 @@ Het wijzigingslogboek klinkt als bureaucratie, maar het is je beste vriend als e
 ## In de praktijk
 
 Begin met één simpel overzicht: wie is eigenaar van welk onderdeel van het AI-systeem? Product, data, model, security, privacy. Als dat overzicht niet bestaat, weet niemand waar de verantwoordelijkheid ligt — en dat is precies waar dingen fout gaan.
+
+## Koppeling met Dynamic Context
+
+In [BB_03 Dynamic Context](/framework/dynamic-context) wordt accountability concreet in twee eisen:
+
+- **Document-eigenaarschap op bron-niveau.** Elk bron-document in de knowledge base draagt een `owner`-veld. Wanneer staleness-drempels worden overschreden, gaat de notificatie naar die eigenaar — niet naar een generieke queue. Zonder per-document ownership blijft recertificatie liggen en degradeert het corpus stil.
+- **Retrieval-audit trails.** Voor elke query: welke chunks zijn opgehaald, op basis van welke embedding-versie, wanneer, met welke score? Zonder dit logboek is incident-analyse ("waarom gaf het systeem dít antwoord?") giswerk, en is AVG-doelbinding niet aantoonbaar.
