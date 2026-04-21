@@ -1,7 +1,7 @@
 # Architecture Decision Records — Index
 
 > **Versie:** 1.0
-> **Laatst bijgewerkt:** 2026-03-09
+> **Laatst bijgewerkt:** 2026-04-21
 
 Dit is de centrale index van alle Architecture Decision Records (ADRs). Elke entry beschrijft een architectuurbeslissing: welk probleem er was, welke opties zijn overwogen, en waarom voor deze oplossing is gekozen.
 
@@ -22,14 +22,15 @@ Dit is de centrale index van alle Architecture Decision Records (ADRs). Elke ent
 | ADR-2026-003 | Externe LLM API's in plaats van lokaal LLM | geaccepteerd | 2026-03-09 |
 | ADR-2026-004 | BBDisclosure als herbruikbaar content-patroon voor BB detail-pagina's | geaccepteerd | 2026-04-15 |
 | ADR-2026-005 | MDX-import per pagina boven globale mdxComponents-config voor BB-content | geaccepteerd | 2026-04-15 |
+| ADR-2026-006 | Single-source terminologie als typed TS-module, geen CMS | geaccepteerd | 2026-04-21 |
 
 ## Statistieken
 
 | Status | Aantal |
 |--------|--------|
-| geaccepteerd | 4 |
+| geaccepteerd | 5 |
 | voorgesteld | 0 |
 | ter bespreking | 0 |
 | deels vervangen | 1 |
 | ingetrokken | 0 |
-| **Totaal** | **5** |
+| **Totaal** | **6** |
