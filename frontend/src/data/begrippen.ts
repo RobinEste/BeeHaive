@@ -215,7 +215,7 @@ export const BEGRIPPEN: Term[] = [
     slug: 'graphrag',
     naam: 'GraphRAG',
     uitleg:
-      'Variant van RAG waarbij de kennisbank niet uit losse documenten bestaat maar uit een kennisgraaf: entiteiten als knooppunten, relaties als verbindingen. Geschikt voor vragen die meerdere stappen vereisen ("welke klanten werken samen met welke leveranciers?"), maar verhoogt wel de kans op privacy-lekkage van gestructureerde relatie-informatie.',
+      'Variant van RAG waarbij de kennisbank niet uit losse documenten bestaat maar uit een kennisnetwerk: entiteiten (klanten, leveranciers, projecten) als knooppunten, relaties tussen die entiteiten als verbindingen. Geschikt voor vragen die meerdere stappen vereisen ("welke klanten werken samen met welke leveranciers?"), maar verhoogt wel de kans op privacy-lekkage van gestructureerde relatie-informatie.',
     categorie: 'retrieval',
     zieOok: ['rag', 'pii'],
   },
