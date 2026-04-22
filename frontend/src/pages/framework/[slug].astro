@@ -12,6 +12,7 @@ import BBResearch from '../../components/bb-detail/BBResearch.astro';
 import BBTools from '../../components/bb-detail/BBTools.astro';
 import BBTableOfContents from '../../components/bb-detail/BBTableOfContents.astro';
 import BBNavigation from '../../components/bb-detail/BBNavigation.astro';
+import GlossaryTooltip from '../../components/bb-detail/GlossaryTooltip.astro';
 import { bbGuardrailLinks } from '../../lib/bb-guardrail-links';
 import { BB_SECTIONS } from '../../lib/bb-sections';
 import { bbAccentMap } from '../../lib/bb-accents';
@@ -100,6 +101,7 @@ const accent = bbAccentMap[block.id] || 'var(--teal)';
     currentId={block.id}
   />
   </div>
+  <GlossaryTooltip />
 </BaseLayout>
 
 <style>

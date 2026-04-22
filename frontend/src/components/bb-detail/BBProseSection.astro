@@ -105,4 +105,17 @@ const { eyebrow, title, sectionId } = Astro.props;
     color: var(--accent, var(--teal-light));
     font-style: italic;
   }
+
+  .prose :global(a) {
+    color: var(--accent, var(--teal-light));
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent, var(--teal-light)) 40%, transparent);
+    text-underline-offset: 0.2em;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  .prose :global(a:hover) {
+    color: var(--accent, var(--teal));
+    text-decoration-color: currentColor;
+  }
 </style>

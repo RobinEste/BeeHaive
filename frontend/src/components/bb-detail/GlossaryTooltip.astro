@@ -1,0 +1,188 @@
+---
+import { BEGRIPPEN } from '../../data/begrippen';
+
+const termMap: Record<string, { naam: string; engels?: string; uitleg: string }> = {};
+for (const term of BEGRIPPEN) {
+  termMap[term.slug] = { naam: term.naam, engels: term.engels, uitleg: term.uitleg };
+}
+---
+
+<div id="glossary-tooltip" role="tooltip" aria-hidden="true">
+  <div class="tooltip-head">
+    <span class="tooltip-naam"></span>
+    <span class="tooltip-engels"></span>
+  </div>
+  <p class="tooltip-uitleg"></p>
+  <span class="tooltip-hint">Klik voor volledig begrip →</span>
+</div>
+
+<script is:inline define:vars={{ termMap }}>
+  const tooltip = document.getElementById('glossary-tooltip');
+  if (tooltip) {
+    const naamEl = tooltip.querySelector('.tooltip-naam');
+    const engelsEl = tooltip.querySelector('.tooltip-engels');
+    const uitlegEl = tooltip.querySelector('.tooltip-uitleg');
+
+    let hideTimer;
+    const PADDING = 12;
+
+    const show = (anchor) => {
+      const href = anchor.getAttribute('href') || '';
+      const match = href.match(/\/begrippen#(.+)$/);
+      if (!match) return;
+      const term = termMap[match[1]];
+      if (!term) return;
+
+      naamEl.textContent = term.naam;
+      engelsEl.textContent = term.engels ? `· ${term.engels}` : '';
+      uitlegEl.textContent = term.uitleg;
+
+      tooltip.setAttribute('aria-hidden', 'false');
+      tooltip.classList.add('visible');
+
+      const rect = anchor.getBoundingClientRect();
+      tooltip.style.visibility = 'hidden';
+      tooltip.style.opacity = '0';
+      tooltip.classList.add('visible');
+      const tipRect = tooltip.getBoundingClientRect();
+      tooltip.style.visibility = '';
+      tooltip.style.opacity = '';
+
+      let top = rect.bottom + 8;
+      let left = rect.left + rect.width / 2 - tipRect.width / 2;
+
+      const maxLeft = document.documentElement.clientWidth - tipRect.width - PADDING;
+      const minLeft = PADDING;
+      left = Math.max(minLeft, Math.min(left, maxLeft));
+
+      if (rect.bottom + tipRect.height + 8 > window.innerHeight && rect.top > tipRect.height + 8) {
+        top = rect.top - tipRect.height - 8;
+      }
+
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+    };
+
+    const hide = () => {
+      tooltip.classList.remove('visible');
+      tooltip.setAttribute('aria-hidden', 'true');
+    };
+
+    const scheduleHide = () => {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(hide, 120);
+    };
+
+    const cancelHide = () => clearTimeout(hideTimer);
+
+    document.addEventListener('pointerover', (event) => {
+      const anchor = event.target.closest('a[href*="/begrippen#"]');
+      if (!anchor) return;
+      cancelHide();
+      show(anchor);
+    });
+
+    document.addEventListener('pointerout', (event) => {
+      const anchor = event.target.closest('a[href*="/begrippen#"]');
+      if (!anchor) return;
+      scheduleHide();
+    });
+
+    document.addEventListener('focusin', (event) => {
+      const anchor = event.target.closest('a[href*="/begrippen#"]');
+      if (!anchor) return;
+      cancelHide();
+      show(anchor);
+    });
+
+    document.addEventListener('focusout', (event) => {
+      const anchor = event.target.closest('a[href*="/begrippen#"]');
+      if (!anchor) return;
+      scheduleHide();
+    });
+
+    tooltip.addEventListener('pointerenter', cancelHide);
+    tooltip.addEventListener('pointerleave', scheduleHide);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') hide();
+    });
+  }
+</script>
+
+<style>
+  #glossary-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    max-width: 360px;
+    padding: 0.9rem 1rem 0.75rem;
+    background: var(--bg-elevated, #111);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 8px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-dim);
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+  }
+
+  #glossary-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .tooltip-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tooltip-naam {
+    font-weight: 600;
+    color: var(--accent, var(--teal-light));
+    font-size: 0.95rem;
+  }
+
+  .tooltip-engels {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .tooltip-engels:empty {
+    display: none;
+  }
+
+  .tooltip-uitleg {
+    margin: 0 0 0.55rem;
+    color: var(--text-dim);
+  }
+
+  .tooltip-hint {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    #glossary-tooltip {
+      max-width: calc(100vw - 24px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #glossary-tooltip {
+      transition: opacity 0.01s;
+      transform: none;
+    }
+  }
+</style>

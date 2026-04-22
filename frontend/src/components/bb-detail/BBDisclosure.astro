@@ -136,6 +136,19 @@ const detailsId = id || slugify(title);
     margin-bottom: 0;
   }
 
+  .disclosure-content :global(a) {
+    color: var(--accent, var(--teal-light));
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent, var(--teal-light)) 40%, transparent);
+    text-underline-offset: 0.2em;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  .disclosure-content :global(a:hover) {
+    color: var(--accent, var(--teal));
+    text-decoration-color: currentColor;
+  }
+
   @keyframes disclosureFadeIn {
     from {
       opacity: 0;
