@@ -4,7 +4,15 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl
 
-SourceType = Literal["paper", "regulation", "guideline", "best_practice"]
+SourceType = Literal[
+    "paper",
+    "regulation",
+    "guideline",
+    "best_practice",
+    "essay",
+    "news",
+    "report",
+]
 PIIType = Literal["email", "phone"]
 FetchStatus = Literal["ok", "failed", "fallback", "requires_pdf_processing"]
 EntityType = Literal["BuildingBlock", "Guardrail", "Topic", "Author"]

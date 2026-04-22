@@ -92,6 +92,6 @@ def test_fetch_source_html_types(monkeypatch):
     """Non-paper types should route through HTML fetching."""
     mock_result = MagicMock()
     monkeypatch.setattr("app.ingestion.fetcher.fetch_html", lambda url: mock_result)
-    for source_type in ["regulation", "guideline", "best_practice"]:
+    for source_type in ["regulation", "guideline", "best_practice", "essay", "news", "report"]:
         result = fetch_source("https://example.com/page", source_type)
         assert result is mock_result

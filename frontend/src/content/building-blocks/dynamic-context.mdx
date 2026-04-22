@@ -118,7 +118,7 @@ Dit raakt direct aan de **Robustness**-guardrail (GR_02: betrouwbaarheid onder a
 
 <BBDisclosure title="Retrieval-architecturen — van simpele RAG naar context engines">
 
-[RAG](/begrippen#rag) is in 2025–2026 geëvolueerd van een vaste ophaal-pijplijn naar een intelligente context-engine. De naïeve versie — *splits documenten in blokjes, maak er [vector-representaties](/begrippen#embedding) van en haal de top-K meest gelijkende op bij elke vraag* — haalt in productie niet het kwaliteitsniveau dat zakelijke toepassingen vragen.
+[RAG](/begrippen#rag) is in 2025–2026 geëvolueerd van een vaste ophaal-pijplijn naar een intelligente context-engine. De naïeve versie — *splits documenten in blokjes, maak er [vector-representaties](/begrippen#embedding) van en haal de [top-K](/begrippen#top-k) meest gelijkende op bij elke vraag* — haalt in productie niet het kwaliteitsniveau dat zakelijke toepassingen vragen.
 
 ### Chunking is de meest onderschatte kwaliteitsvariabele
 
@@ -135,7 +135,7 @@ Richtlijnen per documenttype:
 
 Kwaliteitstest: pak 50 willekeurige chunks en lees ze los van hun document. Als meer dan 1 op 5 in isolatie betekenisloos is (*"de vennootschap groeide 3% het vorige kwartaal"* — welke vennootschap?), zijn je chunks te klein of ontbreekt er overlap.
 
-### Contextual Retrieval — 67% minder fouten
+### [Contextual Retrieval](/begrippen#contextual-retrieval) — 67% minder fouten
 
 Anthropic publiceerde in 2024 *Contextual Retrieval*, een methode die het chunk-probleem oplost door per stukje een korte contextuele annotatie (50–100 tokens, ongeveer 40–75 woorden) te genereren vóór indexering. Die annotatie plakt het document, de periode en het onderwerp aan de chunk — zodat *"de vennootschap groeide 3%"* in de index staat als *"ACME Corp — Q2 2023 — jaarverslag: de vennootschap groeide 3%"*.
 
@@ -143,14 +143,14 @@ Anthropic publiceerde in 2024 *Contextual Retrieval*, een methode die het chunk-
 |--------|---------------------------|
 | Basis vector-search | baseline |
 | + contextuele annotaties per chunk | −35% |
-| + BM25 (keyword-match) er bovenop ([hybride zoeken](/begrippen#hybrid-search)) | −49% |
+| + [BM25](/begrippen#bm25) (keyword-match) er bovenop ([hybride zoeken](/begrippen#hybrid-search)) | −49% |
 | + [reranker](/begrippen#reranker) | −67% |
 
-Kosten via prompt caching (resultaten van eerdere modelcalls hergebruiken): ongeveer €1,02 per miljoen document-tokens aan eenmalige voorbewerking. Economisch haalbaar op bedrijfsschaal. De cijfers komen uit Anthropic's onderzoek op peer-reviewed datasets in 2024; het effect is sindsdien in meerdere onafhankelijke tests gerepliceerd.
+Kosten via [prompt caching](/begrippen#prompt-caching): ongeveer €1,02 per miljoen document-tokens aan eenmalige voorbewerking. Economisch haalbaar op bedrijfsschaal. De cijfers komen uit Anthropic's onderzoek op peer-reviewed datasets in 2024; het effect is sindsdien in meerdere onafhankelijke tests gerepliceerd.
 
 ### Hybride retrieval is de standaard
 
-Pure vector-search (zoeken op semantische gelijkenis) verdunt exacte matches. Als een medewerker zoekt naar *"foutcode TS-999"* of *"AVG Artikel 17"*, wil je dat de exacte term hard meetelt — niet dat je een semantisch-vergelijkbaar document krijgt over foutcodes in het algemeen. BM25 (een klassiek keyword-matching-algoritme) vindt die exacte matches wel. [Hybride zoeken](/begrippen#hybrid-search) combineert beide: typisch 75% semantisch + 25% keyword, met een [reranker](/begrippen#reranker) over de top-10 resultaten die vraag en document sámen leest om fijnere relevantie te bepalen.
+Pure vector-search (zoeken op semantische gelijkenis) verdunt exacte matches. Als een medewerker zoekt naar *"foutcode TS-999"* of *"AVG Artikel 17"*, wil je dat de exacte term hard meetelt — niet dat je een semantisch-vergelijkbaar document krijgt over foutcodes in het algemeen. [BM25](/begrippen#bm25) vindt die exacte matches wel. [Hybride zoeken](/begrippen#hybrid-search) combineert beide: typisch 75% semantisch + 25% keyword, met een [reranker](/begrippen#reranker) over de [top-K](/begrippen#top-k) resultaten die vraag en document sámen leest om fijnere relevantie te bepalen.
 
 ### Eén regel is absoluut
 
@@ -160,9 +160,9 @@ Pure vector-search (zoeken op semantische gelijkenis) verdunt exacte matches. Al
 
 Voor kennisbanken onder de 200.000 tokens (ongeveer 500 pagina's): zet het geheel in de prompt en laat de model-aanbieder het cachen. Geen RAG nodig, minder fouten, sneller antwoord.
 
-Voor complexe meervoudige relaties ("welke klanten werken samen met welke leveranciers in welke projecten?"): [GraphRAG](/begrippen#graphrag) — RAG met een kennisgraaf als tussenlaag — kan toegevoegde waarde hebben (zie ook [Knowledge](/framework/knowledge), BB_02: de onderliggende kennisbronnen en hun kwaliteit). Maar let op: grafenstructuur verhoogt het [PII](/begrippen#pii)-lekrisico, zie de Privacy-sectie verderop.
+Voor complexe meervoudige relaties ("welke klanten werken samen met welke leveranciers in welke projecten?"): [GraphRAG](/begrippen#graphrag) — RAG met een kennisgraaf als tussenlaag — kan toegevoegde waarde hebben. Maar let op: grafenstructuur verhoogt het [PII](/begrippen#pii)-lekrisico, zie de Privacy-sectie verderop.
 
-Voor classificatie- en routeringstaken met 5–20 categorieën (*"welk team moet deze vraag oppakken?"*): semantische routering via RAG — aangeduid als het REIC-patroon, gepubliceerd door Amazon op EMNLP 2025 — presteert beter dan een fijn-afgestemd classificatiemodel, en past zich aan nieuwe categorieën aan zonder opnieuw te trainen.
+Voor classificatie- en routeringstaken met 5–20 categorieën (*"welk team moet deze vraag oppakken?"*): semantische routering via RAG — aangeduid als het REIC-patroon, gepubliceerd door Amazon op EMNLP 2025 — presteert beter dan een *fijn-afgestemd classificatiemodel* (een bestaand model dat nabij-getraind is op jouw specifieke categorieën), en past zich aan nieuwe categorieën aan zonder opnieuw te trainen.
 
 </BBDisclosure>
 
@@ -212,7 +212,7 @@ Actualiteit meten lukt alleen als elk document drie velden draagt: wanneer voor 
 
 Dit raakt direct aan twee andere onderdelen van het framework:
 
-- [Evaluation Loop](/framework/evaluation-loop) (BB_06: meten, analyseren, verbeteren en opnieuw meten) — dezelfde cyclus, toegepast op context-kwaliteit.
+- [Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren en opnieuw meten) — dezelfde cyclus, toegepast op context-kwaliteit.
 - **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is — en hoe daarop wordt toegezien). Zonder een aanwijsbare eigenaar per document blijft hercertificering liggen, en degradeert de kennisbank in stilte.
 
 </BBDisclosure>
@@ -310,8 +310,9 @@ De lastigste faalmodi van Dynamic Context zijn **stille**: plausibele maar verke
 Dynamic Context staat niet op zichzelf. De bouwsteen levert input aan andere bouwstenen en raakt vier guardrails direct:
 
 - [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie) — de prompt is context-gevoelig; zonder goede context levert de beste prompt onbetrouwbare antwoorden
-- [Knowledge](/framework/knowledge) (BB_02: de onderliggende kennisbronnen en hun kwaliteit) — Dynamic Context kan niet beter zijn dan wat Knowledge aanlevert
-- [Evaluation Loop](/framework/evaluation-loop) (BB_06: meten, analyseren, verbeteren, opnieuw meten) — meet antwoord-kwaliteit, context-relevantie en actualiteit
+- [Knowledge](/framework/knowledge) (BB_01: de menselijke competentielaag) — Dynamic Context kan niet beter zijn dan de kwaliteitscriteria die mensen hebben geëxternaliseerd; zonder Knowledge weet niemand wat een goed contextueel antwoord is
+- [Client Blueprint](/framework/client-blueprint) (BB_02: probleem-framing en ontwerpkeuzes) — wat moet het model weten om de bedoelde taak op te lossen
+- [Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren, opnieuw meten) — meet antwoord-kwaliteit, context-relevantie en actualiteit
 - **Privacy**-guardrail (GR_03: databescherming als fundament) — persoonsgegevens, AVG, data-herkomst
 - **Robustness**-guardrail (GR_02: betrouwbaarheid onder alle omstandigheden) — context rot en verouderde kennisbanken als stille faalmodi
 - **Transparency**-guardrail (GR_05: helder hoe AI werkt, wat het doet en waarom) — document-herkomst en betrouwbaarheidsscore bij elk antwoord

@@ -92,6 +92,33 @@ export const BEGRIPPEN: Term[] = [
     categorie: 'ai-basis',
     zieOok: ['context-rot', 'stale-context'],
   },
+  {
+    slug: 'jagged-frontier',
+    naam: 'Jagged frontier',
+    engels: 'Jagged frontier',
+    uitleg:
+      'De onvoorspelbare, taakafhankelijke grens tussen wat AI goed kan en waar het subtiel faalt. Onderzoek van Dell’Acqua et al. (Harvard/BCG, 2023) liet zien dat consultants buiten die grens 19 procentpunten minder nauwkeurig werden als ze AI gebruikten. Je leert de frontier niet uit handleiding of training — alleen door uitgebreide praktijkervaring met reflectie op wat werkte en wat niet.',
+    categorie: 'ai-basis',
+    zieOok: ['hallucinatie', 'operating-agreement'],
+  },
+  {
+    slug: 'operating-agreement',
+    naam: 'Operating agreement',
+    engels: 'Operating agreement',
+    uitleg:
+      'Een schriftelijke afspraak per AI-ondersteund proces waarin staat wie welk besluit neemt, waar human-in-the-loop zit, welke escalatietriggers gelden en hoe "klaar" eruit ziet. Door Chris Lema gepositioneerd als de overgang van ad-hoc AI-gebruik naar volwassen samenwerking: "This is what separates people who use AI from people who work with AI." Het is het concrete instrument waarmee expertise wordt geëxternaliseerd zodat een AI-systeem ermee kan werken.',
+    categorie: 'ai-basis',
+    zieOok: ['jagged-frontier', 'fobo'],
+  },
+  {
+    slug: 'fobo',
+    naam: 'FOBO',
+    engels: 'Fear of Becoming Obsolete',
+    uitleg:
+      'De angst van medewerkers dat AI hen overbodig maakt — en de stille drijfveer achter AI-vermijding. Fortune/WalkMe (2026, n=3.750) mat dat ~80% van kenniswerkers AI-tools actief vermijdt of omzeilt, niet omdat de technologie niet werkt, maar uit FOBO. De vertrouwenskloof tussen leidinggevenden en medewerkers over AI is vaak 50+ punten. Technische training zonder FOBO-adressering lost hier niets op.',
+    categorie: 'ai-basis',
+    zieOok: ['operating-agreement'],
+  },
 
   // ─── Retrieval & kennis ────────────────────────────────────────────
   {
@@ -143,6 +170,39 @@ export const BEGRIPPEN: Term[] = [
       'Variant van RAG waarbij de kennisbank niet uit losse documenten bestaat maar uit een kennisgraaf: entiteiten als knooppunten, relaties als verbindingen. Geschikt voor vragen die meerdere stappen vereisen ("welke klanten werken samen met welke leveranciers?"), maar verhoogt wel de kans op privacy-lekkage van gestructureerde relatie-informatie.',
     categorie: 'retrieval',
     zieOok: ['rag', 'pii'],
+  },
+  {
+    slug: 'top-k',
+    naam: 'Top-K',
+    uitleg:
+      'De K meest gelijkende documenten of fragmenten die een zoeksysteem teruggeeft bij een vraag — typisch K=5, 10 of 20. Lage K geeft minder ruis maar riskeert relevante context missen; hoge K geeft meer dekking maar vraagt vaak een reranker achteraf om de werkelijke toppers bovenaan te zetten.',
+    categorie: 'retrieval',
+    zieOok: ['rag', 'reranker'],
+  },
+  {
+    slug: 'bm25',
+    naam: 'BM25',
+    engels: 'Best Matching 25',
+    uitleg:
+      'Klassiek keyword-matching-algoritme dat documenten scoort op hoe vaak zoektermen erin voorkomen, gewogen naar hoe zeldzaam die termen zijn. Onmisbaar naast semantisch zoeken: voor precieze productcodes, artikelnummers of wetsartikelen mist een puur semantische zoektocht de exacte match te vaak. BM25 vult dat gat.',
+    categorie: 'retrieval',
+    zieOok: ['hybrid-search', 'rag'],
+  },
+  {
+    slug: 'contextual-retrieval',
+    naam: 'Contextual Retrieval',
+    uitleg:
+      'Anthropic-methode (2024) die elk chunk voor indexering voorziet van een korte contextuele annotatie (50–100 tokens) — document-titel, periode, onderwerp. Daardoor blijft een chunk als "de vennootschap groeide 3%" ook los van zijn document vindbaar als het hoort bij ACME Corp Q2 2023. Reduceert retrieval-fouten met 35% solo, tot 67% in combinatie met BM25 en reranker.',
+    categorie: 'retrieval',
+    zieOok: ['chunks', 'reranker', 'bm25'],
+  },
+  {
+    slug: 'prompt-caching',
+    naam: 'Prompt caching',
+    uitleg:
+      'Het hergebruiken van al-door-het-model-verwerkte tokens tussen aanroepen, zodat identieke instructies of vaste documenten niet telkens opnieuw betaald hoeven worden. Grote cost- en latency-winst bij gebruikspatronen waar dezelfde context herhaald aan het model wordt gegeven — typisch 80–90% goedkoper op het gecachete deel, mits dat deel lang genoeg is (bij Anthropic minimaal ~1.000 tokens).',
+    categorie: 'retrieval',
+    zieOok: ['context-window', 'token'],
   },
 
   // ─── Geheugen & koppeling ─────────────────────────────────────────
