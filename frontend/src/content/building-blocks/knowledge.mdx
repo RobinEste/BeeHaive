@@ -8,9 +8,9 @@ quote: "The most critical skill in today's AI-driven world isn't computational p
 quoteAuthor: "Cassie Kozyrkov"
 checklist:
   - "Kan elk teamlid uitleggen waarom het AI-systeem waarmee ze werken laag-, transparantie- of hoog-risico is onder de EU AI Act?"
-  - "Heeft elke rol een eigen, specifieke leeruitkomst — geen generieke 'AI-training voor iedereen'?"
+  - "Heeft elke rol een eigen, specifieke leeruitkomst, en geen generieke 'AI-training voor iedereen'?"
   - "Is voor elk AI-ondersteund proces een schriftelijk operating agreement vastgelegd: wie beslist, waar zit human-in-the-loop, wat is 'klaar'?"
-  - "Weten medewerkers de jagged frontier voor hun taken — waar AI betrouwbaar is, en waar menselijk oordeel nodig blijft?"
+  - "Weten medewerkers de jagged frontier voor hun taken: waar AI betrouwbaar is, en waar menselijk oordeel nodig blijft?"
   - "Is er beleid om kritieke vaardigheden bewust zónder AI te onderhouden, zodat expertise niet erodeert?"
   - "Worden nieuwe medewerkers blootgesteld aan taken zonder AI vóór ze AI-assistentie krijgen (expertise-opbouw-eerste)?"
   - "Is FOBO (Fear of Becoming Obsolete) als adoptiebarrière geïdentificeerd en geadresseerd vóór technische training?"
@@ -19,20 +19,20 @@ checklist:
   - "Is domein- en procesexpertise geëxternaliseerd als kwaliteitscriteria die een AI-systeem kan gebruiken?"
 quickStart:
   - |
-    Begin bij wat je afwijst:
+    Strategisch: beslis waar AI-output een besluit raakt.
+    Alleen op die plekken liggen de kwaliteitscriteria die je expliciet moet externaliseren. Zonder deze keuze blijft alles beneden (operating agreements, training, tooling) vaag, en is investeren in Knowledge verspilling.
+  - |
+    Tactisch: schrijf per AI-ondersteund proces het operating agreement op.
+    Wie beslist, waar zit human-in-the-loop, wat zijn de escalatiecriteria, wat is de kwaliteitsnorm. Expliciet, schriftelijk, per rol. Dit scheidt mensen die AI gebruiken van mensen die mét AI werken.
+  - |
+    Operationeel: begin bij wat je afwijst.
     Verzamel twee weken lang AI-output die niet goed genoeg is en schrijf bij elk stuk op waarom. De clusters die ontstaan zijn je kwaliteitscriteria. Zonder deze externalisatie heeft geen enkele feedback loop iets om tegen te evalueren.
-  - |
-    Schrijf het operating agreement op:
-    Voor elk AI-ondersteund proces: wie beslist, wat zijn de human-in-the-loop punten, wat zijn de escalatietriggers, wat is de kwaliteitsnorm. Expliciet, schriftelijk, per rol. Dit scheidt mensen die AI gebruiken van mensen die mét AI werken.
-  - |
-    Organiseer hands-on op eigen casussen:
-    Niet prompts typen leren, maar de frontier verkennen. Laat medewerkers AI loslaten op taken waar zij de expert zijn — want alleen zij herkennen waar het model subtiel faalt. Zonder die ervaring is compliance-training abstract theater.
 auditExample:
   title: "AI-Readiness Audit"
   description: "Via gestructureerde interviews met medewerkers op alle niveaus brengen we in kaart hoe het staat met AI-kennis, -ervaring en -attitude. We meten niet alleen technische skills, maar ook het vermogen om AI-output kritisch te beoordelen, de mate waarin operating agreements bestaan, de aanwezigheid van FOBO-signalen, en de kloof tussen individuele tool-vaardigheid en institutionele AI-volwassenheid."
 evidence:
   - "Competentiematrix met rol-specifieke AI-leeruitkomsten (niet één generieke training voor iedereen)"
-  - "Schriftelijke operating agreements per AI-ondersteund proces — decision authority, human-in-the-loop, escalatiecriteria, kwaliteitsnorm"
+  - "Schriftelijke operating agreements per AI-ondersteund proces: beslisbevoegdheid, human-in-the-loop moment, escalatiecriteria, kwaliteitsnorm"
   - "Baseline-meting kritieke vaardigheden zónder AI, en een plan om die te onderhouden"
   - "FOBO-meting (vertrouwensgap tussen leidinggevenden en medewerkers) als aanvulling op standaard adoptie-KPI's"
   - "Register van frontier-kennis per domein: welke taken AI-sterk, welke AI-zwak, wie bewaakt de grens"
@@ -46,11 +46,11 @@ Knowledge is het samenspel van ervaring, vaardigheden, inzichten en attitude waa
 
 Het vormt de centrale competentielaag in een AI-oplossing: technische kennis (modellen, tools, workflows), proces- en taakgerichte expertise, en domeinspecifiek begrip van context, regels en betekenis. Vanuit deze kennis wordt bepaald *hoe* informatie wordt geïnterpreteerd, *hoe* AI wordt toegepast, en *hoe* kwaliteit, veiligheid en relevantie worden geborgd.
 
-Knowledge en [Dynamic Context](/framework/dynamic-context) werken samen: Knowledge is wat mensen weten en kunnen beoordelen; Dynamic Context is wat het model op uitvoeringstijd krijgt. De ene zonder de andere is een duur risico — context zonder expertise levert plausibele fout; expertise zonder context levert correcte kennis die het systeem niet kan gebruiken.
+Knowledge en [Dynamic Context](/framework/dynamic-context) werken samen: Knowledge is wat mensen weten en kunnen beoordelen; Dynamic Context is wat het model op uitvoeringstijd krijgt. De ene zonder de andere is een duur risico: context zonder expertise levert een plausibel foute output; expertise zonder context levert correcte kennis die het systeem niet kan gebruiken.
 
 <BBDisclosure title="Van technische vaardigheid naar juridische verplichting">
 
-Tot 2024 was AI-geletterdheid vooral een HR-vinkje: *"heeft het team een ChatGPT-workshop gevolgd?"*. Sinds februari 2025 is dat veranderd. **EU AI Act Artikel 4** verplicht providers en deployers om te zorgen dat personeel dat met AI-systemen werkt *"een voldoende mate van AI-geletterdheid"* bezit — rekening houdend met hun technische kennis, ervaring, opleiding en de context waarin het systeem wordt gebruikt.
+Tot 2024 was AI-geletterdheid vooral een HR-vinkje: *"heeft het team een ChatGPT-workshop gevolgd?"*. Sinds februari 2025 is dat veranderd. **EU AI Act Artikel 4** verplicht providers en deployers om te zorgen dat personeel dat met AI-systemen werkt *"een voldoende mate van AI-geletterdheid"* bezit, rekening houdend met hun technische kennis, ervaring, opleiding en de context waarin het systeem wordt gebruikt.
 
 De verplichting is bewust contextueel geformuleerd. *"Passende AI-geletterdheid"* voor een engineer verschilt fundamenteel van die voor een juridisch medewerker of een productmanager. Het is geen certificaat dat je haalt, het is een competentie die je per rol aantoont.
 
@@ -72,7 +72,7 @@ OECD en de Europese Commissie definiëren AI-geletterdheid langs drie samenhange
 | Attitudes en waarden | Kritisch denken, ethische reflectie, verantwoord gebruik | Oordeelsvermogen |
 | Cross-domein integratie | AI-begrip verweven in werkprocessen | Institutionele toepassing |
 
-Organisaties die alleen de eerste dimensie aanbieden (*"we hebben training gegeven"*) voldoen niet aan de AI Act en bouwen geen duurzame competentie op. Meta-skills — de cognitieve en sociale capaciteiten om AI-output te sturen, interpreteren en ethisch te beoordelen — zijn volgens McKinsey.org in 2026 *"the real competitive advantage."*
+Organisaties die alleen de eerste dimensie aanbieden (*"we hebben training gegeven"*) voldoen niet aan de AI Act en bouwen geen duurzame competentie op. Meta-skills (de cognitieve en sociale capaciteiten om AI-output te sturen, interpreteren en ethisch te beoordelen) zijn volgens McKinsey.org in 2026 *"the real competitive advantage."*
 
 ### Werkende trainingsformaten
 
@@ -80,11 +80,11 @@ Generieke *"wat is AI?"*-workshops scoren hoog op aanwezigheid en laag op gedrag
 
 > *"Good training feels like engineering support. Bad training feels like someone reading a regulation at you."*
 
-Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is — en hoe daarop wordt toegezien). Zonder aantoonbare rol-specifieke geletterdheid blijft compliance een papieren exercitie.
+Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is en hoe daarop wordt toegezien). Zonder aantoonbare rol-specifieke geletterdheid blijft compliance een papieren exercitie.
 
 </BBDisclosure>
 
-<BBDisclosure title="Decision Intelligence — de wens-kant telt meer dan de genie-kant">
+<BBDisclosure title="Decision Intelligence: de wens-kant telt meer dan de genie-kant">
 
 Cassie Kozyrkov ([Decision Intelligence](/begrippen#decision-intelligence) Substack, februari 2026) stelt dat het knelpunt in het AI-tijdperk verschuift van technische uitvoering naar menselijk oordeelsvermogen. Haar kernobservatie:
 
@@ -96,8 +96,8 @@ Hetzelfde mechanisme dat goede beslissingen versnelt, versterkt slechte. Een AI 
 
 Kozyrkov onderscheidt twee niveaus:
 
-- **Genie-kant** — alles wat te maken heeft met de *uitvoering*: tool-vaardigheid, [prompt](/begrippen#prompt) engineering, model-keuze, tool-keuze. De AI doet het werk sneller en goedkoper.
-- **Wens-kant** — alles wat te maken heeft met de *formulering van het probleem*: welke beslissing ondersteun ik, voor wie, waarom, onder welke onzekerheid, met welke acceptabele fout?
+- **Genie-kant**: alles wat te maken heeft met de *uitvoering*: tool-vaardigheid, [prompt](/begrippen#prompt) engineering, model-keuze, tool-keuze. De AI doet het werk sneller en goedkoper.
+- **Wens-kant**: alles wat te maken heeft met de *formulering van het probleem*: welke beslissing ondersteun ik, voor wie, waarom, onder welke onzekerheid, met welke acceptabele fout?
 
 Naarmate AI de genie-kant overneemt, verschuift het knelpunt naar de wens-kant. Organisaties die alleen in de genie-kant investeren (tool-training, prompt engineering) missen het essentieelste niveau:
 
@@ -107,31 +107,31 @@ Naarmate AI de genie-kant overneemt, verschuift het knelpunt naar de wens-kant. 
 
 Kahneman en Klein (*American Psychologist*, 2009) legden vast wanneer professionele intuïtie betrouwbaar is. Twee voorwaarden moeten allebei gelden:
 
-1. **High-validity environment** — stabiele, objectief identificeerbare cues die voorspellend zijn voor uitkomsten
-2. **Adequate opportunity to learn** — voldoende oefening met snelle, consistente feedback
+1. **Omgeving met hoge voorspelkracht** (*high-validity environment*): stabiele, objectief identificeerbare signalen die voorspellend zijn voor uitkomsten.
+2. **Voldoende leerkans** (*adequate opportunity to learn*): oefening met snelle, consistente feedback.
 
-Hun scherpste observatie: *"Subjective experience is not a reliable indicator of judgment accuracy."* Je kunt je zeker voelen over een oordeel dat objectief vaak mis is — het gevoel van expertise is geen bewijs van expertise.
+Hun scherpste observatie: *"Subjective experience is not a reliable indicator of judgment accuracy."* Oftewel: het gevoel dat je een oordeel juist hebt, is geen betrouwbaar bewijs dat het ook klopt. Je kunt je zeker voelen over een oordeel dat objectief vaak mis is.
 
-Het AI-tijdperk bedreigt beide voorwaarden. AI verandert de geldigheidsomgeving (cues waaraan experts hun oordeel kalibreren verschuiven), en het breekt de feedbackloops (uitkomst wordt aan AI toegeschreven, niet aan de menselijke beslissing). Zonder expliciete tegenmaatregelen raken professionals hun ijkpunt kwijt — terwijl ze subjectief nog even zelfverzekerd blijven.
+Het AI-tijdperk bedreigt beide voorwaarden. AI verandert de geldigheidsomgeving (signalen waaraan experts hun oordeel kalibreren verschuiven), en het breekt de feedbackloops (de uitkomst wordt aan AI toegeschreven, niet aan de menselijke beslissing). Zonder expliciete tegenmaatregelen raken professionals hun ijkpunt kwijt, terwijl ze subjectief nog even zelfverzekerd blijven.
 
-### De taak voor BB_01
+### De concrete taak voor Knowledge
 
 Oordeelsvermogen is geen aangeboren talent maar een structurele capaciteit die je kunt opbouwen. Concreet:
 
 - **Definieer per AI-proces welke beslissing het systeem ondersteunt of neemt.** Niet *"we gebruiken AI voor customer support"*, maar *"AI classificeert de urgentie; mens bepaalt de oplossing."*
 - **Wijs per besluit een eigenaar aan.** AI-output zonder eigenaar is niemand's verantwoordelijkheid, en dus iedereen's excuus.
-- **Train actief het onderscheid** tussen taken waar intuïtie betrouwbaar is (high-validity, voldoende oefening) en taken waar AI-verificatie vereist is.
-- **Bouw meta-skills** — nieuwsgierigheid, adaptiviteit, verantwoordelijkheid, mens-gecentreerd denken — als expliciete leeruitkomst, niet als bijproduct.
+- **Train actief het onderscheid** tussen taken waar intuïtie betrouwbaar is (hoge voorspelkracht, voldoende oefening) en taken waar AI-verificatie vereist is.
+- **Bouw meta-skills**: nieuwsgierigheid, adaptiviteit, verantwoordelijkheid, mens-gecentreerd denken, als expliciete leeruitkomst, niet als bijproduct.
 
 Dit raakt aan de **Human Agency**-guardrail (GR_01: mensen behouden controle over AI-beslissingen). Controle veronderstelt oordeelsvermogen; zonder oordeelsvermogen is "menselijke controle" alleen een klikbare knop.
 
 </BBDisclosure>
 
-<BBDisclosure title="Operating agreements — expertise externaliseren in vier niveaus">
+<BBDisclosure title="Operating agreements: expertise externaliseren in vier niveaus">
 
 De vaakst gemiste stap in AI-adoptie: *de kwaliteitscriteria van experts blijven in hun hoofden zitten*. Zolang jij de beoordelingsfunctie bent, werkt dat. Maar een AI-systeem kan geen gedachten lezen. Het moet expliciet krijgen wat "goed" betekent.
 
-Chris Lema's **Four Levels of AI Work** biedt een progressiemodel dat de meeste organisaties nodig hebben — en waar de meeste nog op Level 1 blijven hangen:
+Chris Lema's **Four Levels of AI Work** biedt een progressiemodel dat de meeste organisaties nodig hebben, en waar de meeste nog op Level 1 blijven hangen:
 
 | Level | Van → Naar | Kern |
 |-------|-----------|------|
@@ -140,18 +140,18 @@ Chris Lema's **Four Levels of AI Work** biedt een progressiemodel dat de meeste 
 | 3 | Ad-hoc → Operating Agreements | Wie beslist wat, expliciete human-in-the-loop punten |
 | 4 | Interacties → Productiearchitecturen | Multi-[agent](/begrippen#agent), multi-model designs |
 
-### Level 2 — compounding assets
+### Level 2: compounding assets
 
 Een AI-sessie is alleen waardevol als ze iets nalaat dat de volgende sessie waardevoller maakt. Wat compoundert:
 
-- **Skills** — prompt-patronen, evaluatie-routines, workflow-templates die een individu of team beheerst
-- **Frameworks** — beslisbomen, rubrics, quality gates die expliciet zijn gemaakt
-- **Specifications** — geschreven beschrijvingen van *wat* goed werk is (niet alleen wat fout is)
-- **Memory** — institutioneel geheugen per klant, project, domein — niet in hoofden, maar in systemen (zie [Dynamic Context](/framework/dynamic-context#kennisgeheugen) voor de geheugenlagen)
+- **Skills**: prompt-patronen, evaluatie-routines, workflow-templates die een individu of team beheerst.
+- **Frameworks**: beslisbomen, rubrics, quality gates die expliciet zijn gemaakt.
+- **Specifications**: geschreven beschrijvingen van *wat* goed werk is (niet alleen wat fout is).
+- **Memory**: institutioneel geheugen per klant, project, domein; niet in hoofden, maar in systemen (zie [Dynamic Context](/framework/dynamic-context#kennisgeheugen) voor de geheugenlagen).
 
 De meeste AI-gebruikers produceren wegwerpoutput. Pogingen worden niet hergebruikt, prompts niet versioneerd, kritiekpatronen niet opgeschreven. Het resultaat: elke sessie is weer net zo duur als de vorige.
 
-### Level 3 — het [operating agreement](/begrippen#operating-agreement)
+### Level 3: het [operating agreement](/begrippen#operating-agreement)
 
 Dit is het instrument waarmee expertise daadwerkelijk wordt geëxternaliseerd. Lema's kernregel:
 
@@ -159,57 +159,57 @@ Dit is het instrument waarmee expertise daadwerkelijk wordt geëxternaliseerd. L
 
 Een operating agreement bevat minimaal:
 
-- **Decision authority** — welk besluit raakt dit proces, wie is eigenaar
-- **Human-in-the-loop pause points** — op welke momenten stopt het systeem voor menselijke check
-- **Visible reasoning** — welke stappen moet het systeem expliciteren zodat je ze kunt beoordelen
-- **Escalation triggers** — onder welke condities schakelt het systeem over naar een mens
-- **Quality standards** — hoe ziet "klaar" eruit, en hoe meet je het
+- **Beslisbevoegdheid**: welk besluit raakt dit proces, wie is eigenaar.
+- **Pauzemomenten voor menselijke check**: op welke momenten stopt het systeem voor review.
+- **Zichtbare redenering**: welke stappen moet het systeem expliciteren zodat je ze kunt beoordelen.
+- **Escalatie-criteria**: onder welke condities schakelt het systeem over naar een mens.
+- **Kwaliteitsnormen**: hoe ziet "klaar" eruit, en hoe meet je het.
 
 Niet impliciet. Niet in een vergadering besproken. Schriftelijk. Als je het niet kunt opschrijven, heb je het niet begrepen.
 
 ### Waarom dit werkt: externalisatie vervangt mindreading
 
-Jij weet wanneer een ontwerp klopt. Je herkent solide architectuur als je het ziet. Je voelt wanneer een tekst zijn doel mist. Maar je hebt het nooit hoeven opschrijven — want vóór AI was *jij* de beoordelingsfunctie.
+Jij weet wanneer een ontwerp klopt. Je herkent solide architectuur als je het ziet. Je voelt wanneer een tekst zijn doel mist. Maar je hebt het nooit hoeven opschrijven, want vóór AI was *jij* de beoordelingsfunctie.
 
-Nu moet het AI-systeem dat doen. En het kan je gedachten niet lezen. Een operating agreement is de structurele oplossing: het dwingt je om criteria expliciet te maken die tot dusver impliciet konden blijven. De rol van de expert verschuift van *degene die het werk doet* naar *degene die definieert wat goed werk is*. Dat is geen kleinere rol — het is een grotere.
+Nu moet het AI-systeem dat doen. En het kan je gedachten niet lezen. Een operating agreement is de structurele oplossing: het dwingt je om criteria expliciet te maken die tot dusver impliciet konden blijven. De rol van de expert verschuift van *degene die het werk doet* naar *degene die definieert wat goed werk is*. Dat is geen kleinere rol, maar een grotere.
 
-Begin bij wat je afwijst. Dat is het makkelijkste startpunt: verzamel AI-output die niet goed genoeg is en schrijf bij elk stuk op *waarom*. Na twee weken ontstaan clusters. De redenen waarom je werk afwijst beginnen patronen te vertonen — en die patronen zijn je kwaliteitscriteria. Pas daarna heeft je [Evaluation Loop](/framework/evaluation-loop) iets om tegen te evalueren.
+Begin bij wat je afwijst. Dat is het makkelijkste startpunt: verzamel AI-output die niet goed genoeg is en schrijf bij elk stuk op *waarom*. Na twee weken ontstaan clusters. De redenen waarom je werk afwijst beginnen patronen te vertonen, en die patronen zijn je kwaliteitscriteria. Pas daarna heeft je [Evaluation Loop](/framework/evaluation-loop) iets om tegen te evalueren.
 
 </BBDisclosure>
 
 <BBDisclosure title="De jagged frontier en de orchestrator-rol">
 
-Dell'Acqua et al. (Harvard/BCG, 2023) publiceerden het meest geciteerde veldexperiment over AI-augmentatie — en introduceerden meteen de term [jagged frontier](/begrippen#jagged-frontier) waarmee we sindsdien over mens-AI-grenzen praten. Pre-geregistreerd, n=758 BCG-consultants. De uitkomsten vormen inmiddels de empirische basis voor hoe we over mens-AI samenwerking denken.
+Dell'Acqua et al. (Harvard/BCG, 2023) publiceerden het meest geciteerde veldexperiment over AI-augmentatie, en introduceerden meteen de term [jagged frontier](/begrippen#jagged-frontier) waarmee we sindsdien over mens-AI-grenzen praten. Pre-geregistreerd, n=758 BCG-consultants. De uitkomsten vormen inmiddels de empirische basis voor hoe we over mens-AI samenwerking denken.
 
 ### Wat de data laten zien
 
 - **Binnen de frontier** (taken waar AI sterk is): +12,2% meer taken, +25,1% sneller, +40% hogere kwaliteitsscore
 - **Buiten de frontier** (taken waar AI subtiel faalt): AI-gebruikers **19 procentpunten minder nauwkeurig** dan de controlegroep
-- **Skill-nivellering**: de zwakste consultants verbeterden met +43% — maar alleen binnen de frontier
+- **Skill-nivellering**: de zwakste consultants verbeterden met +43%, maar alleen binnen de frontier.
 
 De kerninzicht in één zin, van Ethan Mollick:
 
 > *"On some tasks AI is immensely powerful, and on others it fails completely or subtly. And, unless you use AI a lot, you won't know which is which."*
 
-De frontier is jagged — onvoorspelbaar en taakafhankelijk. Je leert hem niet uit handleiding of cursus. Alleen door uitgebreide praktijkervaring, met bewuste reflectie op wat werkte en wat niet.
+De frontier is jagged: onvoorspelbaar en taakafhankelijk. Je leert hem niet uit handleiding of cursus. Alleen door uitgebreide praktijkervaring, met bewuste reflectie op wat werkte en wat niet.
 
 ### Twee werkende samenwerkingspatronen
 
-[Centaur en cyborg](/begrippen#centaur-cyborg) zijn de twee empirisch werkende patronen — elk sterk in een ander deel van de frontier.
+[Centaur en cyborg](/begrippen#centaur-cyborg) zijn de twee empirisch werkende patronen; elk sterk in een ander deel van de frontier.
 
-**Centaur-patroon** — duidelijke taakscheiding tussen mens en AI per taak. Sterk bij taken buiten de frontier omdat menselijke competentie actief blijft. Je weet precies welk deel jij deed en welk deel AI.
+**Centaur-patroon**: duidelijke taakscheiding tussen mens en AI per taak. Sterk bij taken buiten de frontier omdat menselijke competentie actief blijft. Je weet precies welk deel jij deed en welk deel AI.
 
-**Cyborg-patroon** — diepe integratie, continue heen-en-weer interactie, AI verweven in elke stap. Effectief voor taken volledig binnen de frontier, maar risico op grensblindheid: je merkt niet meer wanneer je op AI leunt voor iets dat AI niet aankan.
+**Cyborg-patroon**: diepe integratie, continue heen-en-weer interactie, AI verweven in elke stap. Effectief voor taken volledig binnen de frontier, maar risico op grensblindheid: je merkt niet meer wanneer je op AI leunt voor iets dat AI niet aankan.
 
-Beide patronen vereisen dat je de frontier kent. Anders voer je het verkeerde patroon uit op de verkeerde taak — en juist dan produceert AI zijn schadelijkste output: zelfverzekerd fout.
+Beide patronen vereisen dat je de frontier kent. Anders voer je het verkeerde patroon uit op de verkeerde taak, en juist dan produceert AI zijn schadelijkste output: zelfverzekerd fout.
 
-### Teams verslaan individuen — ook met AI
+### Teams verslaan individuen, ook met AI
 
 Dell'Acqua et al. herhaalden het experiment in 2025 bij P&G (n=776). Toen werd een nieuwe laag zichtbaar:
 
 - **Individu + AI ≈ team van twee zonder AI** (+0,37 SD kwaliteit, p &lt; 0,01)
 - **Team + AI** produceert **3× vaker** top-10% doorbraakoplossingen
-- AI balanceert disciplinaire eenzijdigheid — cross-functionelere oplossingen
+- AI balanceert disciplinaire eenzijdigheid en levert cross-functionelere oplossingen.
 
 > *"If you want to empower an individual to be as effective as a team, give them AI. But if you want to be in that top 10% of performers, a full human team plus AI seems like the recipe for success."*
 
@@ -236,48 +236,48 @@ Voor BB_01 betekent dit: rollen herontwerpen van uitvoerder naar orchestrator, a
 
 </BBDisclosure>
 
-<BBDisclosure title="De deskilling-paradox — wanneer erodeert AI expertise">
+<BBDisclosure title="De deskilling-paradox: wanneer erodeert AI expertise">
 
 Augustus 2025 publiceerde *The Lancet Gastroenterology & Hepatology* het eerste klinische bewijs van AI-geïnduceerde [deskilling](/begrippen#deskilling). Het onderzoek is compact, methodologisch scherp, en ongemakkelijk:
 
 - 19 ervaren endoscopisten (elk met meer dan 2.000 procedures op hun naam)
 - 4 Poolse klinieken
 - Adenoom-detectiepercentage **zónder AI**: vóór AI-blootstelling **28%**, na drie maanden AI-gebruik **22%**
-- Statistisch significante daling — in slechts drie maanden
+- Statistisch significante daling, in slechts drie maanden.
 
 > *"To our knowledge this is the first study to suggest a negative impact of regular AI use on healthcare professionals' ability to complete a patient-relevant task."*
 
 Drie maanden. Ervaren specialisten. Patiëntrelevante uitkomst. Dit is geen speculatief risico; het is een gemeten effect.
 
-Parallel vond Gerlich (2025, n=666, VK) in survey-studie een correlatie van **r = −0,68** tussen frequent AI-gebruik en kritische denkvaardigheden, en **r = +0,72** tussen AI-gebruik en cognitieve offloading. Methodologische voorbehouden (correlationeel, zelfrapportage) maken het indicatief, niet causaal — maar het patroon convergeert met de Lancet-bevinding.
+Parallel vond Gerlich (2025, n=666, VK) in survey-studie een correlatie van **r = −0,68** tussen frequent AI-gebruik en kritische denkvaardigheden, en **r = +0,72** tussen AI-gebruik en cognitieve offloading. Methodologische voorbehouden (correlationeel, zelfrapportage) maken het indicatief, niet causaal; het patroon convergeert echter met de Lancet-bevinding.
 
 ### Wanneer versterkt AI expertise, wanneer erodeert het
 
 Uit de convergentie van Lancet, Kahneman-Klein en Dell'Acqua valt een werkbaar onderscheid af te leiden.
 
 **AI versterkt expertise wanneer:**
-- De frontier bekend is — de professional weet welke taken AI aankan en welke niet
-- Human-in-the-loop bewust is ingebouwd — actieve supervisie, niet passief akkoord gaan
-- Expliciete oefening plaatsvindt zónder AI voor kritieke vaardigheden
-- Feedbackloops intact zijn — professionals zien wanneer hun oordeel afweek van de uitkomst
+- De frontier bekend is: de professional weet welke taken AI aankan en welke niet.
+- Human-in-the-loop bewust is ingebouwd: actieve supervisie, niet passief akkoord gaan.
+- Expliciete oefening plaatsvindt zónder AI voor kritieke vaardigheden.
+- Feedbackloops intact zijn: professionals zien wanneer hun oordeel afweek van de uitkomst.
 
 **AI erodeert expertise wanneer:**
-- Autonomie van AI zo hoog is dat mensen stoppen met nadenken (*"falling asleep at the wheel"*)
-- Feedback-signalen verdwijnen — uitkomst wordt aan AI toegeschreven, niet aan de menselijke beslissing
-- Skill-nivellering wordt verward met expertise-behoud — de zwakste krijgen +43%, maar de frontier-kennis van de sterksten verdampt
-- Cognitieve offloading sluipend optreedt zonder bewuste monitoring
+- Autonomie van AI zo hoog is dat mensen stoppen met nadenken (*"falling asleep at the wheel"*).
+- Feedback-signalen verdwijnen: de uitkomst wordt aan AI toegeschreven, niet aan de menselijke beslissing.
+- Skill-nivellering wordt verward met expertise-behoud: de zwakste krijgen +43%, maar de frontier-kennis van de sterksten verdampt.
+- Cognitieve offloading sluipend optreedt zonder bewuste monitoring.
 
-### De kernspanning die BB_01 moet adresseren
+### De kernspanning voor Knowledge
 
-AI verhoogt op korte termijn de gemiddelde prestatie. Zonder actief tegenbeleid erodeert het op de langere termijn de expertisebasis die nodig is voor taken buiten de frontier — én voor supervisie van de AI-systemen zelf.
+AI verhoogt op korte termijn de gemiddelde prestatie. Zonder actief tegenbeleid erodeert het op de langere termijn de expertisebasis die nodig is voor taken buiten de frontier, én voor supervisie van de AI-systemen zelf.
 
 Praktische maatregelen:
 
-- **Beleid voor actief competentieonderhoud zónder AI** — bewust taken oefenen waar AI ze zou kunnen overnemen, voor de vaardigheden die het meest kwetsbaar zijn voor erosie
-- **Identificeer per rol/domein welke vaardigheden kwetsbaar zijn** — niet alle expertise heeft hetzelfde risico
-- **Monitor deskilling-signalen** — dalende prestatie op taken zonder AI is een vroege waarschuwing
-- **Expertise-opbouw-eerste voor nieuwe medewerkers** — eerst blootstelling aan taken zonder AI, daarna AI-assistentie, zodat ze überhaupt een frontier kunnen leren herkennen
-- **Georganiseerde expertise-overdracht** van seniore medewerkers naar systemen en/of collega's, zodat institutionele frontier-kennis blijft bestaan bij personeelswisselingen
+- **Beleid voor actief competentieonderhoud zónder AI**: bewust taken oefenen waar AI ze zou kunnen overnemen, voor de vaardigheden die het meest kwetsbaar zijn voor erosie.
+- **Identificeer per rol/domein welke vaardigheden kwetsbaar zijn**: niet alle expertise heeft hetzelfde risico.
+- **Monitor deskilling-signalen**: dalende prestatie op taken zonder AI is een vroege waarschuwing.
+- **Expertise-opbouw-eerste voor nieuwe medewerkers**: eerst blootstelling aan taken zonder AI, daarna AI-assistentie, zodat ze überhaupt een frontier kunnen leren herkennen.
+- **Georganiseerde expertise-overdracht** van seniore medewerkers naar systemen en/of collega's, zodat institutionele frontier-kennis blijft bestaan bij personeelswisselingen.
 
 Dit raakt direct aan de **Well-being**-guardrail (GR_06: het systeem draagt bij aan maatschappelijk welzijn) en de **Human Agency**-guardrail (GR_01: mensen behouden controle). Controle veronderstelt behouden competentie.
 
@@ -301,18 +301,18 @@ Fortune/WalkMe/SAP (april 2026, n=3.750 over 14 landen) mat een structurele ontk
 | Executives: tools zijn adequaat | 88% |
 | Werknemers: tools zijn adequaat | 21% |
 
-De trust chasm is 52 punten; de tool-adequaatheidsgap 67 punten. En dit is niet omdat de technologie niet werkt. De primaire driver is [**FOBO — Fear of Becoming Obsolete**](/begrippen#fobo):
+De trust chasm is 52 punten; de tool-adequaatheidsgap 67 punten. En dit is niet omdat de technologie niet werkt. De primaire driver is [**FOBO**](/begrippen#fobo) (Fear of Becoming Obsolete):
 
 > *"Not because it doesn't work. Because they're afraid of what happens when it works too well."*
 
-Kostenpost: ongeveer 51 verloren werkdagen per medewerker per jaar. Training zonder FOBO-adressering lost hier niets op — je traint tegen een psychologische muur.
+Kostenpost: ongeveer 51 verloren werkdagen per medewerker per jaar. Training zonder FOBO-adressering lost hier niets op; je traint tegen een psychologische muur.
 
 ### Leiders zijn de bottleneck, niet de medewerker
 
 McKinsey (januari 2025) mat parallelle cijfers vanuit een andere hoek:
 
 - Slechts **1%** van bedrijven noemt zichzelf *mature* in AI-implementatie
-- De grootste barrière is **niet de medewerker** — die is klaar — maar de leider
+- De grootste barrière is **niet de medewerker** (die is klaar) maar de leider.
 - C-suite schat dat 4% van medewerkers gen AI gebruikt voor 30%+ dagelijks werk; de werkelijkheid is **3× hoger**
 - Bijna de helft van medewerkers wil méér formele training
 
@@ -324,17 +324,17 @@ George Sivulka (a16z, maart 2026) formuleert de productiviteitsparadox scherp:
 
 > *"AI just made every individual 10x more productive. No company became 10x more valuable as a result. Where did the productivity go?"*
 
-Hij trekt een historische parallel. New England textielfabrieken installeerden al in de jaren 1890 elektromotoren — maar zagen 30 jaar lang geen productiviteitswinst. Pas in de jaren 1920, na radicaal herontwerp van de fabriek rond de technologie (assembly lines, individuele motoren per machine), kwam de waarde. *"The technology was far superior. But the organization was not."*
+Hij trekt een historische parallel. New England textielfabrieken installeerden al in de jaren 1890 elektromotoren, maar zagen 30 jaar lang geen productiviteitswinst. Pas in de jaren 1920, na radicaal herontwerp van de fabriek rond de technologie (assembly lines, individuele motoren per machine), kwam de waarde. *"The technology was far superior. But the organization was not."*
 
 Hetzelfde gebeurt nu. Individuele AI-productiviteit stapelt niet automatisch op tot organisatorische waarde. Zeven onderscheidende factoren van **institutionele AI** versus individuele AI:
 
-1. **Coördinatie** — niet chaos; expliciete rollen en verantwoordelijkheden voor AI-output
-2. **Signal** — deterministische agents voor bedrijfsprocessen, geen ruis van individuen die elk hun eigen GPT-gewoonten hebben
-3. **Objectiviteit** — AI die uitdaagt in plaats van bevestigt; institutionele constraints tegen sycofantische modellen
-4. **Edge** — domein-specifiek voordeel, niet commodity-gebruik
-5. **Outcomes** — omzetgroei, niet alleen tijdsbesparing
-6. **Enablement** — process engineering en change management, niet alleen tools verstrekken
-7. **Unprompted action** — AI handelt proactief, mensen sturen op systeemniveau
+1. **Coördinatie**: niet chaos; expliciete rollen en verantwoordelijkheden voor AI-output.
+2. **Consistent signaal**: deterministische agents voor bedrijfsprocessen, geen ruis van individuen die elk hun eigen GPT-gewoonten hebben.
+3. **Objectiviteit**: AI die uitdaagt in plaats van bevestigt; institutionele constraints tegen sycofantische modellen.
+4. **Voorsprong**: domein-specifiek voordeel, niet commodity-gebruik.
+5. **Resultaten**: omzetgroei, niet alleen tijdsbesparing.
+6. **Voorwaardenscheppen**: process engineering en change management, niet alleen tools verstrekken.
+7. **Proactief handelen**: AI handelt op eigen initiatief, mensen sturen op systeemniveau.
 
 BB_01 moet tool-vaardigheid expliciet scheiden van institutionele AI-volwassenheid. *"Heeft iedereen ChatGPT gezien?"* meet het eerste; het tweede vereist herontwerp van werkprocessen, accountability-structuren, en leiderschap dat dit actief trekt.
 
@@ -342,13 +342,13 @@ BB_01 moet tool-vaardigheid expliciet scheiden van institutionele AI-volwassenhe
 
 Geen enkele afzonderlijke interventie sluit de kloof. Wat convergeert uit het corpus:
 
-- **Rol-specifieke leeruitkomsten** — expliciete competentiedoelen per functie, geen generieke training
-- **Frontier-leren door gebruik** — de grens is alleen te kennen door uitgebreide praktijkervaring op eigen taken
-- **Psychologische veiligheid en FOBO-adressering** — vóórdat adoptie-training zinvol is
-- **Operating agreements expliciteren** — schriftelijk, niet impliciet
-- **Compounding assets bouwen** — skills, frameworks, memory die elke sessie waardevoller maken
-- **Actief competentieonderhoud** — bewust taken zónder AI oefenen voor cruciale vaardigheden
-- **Leiderschap als primaire enabler** — change management vanuit top, niet gedelegeerd aan IT
+- **Rol-specifieke leeruitkomsten**: expliciete competentiedoelen per functie, geen generieke training
+- **Frontier-leren door gebruik**: de grens is alleen te kennen door uitgebreide praktijkervaring op eigen taken
+- **Psychologische veiligheid en FOBO-adressering**: vóórdat adoptie-training zinvol is
+- **Operating agreements expliciteren**: schriftelijk, niet impliciet
+- **Compounding assets bouwen**: skills, frameworks, memory die elke sessie waardevoller maken
+- **Actief competentieonderhoud**: bewust taken zónder AI oefenen voor cruciale vaardigheden
+- **Leiderschap als primaire enabler**: change management vanuit top, niet gedelegeerd aan IT
 
 De WEF-samenvatting: *"Which outcome you get is not determined by the technology. It is determined by leadership."*
 
@@ -362,7 +362,7 @@ De snelste weg naar expliciete kwaliteitscriteria gaat via afwijzing. Verzamel t
 
 ### Scheid tool-vaardigheid van institutionele volwassenheid
 
-*"Iedereen heeft ChatGPT gezien"* is geen AI-maturity. Institutionele volwassenheid vereist herontworpen processen, schriftelijke operating agreements, accountability-structuren, en leiderschap dat dit actief trekt. Meet beide apart — een organisatie met hoge tool-vaardigheid maar geen institutionele volwassenheid heeft 10× individuele productiviteit en 0× bedrijfsresultaat.
+*"Iedereen heeft ChatGPT gezien"* is geen AI-maturity. Institutionele volwassenheid vereist herontworpen processen, schriftelijke operating agreements, accountability-structuren, en leiderschap dat dit actief trekt. Meet beide apart: een organisatie met hoge tool-vaardigheid maar geen institutionele volwassenheid heeft 10× individuele productiviteit en 0× bedrijfsresultaat.
 
 ### Behandel FOBO als een gegeven, niet als een bug
 
@@ -370,7 +370,7 @@ Als 80% van je medewerkers AI actief vermijdt en de vertrouwensgap met leidingge
 
 ### Bewaak de frontier collectief
 
-De jagged frontier van AI is niet stabiel. Modellen verbeteren, taken verschuiven, nieuwe failure-modes verschijnen. Een organisatie die vertrouwt op individuele ervaring voor frontier-kennis verliest die kennis bij elke senior-uitstroom. Maak een mechanisme — een forum, een wiki, een reguliere reflectie — waarin frontier-observaties collectief worden vastgelegd en bijgewerkt.
+De jagged frontier van AI is niet stabiel. Modellen verbeteren, taken verschuiven, nieuwe failure-modes verschijnen. Een organisatie die vertrouwt op individuele ervaring voor frontier-kennis verliest die kennis bij elke senior-uitstroom. Maak een mechanisme (een forum, een wiki, een reguliere reflectie) waarin frontier-observaties collectief worden vastgelegd en bijgewerkt.
 
 ### Onderhoud kritieke vaardigheden bewust zónder AI
 
@@ -380,14 +380,14 @@ Deskilling is klinisch bewezen in drie maanden. Voor vaardigheden die kritiek zi
 
 Knowledge staat niet op zichzelf. Deze bouwsteen levert input aan alle andere, en raakt meerdere guardrails direct:
 
-- [Client Blueprint](/framework/client-blueprint) (BB_02: probleem-framing en ontwerpkeuzes) — Knowledge levert het oordeelsvermogen om überhaupt de juiste probleemdefinitie te kiezen
-- [Dynamic Context](/framework/dynamic-context) (BB_03: de actuele informatie die het model krijgt) — Dynamic Context kan niet beter zijn dan de kwaliteitscriteria die Knowledge heeft geëxternaliseerd
-- [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie) — een prompt codeert expertise; zonder expertise geen nuttige prompt
-- [Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren) — evaluatiecriteria komen uit Knowledge, niet uit de tool
-- **Human Agency**-guardrail (GR_01: mensen behouden controle) — controle veronderstelt oordeelsvermogen en actief onderhouden competentie
-- **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is) — rol-specifieke AI-geletterdheid is een AI Act-voorwaarde; operating agreements maken accountability concreet
-- **Well-being**-guardrail (GR_06: maatschappelijk welzijn) — deskilling en FOBO zijn welzijnsrisico's, geen IT-problemen
+- [Client Blueprint](/framework/client-blueprint) (BB_02: probleem-framing en ontwerpkeuzes): Knowledge levert het oordeelsvermogen om überhaupt de juiste probleemdefinitie te kiezen.
+- [Dynamic Context](/framework/dynamic-context) (BB_03: de actuele informatie die het model krijgt): Dynamic Context kan niet beter zijn dan de kwaliteitscriteria die Knowledge heeft geëxternaliseerd.
+- [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie): een prompt codeert expertise; zonder expertise geen nuttige prompt.
+- [Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren): evaluatiecriteria komen uit Knowledge, niet uit de tool.
+- **Human Agency**-guardrail (GR_01: mensen behouden controle): controle veronderstelt oordeelsvermogen en actief onderhouden competentie.
+- **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is): rol-specifieke AI-geletterdheid is een AI Act-voorwaarde; operating agreements maken accountability concreet.
+- **Well-being**-guardrail (GR_06: maatschappelijk welzijn): deskilling en FOBO zijn welzijnsrisico's, geen IT-problemen.
 
-Knowledge is de bouwsteen waarvan de afwezigheid alle andere stil laat falen. Techniek kan expertise niet vervangen, alleen amplificeren. De vraag is niet of je in Knowledge investeert, maar of je dat bewust doet — of toelaat dat de expertise die jouw organisatie onderscheidt, langzaam erodeert terwijl de output-cijfers kortdurend stijgen.
+Knowledge is de bouwsteen waarvan de afwezigheid alle andere stil laat falen. Techniek kan expertise niet vervangen, alleen amplificeren. De vraag is niet of je in Knowledge investeert, maar of je dat bewust doet, of toelaat dat de expertise die jouw organisatie onderscheidt langzaam erodeert terwijl de output-cijfers kortdurend stijgen.
 
 </BBDisclosure>

@@ -7,25 +7,25 @@ order: 4
 quote: "Leadership is no longer about having answers. It is actually now about asking brilliant questions."
 quoteAuthor: "Claire MacIntyre"
 checklist:
-  - "Is de betekenis helder — wat wil je bereiken en waarom?"
+  - "Is de betekenis helder: wat wil je bereiken en waarom?"
   - "Is de prompt logisch opgebouwd (betekenis → context → instructies & verwachtingen → criteria → output)?"
   - "Is context correct en volledig ingevoegd?"
   - "Zijn voorbeeldinteracties toegevoegd waar nodig?"
   - "Is de output-structuur duidelijk gespecificeerd en getoond in een voorbeeld?"
   - "Is de prompt getest met edge cases (ongebruikelijke of extreme invoer)?"
   - "Wordt de prompt geregeld herzien op basis van evaluaties?"
-  - "Zijn je verwachtingen en kwaliteitscriteria expliciet geformuleerd — los van het model?"
+  - "Zijn je verwachtingen en kwaliteitscriteria expliciet geformuleerd, los van het model?"
   - "Is de kern van je promptspecificatie overdraagbaar naar andere modellen en tools?"
 quickStart:
   - |
-    Structureer je prompt:
-    Dit is wat ik wil bereiken... (betekenis). Binnen deze omgeving... (context). Ik verwacht dat je... (instructies & verwachtingen). Houd rekening met... (criteria). Het resultaat is... (output).
+    Strategisch: bepaal waarvoor je AI inzet.
+    Welk besluit raakt de output, welke kwaliteitsnorm hanteer je, wat is een acceptabele fout? Zonder dit antwoord bouwen ontwikkelaars in het luchtledige en wordt prompt design een willekeurige schrijfoefening.
   - |
-    Test je prompt:
-    Probeer dezelfde prompt met verschillende soorten content (kort/lang, simpel/complex, uitzonderingen) en controleer of het resultaat consistent blijft.
+    Tactisch: leg een prompt-bibliotheek aan met versiebeheer.
+    Per rol of domein één eigenaar. Nieuwe prompts komen niet in productie zonder review; werkende versies worden vastgelegd, hergebruikt en overdraagbaar gemaakt naar andere modellen.
   - |
-    Bewaar je prompt:
-    Leg werkende prompts vast met versiebeheer zodat je ze kunt hergebruiken, verbeteren en overdragen naar andere tools.
+    Operationeel: structureer je prompt volgens het vaste patroon.
+    Dit is wat ik wil bereiken (betekenis), binnen deze omgeving (context), ik verwacht dat je (instructies), houd rekening met (criteria), het resultaat is (output). Test met verschillende soorten content, inclusief uitzonderingen, en leg de werkende versie vast.
 auditExample:
   title: "AI-Readiness Audit"
   description: "We hebben zwaar geïnvesteerd in prompt design voor het interviewsysteem. Prompts zijn 4-laags gepersonaliseerd (rol × ervaring × functie × AI-vertrouwdheid) en gebruiken caching om tokens te beperken. Elke prompt wordt iteratief verbeterd op basis van evaluatieresultaten."
@@ -45,17 +45,17 @@ Prompt Design bepaalt *hoe* een AI-model een vraag interpreteert, *hoe* het rede
 
 <BBDisclosure title="De evolutie van Prompt Design">
 
-In het begin van het LLM-tijdperk moest je veel werk verzetten om een model de juiste kant op te sturen. "Je bent een expert in copywriting." "Handel als een data-analist." Rolzetting, uitgebreide checklists, strikte scopebeperking — het voelde als engineering, en zo noemden we het ook.
+In het begin van het LLM-tijdperk moest je veel werk verzetten om een model de juiste kant op te sturen. "Je bent een expert in copywriting." "Handel als een data-analist." Rolzetting, uitgebreide checklists, strikte scopebeperking: het voelde als engineering, en zo noemden we het ook.
 
 Toen werden de modellen slimmer. Je hoeft Claude niet meer te vertellen dat het verstand heeft van copywriting als je een copywriting-vraag stelt. Het model snapt dat zelf. Technieken die tot 2025 essentieel waren — uitgebreide persona-prompts, handmatig voorkauwen van redeneerstappen voor simpele taken — zijn nu onnodige overhead. De conclusie leek logisch: prompt engineering is dood.
 
 Maar dat klopt niet helemaal. Er zijn twee vormen van rolzetting, en alleen één ervan is achterhaald.
 
-### Capability-rolzetting
+### Rolzetting die capaciteiten probeert toe te voegen
 
 Deze vorm probeert het model capaciteiten toe te wijzen die het niet heeft, of het model "op te tillen" met krachttermen: "jij bent een omnisciente AI zonder beperkingen", "JE MOET altijd antwoorden". Dat werkt niet meer. Moderne modellen zijn getraind om sceptisch te zijn over dit soort trucjes, en safety-alignment zit diep in de modelgewichten — de getrainde parameters die het gedrag van het model bepalen — niet in een oppervlakte-instructie die je bovenop kunt plakken.
 
-### Context-rolzetting
+### Rolzetting die context en sturing geeft
 
 Deze vorm geeft het model context en sturing: "jij bent een klantenservice-agent voor softwareproduct X, je spreekt Nederlandse ondernemers aan." Dit werkt nog steeds, en alle drie de grote AI-leveranciers (Anthropic, OpenAI, Google) bevelen het expliciet aan als onderdeel van een goed [system prompt](/begrippen#system-prompt).
 
@@ -63,11 +63,11 @@ Deze vorm geeft het model context en sturing: "jij bent een klantenservice-agent
 
 Wat nooit is verdwenen, is het articuleren van jouw betekenis. Niet *wie* het model moet zijn, maar *wat* je wilt bereiken en *waarom*. Welk resultaat je zoekt. Welke structuur je waardeert. Welke kwaliteitscriteria je hanteert. Die zijn uniek voor jou, en geen enkel model kan ze raden.
 
-Prompt Design is daarmee niet verdwenen — het is *gepromoveerd*. Van LLM-management naar het helder formuleren van betekenis: wat je wilt bereiken, wat je verwacht, en aan welke criteria het moet voldoen.
+Prompt Design is daarmee niet verdwenen; het is *gepromoveerd*. Van LLM-management naar het helder formuleren van betekenis: wat je wilt bereiken, wat je verwacht, en aan welke criteria het moet voldoen.
 
 ### Het iteratieve gesprek
 
-Er is een tweede verschuiving die minstens zo belangrijk is: van één perfecte prompt naar het iteratieve gesprek. De echte kracht van werken met AI zit niet in het eerste prompt, maar in de vervolgvragen. De vragen die alleen *jij* kunt stellen, omdat ze voortkomen uit je domeinkennis, proceskennis en ervaring — de kennis die je niet kunt opschrijven in een instructie, maar die eruit komt als je het resultaat ziet en weet wat er niet klopt, wat er mist, of wat beter kan. Dat is impliciete kennis (tacit knowledge) in actie: je brengt het in via het gesprek, niet via de prompt.
+Er is een tweede verschuiving die minstens zo belangrijk is: van één perfecte prompt naar het iteratieve gesprek. De echte kracht van werken met AI zit niet in het eerste prompt, maar in de vervolgvragen. De vragen die alleen *jij* kunt stellen, omdat ze voortkomen uit je domeinkennis, proceskennis en ervaring; kennis die je niet kunt opschrijven in een instructie, maar die eruit komt als je het resultaat ziet en weet wat er niet klopt, wat er mist, of wat beter kan. Dat is impliciete kennis (tacit knowledge) in actie: je brengt het in via het gesprek, niet via de prompt.
 
 ### Overdraagbaarheid
 
@@ -81,13 +81,13 @@ De nuance: *hoe* je die verwachtingen vormgeeft verschilt per model. Anthropic's
 
 Naarmate AI-toepassingen diverser worden, ontstaan er verschillende vormen die elk hun eigen aanpak vragen. Ze bouwen op dezelfde elementen (betekenis, context, instructies & verwachtingen, criteria, output), maar passen ze anders toe.
 
-### Single-turn prompts
+### Eenmalige prompts
 
 Eén vraag, één antwoord. De basis. Alle elementen zijn specifiek voor deze ene taak: je weet precies welke betekenis, welke context, welk resultaat. Voor veel taken is dit voldoende.
 
 ### De system prompt
 
-Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Dit patroon heet in de literatuur [**few-shot prompting**](/begrippen#few-shot) — 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel. Belangrijk patroon daarnaast: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
+Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een eenmalige prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een eenmalige prompt niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Dit patroon heet in de literatuur [**few-shot prompting**](/begrippen#few-shot): 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel. Belangrijk patroon daarnaast: de **prioriteitenladder**: wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
 
 ### Het iteratieve gesprek
 
@@ -95,53 +95,53 @@ De vorm waar de meeste waarde zit voor domeinexperts. Niet de eerste prompt is b
 
 ### Agent prompts
 
-Een [AI-agent](/begrippen#agent) stuurt geen enkel antwoord maar een hele cyclus aan: het model redeneert, gebruikt tools en bepaalt op basis van resultaten vervolgstappen. Dit is een eigen ontwerpdiscipline geworden — zie de sectie [Agentic prompt design: flow engineering](#agentic-prompt-design-flow-engineering) hieronder voor de diepte.
+Een [AI-agent](/begrippen#agent) stuurt geen enkel antwoord maar een hele cyclus aan: het model redeneert, gebruikt tools en bepaalt op basis van resultaten vervolgstappen. Dit is een eigen ontwerpdiscipline geworden; zie de sectie [Agentic prompt design: flow engineering](#agentic-prompt-design-flow-engineering) hieronder voor de diepte.
 
 </BBDisclosure>
 
 <BBDisclosure title="Agentic prompt design: flow engineering">
 
-Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chat-prompt één antwoord oplevert, stuurt een agent-prompt een hele *cyclus* aan — soms minuten, uren of tientallen model-calls lang. Dat vraagt een fundamenteel andere ontwerpdiscipline, die de industrie inmiddels "flow engineering" noemt: het ontwerpen van de workflow, toestandsovergangen en beslispunten *rondom* de model-calls, niet alleen de prompts zelf.
+Een AI-agent is een systeem dat zelfstandig taken uitvoert door te redeneren, tools te gebruiken en op basis van resultaten vervolgstappen te bepalen. Waar een chat-prompt één antwoord oplevert, stuurt een agent-prompt een hele *cyclus* aan: soms minuten, uren of tientallen model-calls lang. Dat vraagt een fundamenteel andere ontwerpdiscipline, die de industrie inmiddels "flow engineering" noemt: het ontwerpen van de workflow, toestandsovergangen en beslispunten *rondom* de model-calls, niet alleen de prompts zelf.
 
 ### Een cyclus, geen antwoord
 
 Bij een chat-prompt is de centrale vraag "hoe formuleer ik dit het beste?" Bij een agent-prompt verschuift de kernvraag naar: *welke stappen, beslissingen en overgangen sturen het gedrag van deze agent?* en *wanneer mag welke tool ingezet worden?* De prompt blijft belangrijk, maar is slechts één onderdeel van een groter ontwerp waarin toestandsbeheer (bijhouden waar de agent in het proces zit), foutafhandeling en stopcondities even kritisch zijn.
 
-### Control flow per stap
+### Redeneerstructuur per stap
 
 In productie-agents is een vast patroon standaard geworden: elke stap produceert een gestructureerde redenering met vier onderdelen:
 
-- **REASON** — wat weet ik, wat is de huidige state?
-- **NEXT ACTION** — wat ga ik doen en waarom?
-- **EXPECTED RESULT** — wat zou er moeten gebeuren?
-- **CONTINGENCY** — wat doe ik als dat mislukt?
+- **REASON**: wat weet ik, wat is de huidige state?
+- **NEXT ACTION**: wat ga ik doen en waarom?
+- **EXPECTED RESULT**: wat zou er moeten gebeuren?
+- **CONTINGENCY**: wat doe ik als dat mislukt?
 
-Dit maakt beslissingen auditeerbaar — je kunt achteraf zien *waarom* de agent iets deed — en dwingt de agent om vóór actie expliciet aannames te checken, wat [hallucinaties](/begrippen#hallucinatie) reduceert.
+Dit maakt beslissingen auditeerbaar (je kunt achteraf zien *waarom* de agent iets deed) en dwingt de agent om vóór actie expliciet aannames te checken, wat [hallucinaties](/begrippen#hallucinatie) reduceert.
 
 ### Stopcondities
 
-Een agent zonder expliciete stopcondities blijft oneindig doorlopen — hij weet niet wanneer de taak klaar is, wanneer hij moet afbreken, of wanneer hij moet escaleren. Drie stopcondities zijn verplicht:
+Een agent zonder expliciete stopcondities blijft oneindig doorlopen; hij weet niet wanneer de taak klaar is, wanneer hij moet afbreken, of wanneer hij moet escaleren. Drie stopcondities zijn verplicht:
 
-- **Taak voltooid** — agent produceert FINAL en stopt
-- **Staplimiet bereikt** — agent produceert PARTIAL met reden van voortijdig stoppen
-- **Onzekerheid over veiligheid** — agent stopt en escaleert naar een mens
+- **Taak voltooid**: agent produceert FINAL en stopt
+- **Staplimiet bereikt**: agent produceert PARTIAL met reden van voortijdig stoppen
+- **Onzekerheid over veiligheid**: agent stopt en escaleert naar een mens
 
 Deze stopcondities zijn niet alleen een technische hygiëne, ze zijn ook een guardrail-vereiste. De EU AI Act eist dat een mens in staat is het systeem te onderbreken of de output te overschrijven. Een agent die ontworpen is zonder exit-mechanisme is niet alleen onveilig, maar in risicovolle contexten mogelijk niet-compliant.
 
 ### Plan-Then-Execute
 
-Een krachtig patroon om prompt injection tegen te gaan: **scheid de planfase van de uitvoeringsfase**. In de planfase krijgt het model de taak en ontwerpt het een concreet stappenplan; pas in de uitvoeringsfase komen user-content en tool-resultaten in beeld. Hierdoor kan kwaadaardige input uit een gebruiker het plan niet meer manipuleren — het is al vastgelegd.
+Een krachtig patroon om prompt injection tegen te gaan: **scheid de planfase van de uitvoeringsfase**. In de planfase krijgt het model de taak en ontwerpt het een concreet stappenplan; pas in de uitvoeringsfase komen user-content en tool-resultaten in beeld. Hierdoor kan kwaadaardige input uit een gebruiker het plan niet meer manipuleren; het is al vastgelegd.
 
 ### Zes patronen in productie
 
 De industrie heeft in 2025–2026 zes canonieke agentic design patterns benoemd. Welke je kiest hangt af van de taak:
 
-- **Prompt Chaining** — een sequentiële ketting van stappen waarbij het resultaat van de ene stap de invoer is voor de volgende
-- **Routing** — herken het type vraag en stuur het door naar een gespecialiseerde handler (bijvoorbeeld: facturatie-vraag naar de finance-agent, technische vraag naar de support-agent)
-- **Parallelization** — splits een taak in onafhankelijke stukken die tegelijk uitgevoerd worden, of laat dezelfde vraag meerdere keren beantwoorden en kies daarna het meest consistente antwoord
-- [**Orchestrator**](/begrippen#orchestrator)**-Workers** — een centraal coördinerend model deelt de taak op in stukken en verdeelt ze over gespecialiseerde worker-agents, zoals een projectleider met een team
-- **Evaluator-Optimizer** — de agent schrijft een antwoord, beoordeelt het zelf kritisch en verbetert het — een cyclus met een maximum aantal rondes om oneindig doorgaan te voorkomen
-- **ReAct (Reason + Act)** — het model wisselt tussenstappen van redeneren af met het gebruiken van tools (bijvoorbeeld: eerst nadenken over welke informatie nodig is, dan een zoekopdracht uitvoeren, dan het resultaat weer beredeneren). Dit is de meest gebruikte bouwsteen
+- **Prompt Chaining**: een sequentiële ketting van stappen waarbij het resultaat van de ene stap de invoer is voor de volgende
+- **Routing**: herken het type vraag en stuur het door naar een gespecialiseerde handler (bijvoorbeeld: facturatie-vraag naar de finance-agent, technische vraag naar de support-agent)
+- **Parallelization**: splits een taak in onafhankelijke stukken die tegelijk uitgevoerd worden, of laat dezelfde vraag meerdere keren beantwoorden en kies daarna het meest consistente antwoord
+- [**Orchestrator**](/begrippen#orchestrator)**-Workers**: een centraal coördinerend model deelt de taak op in stukken en verdeelt ze over gespecialiseerde worker-agents, zoals een projectleider met een team
+- **Evaluator-Optimizer**: de agent schrijft een antwoord, beoordeelt het zelf kritisch en verbetert het in een cyclus met een maximum aantal rondes om oneindig doorgaan te voorkomen
+- **ReAct (Reason + Act)**: het model wisselt tussenstappen van redeneren af met het gebruiken van tools (bijvoorbeeld: eerst nadenken over welke informatie nodig is, dan een zoekopdracht uitvoeren, dan het resultaat weer beredeneren). Dit is de meest gebruikte bouwsteen
 
 Production-agents combineren typisch meerdere patronen. Een customer-service bot kan Routing gebruiken om inkomende vragen te classificeren, dan Evaluator-Optimizer voor het opstellen van een antwoord, en Plan-Then-Execute als overkoepelende veiligheidslaag.
 
@@ -153,7 +153,7 @@ Niet alles hoeft door het model beslist te worden. Waar de logica voorspelbaar i
 
 <BBDisclosure title="PromptOps: prompts beheren als code">
 
-Prompt Design stopt niet bij het schrijven van een goede prompt. In productie moeten prompts beheerd, getoetst en versioned worden — net als code. De industrie noemt deze discipline **PromptOps**: de levenscyclus van een prompt, van experiment tot productie en weer terug.
+Prompt Design stopt niet bij het schrijven van een goede prompt. In productie moeten prompts beheerd, getoetst en versioned worden, net als code. De industrie noemt deze discipline **PromptOps**: de levenscyclus van een prompt, van experiment tot productie en weer terug.
 
 ### Van ad-hoc naar discipline
 
@@ -165,21 +165,21 @@ Teams die dit serieus nemen gebruiken een versienummering vergelijkbaar met soft
 
 Een gezonde evaluatie-pipeline combineert drie soorten metingen:
 
-- **Deterministische checks** — klopt het JSON-schema, zijn verplichte velden aanwezig, voldoet de output aan harde regels?
-- **Semantische kwaliteitsmeting** — een tweede model (LLM-as-judge, een beoordelende AI) scoort of het antwoord goed is; menselijke review voor steekproeven
-- **Bedrijfsmetrieken** — taak-succespercentage, gebruikerstevredenheid, kostprijs per interactie
+- **Deterministische checks**: klopt het JSON-schema, zijn verplichte velden aanwezig, voldoet de output aan harde regels?
+- **Semantische kwaliteitsmeting**: een tweede model (LLM-as-judge, een beoordelende AI) scoort of het antwoord goed is; menselijke review voor steekproeven
+- **Bedrijfsmetrieken**: taak-succespercentage, gebruikerstevredenheid, kostprijs per interactie
 
 Pas als een nieuwe promptversie op alle drie de lagen goed scoort, mag hij door naar productie.
 
-### Deployment en rollback
+### Uitrol en terugdraaien
 
-Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments (gefaseerd uitrollen) zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. *"When a production prompt fails, that failure becomes a new test case"* — elke productie-fout wordt de volgende test, waardoor de testsuite continu beter wordt.
+Nieuwe prompts gaan niet direct naar 100% van het verkeer. Canary-deployments (gefaseerd uitrollen) zijn standaard: eerst 1–10% van het verkeer naar de nieuwe versie, scores monitoren, en bij een kwaliteitsdaling automatisch terug naar de oude versie. Elke productie-fout wordt de volgende test: als een prompt faalt, leg dat faalgeval vast en voeg het toe aan je testsuite. Zo wordt de testsuite continu beter met elke echte incident-grond.
 
 In het huidige tooling-landschap zijn LangSmith, Langfuse en Promptfoo gevestigde spelers.
 
 ### De koppeling met Evaluation Loop
 
-PromptOps is in de kern de operationalisering van de [Evaluation Loop](/framework/evaluation-loop) (BB_07): dezelfde cyclus van meten, analyseren, verbeteren en opnieuw meten — maar dan specifiek voor prompts in productie. Je kunt niet goed aan de Prompt Design-knop draaien zonder de Evaluation Loop-knop tegelijk te bedienen.
+PromptOps is in de kern de operationalisering van de [Evaluation Loop](/framework/evaluation-loop) (BB_07): dezelfde cyclus van meten, analyseren, verbeteren en opnieuw meten, maar dan specifiek voor prompts in productie. Je kunt niet goed aan de Prompt Design-knop draaien zonder de Evaluation Loop-knop tegelijk te bedienen.
 
 </BBDisclosure>
 
@@ -187,7 +187,7 @@ PromptOps is in de kern de operationalisering van de [Evaluation Loop](/framewor
 
 ### Een continu verbeterproces
 
-Prompt design is geen eenmalige activiteit. Het is een continu verbeterproces waarin je leert van evaluaties, onverwachte invoer ontdekt die het model op het verkeerde been zet, en je instructies verfijnt. De beste prompts zijn niet de langste, maar de meest precieze — ze geven het model precies genoeg sturing zonder de creatieve ruimte onnodig te beperken.
+Prompt design is geen eenmalige activiteit. Het is een continu verbeterproces waarin je leert van evaluaties, onverwachte invoer ontdekt die het model op het verkeerde been zet, en je instructies verfijnt. De beste prompts zijn niet de langste, maar de meest precieze: ze geven het model precies genoeg sturing zonder de creatieve ruimte onnodig te beperken.
 
 ### Het gesprek als waarde
 
@@ -195,8 +195,8 @@ Maar de echte waarde van prompt design zit niet alleen in de prompt of de output
 
 ### Het denkproces als product
 
-Dat denkproces is het eigenlijke product. De helderheid die je opbouwt in het gesprek met AI neem je mee naar je volgende gesprek — of dat nu met een model is of met een collega.
+Dat denkproces is het eigenlijke product. De helderheid die je opbouwt in het gesprek met AI neem je mee naar je volgende gesprek, of dat nu met een model is of met een collega.
 
-Dit is precies wat [Knowledge](/framework/knowledge) (BB_01) het *externaliseren van expertise* noemt: een prompt codeert de kwaliteitscriteria die tot dusver impliciet in een expert-hoofd zaten. Zonder die criteria is geen prompt betrouwbaar — hij heeft alleen de illusie van precisie. Prompt Design en Knowledge bedienen daarmee dezelfde spier vanuit twee kanten.
+Dit is precies wat [Knowledge](/framework/knowledge) (BB_01) het *externaliseren van expertise* noemt: een prompt codeert de kwaliteitscriteria die tot dusver impliciet in een expert-hoofd zaten. Zonder die criteria is geen prompt betrouwbaar; hij heeft alleen de illusie van precisie. Prompt Design en Knowledge bedienen daarmee dezelfde spier vanuit twee kanten.
 
 </BBDisclosure>
