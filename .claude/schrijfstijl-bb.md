@@ -20,8 +20,30 @@ Elke niet-algemene Engelse term krijgt bij **eerste gebruik** een korte NL-verta
 - ✓ `data-herkomst (van brondocument tot antwoord traceerbaar — in het Engels *data-lineage*)`
 - ✗ `implementeer een approval chain voor...` (geen uitleg bij eerste gebruik)
 
+**Parafrase-regel.** Als de letterlijke NL-vertaling zélf jargon is, gebruik een concrete parafrase in lopende tekst — niet een jargon-voor-jargon-vervanging:
+
+- ✗ `kennisgraaf` (Nederlands maar academisch; niet-techneut snapt het niet)
+- ✓ `kennisnetwerk (entiteiten als knooppunten, relaties tussen entiteiten als verbindingen)`
+- ✗ `nabij-getraind op jouw specifieke categorieën`
+- ✓ `een bestaand taalmodel dat je extra hebt getraind op jouw specifieke categorieën`
+- ✗ `signaal-dichtheid`
+- ✓ `méér relevante informatie per token — dat is wat "signaal-dichtheid" betekent`
+
+**Test**: kan een zakelijke lezer na het lezen van de zin zelf de term uitleggen? Zo nee: parafraseer.
+
+**Let op anglicismen in idiomen.** Letterlijk vertaalde Engelse uitdrukkingen lezen als fout Nederlands, ook al zijn alle woorden NL. Herken en vervang door een echt bestaand NL-idioom of een neutrale parafrase:
+
+- ✗ *"alles-en-de-keukenkraan"* (uit *everything and the kitchen sink*)
+- ✓ *"alles op een hoop gegooid"*
+- ✗ *"aan het einde van de dag"* (uit *at the end of the day*)
+- ✓ *"uiteindelijk"*
+- ✗ *"de olifant in de kamer"* (uit *elephant in the room*) — wel ingeburgerd maar vermijd voor zakelijke tekst
+- ✓ *"het onbesproken probleem"*
+
+**Test**: als je twijfelt of een uitdrukking Nederlands is, zoek hem in Van Dale of bij een Nederlandstalige nieuwsbron. Geen hits? Letterlijke vertaling uit het Engels; herschrijf.
+
 Afkortingen worden pas gebruikt nadat ze zijn uitgeschreven:
-- ✓ `Model Context Protocol (MCP — een opkomende standaard om...)` → daarna vrij `MCP`
+- ✓ `Model Context Protocol (MCP: een opkomende standaard om...)` → daarna vrij `MCP`
 - ✗ `BB_03` als eigennaam — gebruik `Dynamic Context`, desnoods met `(BB_03)` achter de naam
 
 ## 2. Business-termen in Nederlands
@@ -59,11 +81,26 @@ Bij eerste voorkomen op een pagina: één tussen-haakjes-zin of korte parenthese
 | MCP | Model Context Protocol — opkomende standaard om AI-systemen met externe data en tools te verbinden |
 | data-lineage | data-herkomst: van brondocument tot antwoord traceerbaar |
 | degradeert | in kwaliteit achteruitgaat |
-| chunks | stukjes waarin een document wordt opgeknipt voor retrieval |
+| chunks | stukjes waarin een document wordt opgeknipt voor het ophalen uit de kennisbank |
 | embedding | wiskundige representatie van tekst die semantische gelijkenis meetbaar maakt |
-| reranker | tweede-pass-model dat opgehaalde documenten herordent op relevantie |
+| embedding-model | taalmodel dat tekst omzet naar een reeks getallen zodat een computer kan uitrekenen hoe sterk twee stukken tekst op elkaar lijken |
+| reranker | tweede-pass-model dat opgehaalde documenten herordent op relevantie — leest vraag en document sámen |
+| retrieval | het ophalen van relevante documenten of fragmenten uit een kennisbank voor het model |
 | prompt | de instructie die je aan een AI-model geeft |
+| system prompt | de overkoepelende instructie die het gedrag van een AI over álle gesprekken heen stuurt |
+| few-shot | 2–5 diverse voorbeelden in de prompt zodat het model zich kalibreert op gedrag dat moeilijk in regels te vangen is |
 | hallucinatie | het verzinnen van feiten door een model die plausibel klinken maar niet kloppen |
+| top-K | de K meest gelijkende documenten die een zoeksysteem teruggeeft — typisch 5, 10 of 20 |
+| BM25 | klassiek keyword-matching-algoritme — vindt exacte termen die semantisch zoeken mist |
+| prompt caching | al-door-het-model-verwerkte tokens hergebruiken tussen aanroepen, voor kosten- en latency-winst |
+| contextual retrieval | Anthropic-methode: korte contextuele annotatie vóór indexering per chunk plakken |
+| jagged frontier | onvoorspelbare, taakafhankelijke grens tussen wat AI goed kan en waar het subtiel faalt |
+| operating agreement | schriftelijke afspraak per AI-proces: wie beslist, waar zit human-in-the-loop, wat is "klaar" |
+| FOBO | Fear of Becoming Obsolete — de stille drijfveer achter AI-vermijding door medewerkers |
+| decision intelligence | Kozyrkov's kader: knelpunt verschuift van uitvoering ("genie-kant") naar probleem-formulering ("wens-kant") |
+| centaur / cyborg | twee mens-AI-samenwerkingspatronen: centaur = duidelijke taakscheiding, cyborg = diepe integratie |
+| orchestrator | rol waarin een mens een systeem van AI-agents ontwerpt in plaats van zelf naast AI te werken |
+| deskilling | het eroderen van menselijke expertise doordat AI taken overneemt en de professional stopt met oefenen |
 
 *(Deze tabel groeit na elke BB/GR die we afronden.)*
 
@@ -95,12 +132,37 @@ De passieve vorm benadrukt dat het probleem het **ontwerp** is, niet het "gedrag
 
 ## 8. Interpunctie in NL
 
-- **Em-dashes spaarzaam** — gebruik in NL komma's voor bijzin, em-dash alleen voor zijsprong/nadruk
-- ✗ *"definitie — en zonder die definitie..."*
-- ✓ *"definitie en wanneer er geen definitie bekend is..."*
-- ✗ *"ontwerpdisciplines — ongeacht hoe groot..."*
-- ✓ *"ontwerpdisciplines, ongeacht hoe groot..."*
-- Aanhalingstekens liggend NL-stijl ("zo") of typografisch ("zó") — niet rechtop ("zo") in body-tekst
+**Na vetgedrukt kopje hoort `:`, geen `—`.** Dit is het belangrijkste verschil met Engels schrijven en het meest-voorkomende foutpatroon:
+
+- ✗ `**Systeeminstructies & rol-definities** — wie is de agent...`
+- ✓ `**Systeeminstructies & rol-definities**: wie is de agent...`
+
+Geldt voor bullets, tabelkoppen in proza, en alinea-openers. Test: als de zin begint met een vetgedrukt *onderwerp* gevolgd door zijn *definitie*, dan `:`.
+
+**`;` boven `—` voor zin-koppel.** Em-dashes zijn voor zijsprongen, niet voor "en-nog-iets":
+
+- ✗ *"komt te laat — de schade is al aangericht"*
+- ✓ *"komt te laat; de schade is al aangericht"*
+- ✗ *"het patroon blijft — het is een structurele eigenschap"*
+- ✓ *"het patroon blijft: het is een structurele eigenschap"* (hier is `:` want tweede helft expliciteert de eerste)
+
+**Em-dash: alleen als dubbele dash rond een tussenzin.** Een enkele em-dash in een zin is bijna altijd fout in NL. De regel is streng:
+
+- ✓ *"Chroma's onderzoek testte **18 frontier-modellen** — inclusief GPT-4.1, Claude Opus 4, Gemini 2.5 Pro — en vond dat elk model degradeert."* (dubbele em-dash rondom tussenzin)
+- ✗ *"een verouderde kennisbank geeft een antwoord — structureel correct, zelfverzekerd van toon..."* (losse em-dash)
+- ✓ *"een verouderde kennisbank geeft een antwoord; structureel correct, zelfverzekerd van toon..."* (met `;`)
+- ✗ *"definitie — en zonder die definitie..."* (losse em-dash)
+- ✓ *"definitie. En zonder die definitie..."* of *"definitie, en zonder die definitie..."*
+
+**Check**: zoek in je diff op ` — ` (met spaties). Elke hit moet óf een openings-em-dash óf een sluitings-em-dash van een tussenzin zijn. Als er maar één losse em-dash staat in een zin, herformuleer: `;`, `.`, `,`, of de zin opbreken.
+
+**Blinde vlek: je eigen concept-voorstellen.** Em-dashes zijn in Engelstalige training diep ingebakken; ze sluipen terug in voorstellen die je zelf aanbiedt *terwijl je de regel uitlegt*. Voor je een concept-zin, herschreven alinea of Quick Start-voorstel presenteert: scan je eigen tekst op ` — ` en vervang eerst. Als een reviewer jouw voorstel nog moet corrigeren op iets wat je zelf als regel hebt geformuleerd, ondermijnt dat de regel.
+
+**Komma-voegwoordje tussen gelijkwaardige zinsdelen**: *"slechte antwoorden, kortingen die goed worden gekeurd..."* → `;` als het tweede deel een andere gedachtelijn is: *"slechte antwoorden; kortingen die ..."*.
+
+**Aanhalingstekens** liggend NL-stijl ("zo") of typografisch ("zó"), niet rechtop in body-tekst.
+
+**NL-grammatica**: geen bepalers verzwijgen zoals in EN. *"Simpel splitsen elke 512 tokens"* → *"Simpel splitsen **van** elke 512 tokens"*.
 
 ## 9. Opsommingen: labels met uitleg, niet alleen labels
 
@@ -140,7 +202,55 @@ Kies één term en houd die vast:
 
 De bewoording in frontmatter (`checklist`, `quickStart`, `evidence`) moet **dezelfde termen** gebruiken als de body. Als je in de body "staleness-drempels" zegt, niet in de checklist "verouderdheidsgrens".
 
-## 13. Structuur per BB-pagina
+## 13. Tabellen vs. bullets
+
+Tabellen zijn slecht leesbaar op mobiel zodra ze tekst bevatten. Richtlijn:
+
+- **Tabel alleen voor** numerieke vergelijking over max 3 kolommen, met kleine tabelkoppen (één of twee woorden per kop)
+- **Bullets voor** inhoudelijke uitleg per categorie — ook als een tabel "logisch" lijkt
+- Als een tabelcel méér dan 8–10 woorden nodig heeft: het moet bullets worden
+
+Voorbeeld — ✗ als tabel:
+
+| Documenttype | Chunk-grootte | Overlap tussen chunks |
+|--------------|---------------|------------------------|
+| Algemene tekst | 256–512 tokens (ca. 180–350 woorden) | 20–30% |
+
+Voorbeeld — ✓ als bullets:
+
+- **Algemene tekst** (blogs, rapporten): 256–512 tokens per chunk (ca. 180–350 woorden), met 20–30% overlap.
+
+## 14. Koppen: gewone-woorden-toets
+
+Een sectie-kop moet begrijpelijk zijn zonder de sectie zelf te lezen. Vermijd samenstellingen met `-architectuur`, `-engine`, `-tijdperk`, `-pijplijn` en andere abstracties.
+
+- ✗ *"Retrieval-architecturen — van simpele RAG naar context engines"*
+- ✓ *"Documenten ophalen: van simpel zoeken naar een intelligente zoekmachine"*
+- ✗ *"Context rot — waarom grotere windows geen oplossing zijn"*
+- ✓ *"Context rot: waarom meer informatie het probleem niet oplost"*
+
+Test: kan een zakelijke lezer na het lezen van alleen de kop vertellen waar de sectie over gaat? Zo nee: herschrijf.
+
+## 15. Glossary-links maken inline-uitleg vaak overbodig
+
+Sinds hover-tooltips op `/begrippen#slug`-links werken, toont de tooltip automatisch de volledige uitleg van de term. Inline parenthese na de link is dan duplicaat.
+
+- ✗ `[MCP](/begrippen#mcp) — het Model Context Protocol`  (tooltip zegt dit al)
+- ✓ `[MCP](/begrippen#mcp)`  (zin blijft leesbaar zonder parenthese)
+- ✓ `het [MCP](/begrippen#mcp) — het Model Context Protocol` (behouden alléén als de zin anders onleesbaar wordt voor wie niet hovert)
+
+Regel: **als de term in glossary staat, link plaatsen en parenthese weglaten** — tenzij de vloeiendheid van de zin echt lijdt onder de bondigheid.
+
+## 16. Cross-sectie consistentie
+
+Elke pragmatische aanbeveling moet stand houden tegen de beperkingen die elders op de pagina staan. Check bij elke sectie: *"weerleg ik hier iets wat ik eerder heb beweerd?"*
+
+- ✗ Sectie A: *"context rot zorgt dat nauwkeurigheid instort bij 32K tokens"*. Sectie B: *"voor 200K-tokens kennisbanken: stop het gewoon in de prompt"*.
+- ✓ Sectie A onveranderd. Sectie B: *"voor kleine kennisbanken met simpele vragen: stop in prompt. Voor vragen waarbij het model moet redeneren: loopt alsnog tegen context rot aan (zie sectie hierboven)"*.
+
+Een pagina mag spanning tonen tussen ideeën — maar moet de spanning dan expliciet benoemen.
+
+## 17. Structuur per BB-pagina
 
 Verplichte volgorde die we met BB_03 hebben vastgesteld:
 
@@ -155,12 +265,20 @@ Verplichte volgorde die we met BB_03 hebben vastgesteld:
    - "In de praktijk" — pragmatische principes + koppelingen
 4. **Interne links** door de tekst heen naar andere `/framework/{slug}` pagina's (BB's). GR's nog niet als URL (geen `/guardrails/[slug]` route); gebruik `**Name** (GR_0X: kernzin)` in-line.
 
-## 14. Frontmatter-discipline
+## 18. Frontmatter-discipline
 
 - `checklist` — vraagvorm, concreet, meetbaar ("Zijn chunks contextueel verrijkt vóór indexering?")
-- `quickStart` — 3 stappen, elk begint met een werkwoord, eindigt met een concrete actie
+- `quickStart` — **drie stappen op drie niveaus**: strategisch (bedrijfs-/directie-beslissing), tactisch (eigenaarschap, beleid, organisatie), operationeel (concrete technische handeling). Elke stap beschrijft de eerste logische stap op dát niveau, zodat iedere rol — directie, domain-owner, developer — direct iets heeft om mee te starten. Elke stap begint met een werkwoord en eindigt met een concrete actie.
 - `evidence` — wat lever je op als bewijs dat de BB goed draait
 - `auditExample` — authentiek eigen voorbeeld (AI-Readiness Audit of vergelijkbaar), niet een generiek scenario
+
+**Voorbeeld** (uit BB_03 Dynamic Context):
+
+1. **Strategisch**: *"Bepaal welke kennisbronnen überhaupt in de context-laag mogen. Beslis per bron of hij erin hoort, hoe vaak hij actueel moet zijn, en welk privacy-regime geldt..."*
+2. **Tactisch**: *"Wijs per bron een inhoudelijke eigenaar en een houdbaarheidsgrens aan..."*
+3. **Operationeel**: *"Begin bij chunking en contextuele annotatie, niet bij model-keuze..."*
+
+De drie niveaus dekken samen de rol-laag waar de BB organisatorisch impact heeft. Geen van de drie mag ontbreken; als je er maar één of twee kunt formuleren, begrijp je zelf de BB nog niet volledig. De niveaus-labels (`Strategisch:`, `Tactisch:`, `Operationeel:`) horen in de tekst van de Quick Start zelf, niet alleen impliciet.
 
 ---
 
@@ -169,20 +287,28 @@ Verplichte volgorde die we met BB_03 hebben vastgesteld:
 Voor elke nieuwe BB- of GR-pagina, doorloop deze vragen:
 
 - [ ] Elke vakterm bij eerste gebruik uitgelegd (tabel §4 gebruikt waar mogelijk)?
+- [ ] **Geen vertaalde termen die zelf uitleg vergen** (kennisgraaf, nabij-getraind, etc.) → parafrase (§1)
 - [ ] Business-termen NL (Verkoop/Productmanagement/Klantenservice, niet Sales/Product/Customer Success)?
 - [ ] Alle voorbeelden herkenbaar voor niet-techneut?
 - [ ] Elk getal voorzien van menselijke eenheid?
 - [ ] Metaforen eerst uitgelegd, dan bondig?
 - [ ] Benchmarks van jaartal voorzien en met richting-claim?
 - [ ] Gevolg-zinnen passief (niet anthropomorfisch)?
+- [ ] **Na vetgedrukt kopje `:`, geen `—`** (§8) — grootste foutpatroon, veroorzaakte 76 correcties in BB_03
+- [ ] **`;` boven `—` als zin-koppel** (§8)
 - [ ] Em-dashes terughoudend; komma's voor bijzin?
 - [ ] Opsommingen met uitleg per bullet, niet alleen labels?
+- [ ] **Geen tabellen met meer dan 8-10 woorden per cel → bullets** (§13)
+- [ ] **Koppen in gewone-woorden-toets** — vermijd `-architectuur`, `-engine`, `-pijplijn` in kop (§14)
+- [ ] **Inline-parenthese weggelaten als glossary-link tooltip al de uitleg biedt** (§15)
+- [ ] **Cross-sectie consistentie** — elk advies houdt stand tegen eerder genoemde beperkingen (§16)
 - [ ] Cross-refs: naam + code + kernzin bij eerste vermelding?
 - [ ] Slotzin van elke disclosure toegevoegde waarde?
 - [ ] Consistente terminologie (context window niet model window)?
+- [ ] **Quick Start beschrijft eerste logische stap op drie niveaus** — strategisch (directie/product-lead), tactisch (domain-owner/ops), operationeel (developer). Labels expliciet in de tekst (§18).
 - [ ] Frontmatter-bewoording lijnt met body?
 - [ ] `astro check` → 0 errors?
-- [ ] Dev-server render gecheckt op: alle disclosures openen, alle tools-cards zichtbaar, alle links werken?
+- [ ] Dev-server render gecheckt op: alle disclosures openen, alle tools-cards zichtbaar, alle links werken, **hover-tooltips tonen definities op glossary-links**?
 
 ---
 
@@ -191,6 +317,9 @@ Voor elke nieuwe BB- of GR-pagina, doorloop deze vragen:
 | Datum | Pagina | Status |
 |-------|--------|--------|
 | 2026-04-21 | BB_03 Dynamic Context | Volledig — baseline voor deze gids (322 regels, 7 disclosures, alle secties nu volgens gids §1-14) |
+| 2026-04-22 | BB_01 Knowledge | Volledig — 391 regels, 7 disclosures, checklist + frontmatter + 12 KnowledgeItems + 5 tools |
+| 2026-04-22 | BB_03 her-pass | Lees-review door Robin: 76× `**x** —` → `:`, 10+ em-dash → `;`, 12 jargon-termen uitgelegd of geparafraseerd, tabel → bullets (§13), koppen in gewone-woorden-toets (§14), hover-tooltip-redundantie opgeruimd (§15), 200k-cachen-claim cross-sectie gealigneerd (§16). Gids §1, §4, §8 aangescherpt; §13-§16 nieuw toegevoegd. |
+| 2026-04-22 | BB_03 her-pass 2 | Enkele em-dash-regel verscherpt (§8: alleen dubbel rond tussenzin), anglicisme-regel toegevoegd (§1), Privacy-sectie top-down gerestructureerd (strategisch/tactisch/operationeel), pseudonimiseren-vs-anonimiseren nuance toegevoegd (AVG overweging 26), Quick Start omgebouwd naar drie-niveau-stap (§18 aangescherpt). |
 
 Na elke afgeronde BB/GR: entry toevoegen + zo nodig gids bijwerken met nieuwe patronen die we ontdekten.
 
