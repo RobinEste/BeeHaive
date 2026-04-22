@@ -57,7 +57,7 @@ Deze vorm probeert het model capaciteiten toe te wijzen die het niet heeft, of h
 
 ### Context-rolzetting
 
-Deze vorm geeft het model context en sturing: "jij bent een klantenservice-agent voor softwareproduct X, je spreekt Nederlandse ondernemers aan." Dit werkt nog steeds, en alle drie de grote AI-leveranciers (Anthropic, OpenAI, Google) bevelen het expliciet aan als onderdeel van een goed system prompt.
+Deze vorm geeft het model context en sturing: "jij bent een klantenservice-agent voor softwareproduct X, je spreekt Nederlandse ondernemers aan." Dit werkt nog steeds, en alle drie de grote AI-leveranciers (Anthropic, OpenAI, Google) bevelen het expliciet aan als onderdeel van een goed [system prompt](/begrippen#system-prompt).
 
 ### Jouw betekenis
 
@@ -87,7 +87,7 @@ Eén vraag, één antwoord. De basis. Alle elementen zijn specifiek voor deze en
 
 ### De system prompt
 
-Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Dit patroon heet in de literatuur **few-shot prompting** — 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel. Belangrijk patroon daarnaast: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
+Ontworpen voor herhaald gebruik over meerdere interacties. Het verschil met een single-turn prompt: je weet niet vooraf welke specifieke taken komen. Daarom wordt "betekenis" een overkoepelend **doel** ("klanten helpen hun technische problemen op te lossen"), en voeg je twee dingen toe die bij een single-turn niet nodig zijn: afhandeling van **onverwachte situaties** (off-topic vragen, dubbelzinnige input, gefrustreerde gebruikers) en **voorbeelden** van ideale interacties die het model kalibreren op gedrag dat je moeilijk in regels kunt vangen. Dit patroon heet in de literatuur [**few-shot prompting**](/begrippen#few-shot) — 2 tot 5 diverse voorbeelden verhogen de betrouwbaarheid van gestructureerde output substantieel. Belangrijk patroon daarnaast: de **prioriteitenladder** — wanneer regels conflicteren, moet het model weten welke wint. Veiligheid en privacy gaan boven feitelijke correctheid, die gaat boven toon en formatting.
 
 ### Het iteratieve gesprek
 
@@ -139,7 +139,7 @@ De industrie heeft in 2025–2026 zes canonieke agentic design patterns benoemd.
 - **Prompt Chaining** — een sequentiële ketting van stappen waarbij het resultaat van de ene stap de invoer is voor de volgende
 - **Routing** — herken het type vraag en stuur het door naar een gespecialiseerde handler (bijvoorbeeld: facturatie-vraag naar de finance-agent, technische vraag naar de support-agent)
 - **Parallelization** — splits een taak in onafhankelijke stukken die tegelijk uitgevoerd worden, of laat dezelfde vraag meerdere keren beantwoorden en kies daarna het meest consistente antwoord
-- **Orchestrator-Workers** — een centraal coördinerend model deelt de taak op in stukken en verdeelt ze over gespecialiseerde worker-agents, zoals een projectleider met een team
+- [**Orchestrator**](/begrippen#orchestrator)**-Workers** — een centraal coördinerend model deelt de taak op in stukken en verdeelt ze over gespecialiseerde worker-agents, zoals een projectleider met een team
 - **Evaluator-Optimizer** — de agent schrijft een antwoord, beoordeelt het zelf kritisch en verbetert het — een cyclus met een maximum aantal rondes om oneindig doorgaan te voorkomen
 - **ReAct (Reason + Act)** — het model wisselt tussenstappen van redeneren af met het gebruiken van tools (bijvoorbeeld: eerst nadenken over welke informatie nodig is, dan een zoekopdracht uitvoeren, dan het resultaat weer beredeneren). Dit is de meest gebruikte bouwsteen
 

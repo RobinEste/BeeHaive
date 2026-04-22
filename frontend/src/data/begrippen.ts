@@ -61,6 +61,22 @@ export const BEGRIPPEN: Term[] = [
     zieOok: ['token', 'context-window'],
   },
   {
+    slug: 'system-prompt',
+    naam: 'System prompt',
+    uitleg:
+      'De overkoepelende instructie die het gedrag van een AI-systeem over álle gesprekken heen stuurt — in tegenstelling tot een single-turn prompt die maar één interactie bestuurt. Een system prompt formuleert doel, toon, afhandeling van onverwachte situaties en een prioriteitenladder (welke regel wint als er conflict is). De drie grote AI-leveranciers (Anthropic, OpenAI, Google) bevelen system prompts expliciet aan voor iedere productie-toepassing.',
+    categorie: 'ai-basis',
+    zieOok: ['prompt', 'few-shot'],
+  },
+  {
+    slug: 'few-shot',
+    naam: 'Few-shot prompting',
+    uitleg:
+      'Techniek waarbij je 2–5 diverse voorbeelden van ideale input-outputparen in de prompt meegeeft, zodat het model zich kalibreert op gedrag dat moeilijk in expliciete regels te vangen is. Werkt bijzonder goed voor gestructureerde output, toon-matching en niche-classificatie. Tegenhanger: zero-shot (geen voorbeelden, alleen instructie).',
+    categorie: 'ai-basis',
+    zieOok: ['prompt', 'system-prompt'],
+  },
+  {
     slug: 'token',
     naam: 'Token',
     uitleg:
@@ -118,6 +134,38 @@ export const BEGRIPPEN: Term[] = [
       'De angst van medewerkers dat AI hen overbodig maakt — en de stille drijfveer achter AI-vermijding. Fortune/WalkMe (2026, n=3.750) mat dat ~80% van kenniswerkers AI-tools actief vermijdt of omzeilt, niet omdat de technologie niet werkt, maar uit FOBO. De vertrouwenskloof tussen leidinggevenden en medewerkers over AI is vaak 50+ punten. Technische training zonder FOBO-adressering lost hier niets op.',
     categorie: 'ai-basis',
     zieOok: ['operating-agreement'],
+  },
+  {
+    slug: 'decision-intelligence',
+    naam: 'Decision Intelligence',
+    uitleg:
+      'Discipline (Cassie Kozyrkov) die stelt dat het knelpunt in het AI-tijdperk verschuift van technische uitvoering naar menselijk oordeelsvermogen. Onderscheidt de "genie-kant" (tools, prompts, modellen) van de "wens-kant" (welke beslissing, voor wie, waarom, met welke acceptabele fout). Organisaties die alleen in de genie-kant investeren missen het essentieelste niveau.',
+    categorie: 'ai-basis',
+    zieOok: ['operating-agreement', 'jagged-frontier'],
+  },
+  {
+    slug: 'centaur-cyborg',
+    naam: 'Centaur en cyborg',
+    uitleg:
+      'Twee empirisch werkende samenwerkingspatronen tussen mens en AI (Mollick/Dell\'Acqua). Centaur: duidelijke taakscheiding — mens doet deel A, AI doet deel B. Cyborg: diepe integratie — continue heen-en-weer interactie, AI verweven in elke stap. Centaur houdt menselijke competentie actiever; cyborg is efficiënter binnen de jagged frontier maar geeft risico op grensblindheid. Beide vereisen dat je de frontier kent.',
+    categorie: 'ai-basis',
+    zieOok: ['jagged-frontier', 'orchestrator'],
+  },
+  {
+    slug: 'orchestrator',
+    naam: 'Orchestrator',
+    uitleg:
+      'De rol waarin een mens een systeem van AI-agents ontwerpt en bewaakt, in plaats van zelf één taak naast AI uit te voeren. KPMG (2026) onderscheidt vier agent-archetypes — Taskers, Automators, Collaborators en Orchestrators — waarbij de mens naar de orchestrator-laag schuift: bepalen wie wat doet, hoe resultaten worden beoordeeld en wanneer er wordt ingegrepen. Breidt het centaur/cyborg-kader uit voor het agents-tijdperk.',
+    categorie: 'ai-basis',
+    zieOok: ['agent', 'centaur-cyborg', 'operating-agreement'],
+  },
+  {
+    slug: 'deskilling',
+    naam: 'Deskilling',
+    uitleg:
+      'Het eroderen van menselijke expertise doordat AI taken overneemt en de professional stopt met actief oefenen. Klinisch bewezen in Budzyń et al. (Lancet 2025): ervaren endoscopisten zagen hun adenoom-detectiepercentage in drie maanden dalen van 28% naar 22% op procedures zónder AI. Tegenmaatregel: bewust competentieonderhoud — kritieke taken periodiek zonder AI oefenen, ook als AI ze aankan.',
+    categorie: 'ai-basis',
+    zieOok: ['jagged-frontier', 'operating-agreement'],
   },
 
   // ─── Retrieval & kennis ────────────────────────────────────────────
