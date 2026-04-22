@@ -7,12 +7,12 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | Categorie | Aantal |
 |-----------|--------|
 | security | 1 |
-| avg-privacy | 3 |
-| architectuur | 17 |
-| development | 26 |
+| avg-privacy | 4 |
+| architectuur | 18 |
+| development | 29 |
 | infrastructure | 0 |
 | testing | 2 |
-| **Totaal** | **49** |
+| **Totaal** | **54** |
 
 ## Inzichten
 
@@ -67,3 +67,8 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-047 | Inline uitleg eerst, glossary-links pas na rijpheid | development | 2026-04-21 | hoog |
 | KNW-2026-048 | Single source voor terminologie voedt pagina + inline links | architectuur | 2026-04-21 | hoog |
 | KNW-2026-049 | Check route-bestaan vóór inline-links in content-MDX | development | 2026-04-21 | midden |
+| KNW-2026-050 | Em-dash drift — AI-schrijvers vallen terug op Engelse interpunctie | development | 2026-04-22 | hoog |
+| KNW-2026-051 | Pseudonimiseren vs anonimiseren — AVG-status maakt compliance-eisen conditioneel | avg-privacy | 2026-04-22 | hoog |
+| KNW-2026-052 | Quick Start op drie niveaus — strategisch, tactisch, operationeel | architectuur | 2026-04-22 | hoog |
+| KNW-2026-053 | Hover-tooltip verandert inline-uitleg-patroon structureel | development | 2026-04-22 | hoog |
+| KNW-2026-054 | Quote-sourcing — BB-specifiek boven overkoepelend | development | 2026-04-22 | midden |
