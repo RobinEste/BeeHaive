@@ -9,10 +9,12 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | security | 1 |
 | avg-privacy | 4 |
 | architectuur | 18 |
-| development | 29 |
+| design | 1 |
+| development | 31 |
 | infrastructure | 0 |
+| process | 1 |
 | testing | 2 |
-| **Totaal** | **54** |
+| **Totaal** | **58** |
 
 ## Inzichten
 
@@ -72,3 +74,7 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-052 | Quick Start op drie niveaus — strategisch, tactisch, operationeel | architectuur | 2026-04-22 | hoog |
 | KNW-2026-053 | Hover-tooltip verandert inline-uitleg-patroon structureel | development | 2026-04-22 | hoog |
 | KNW-2026-054 | Quote-sourcing — BB-specifiek boven overkoepelend | development | 2026-04-22 | midden |
+| KNW-2026-055 | Wetenschappelijke claims toetsen op auteurs-positie, niet alleen feitelijkheid | process | 2026-04-25 | hoog |
+| KNW-2026-056 | Disclosure-isolatie — elke collapsable sectie moet zelfdragend zijn | design | 2026-04-25 | hoog |
+| KNW-2026-057 | Numerieke claims uit tabellen expliciet uitwerken in proza | development | 2026-04-25 | midden |
+| KNW-2026-058 | Anglicisme-drift in woordkeuze — sibling van em-dash drift | development | 2026-04-25 | midden |
