@@ -20,7 +20,7 @@ checklist:
 quickStart:
   - |
     Strategisch: beslis waar AI-output een besluit raakt.
-    Alleen op die plekken liggen de kwaliteitscriteria die je expliciet moet externaliseren. Zonder deze keuze blijft alles beneden (operating agreements, training, tooling) vaag, en is investeren in Knowledge verspilling.
+    Alleen op die plekken liggen de kwaliteitscriteria die je expliciet moet externaliseren. Zonder die strategische keuze hebben de tactische en operationele stappen die erop volgen — operating agreements, training, tooling — geen anker, en is investeren in Knowledge verspilling.
   - |
     Tactisch: schrijf per AI-ondersteund proces het operating agreement op.
     Wie beslist, waar zit human-in-the-loop, wat zijn de escalatiecriteria, wat is de kwaliteitsnorm. Expliciet, schriftelijk, per rol. Dit scheidt mensen die AI gebruiken van mensen die mét AI werken.
@@ -54,7 +54,7 @@ Tot 2024 was AI-geletterdheid vooral een HR-vinkje: *"heeft het team een ChatGPT
 
 De verplichting is bewust contextueel geformuleerd. *"Passende AI-geletterdheid"* voor een engineer verschilt fundamenteel van die voor een juridisch medewerker of een productmanager. Het is geen certificaat dat je haalt, het is een competentie die je per rol aantoont.
 
-### De litmustest in één zin
+### De lakmoesproef in één zin
 
 De meest praktische maatstaf uit de compliance-praktijk:
 
@@ -67,16 +67,23 @@ Dit onderscheidt werkelijke geletterdheid van theatrale training. Niet *"weet de
 OECD en de Europese Commissie definiëren AI-geletterdheid langs drie samenhangende dimensies:
 
 | Dimensie | Inhoud | Wat het test |
-|----------|--------|--------------|
+|:---------|:-------|:-------------|
 | Kennis en vaardigheden | Hoe AI werkt, gebruiken, co-creëren | Tool-fluency |
 | Attitudes en waarden | Kritisch denken, ethische reflectie, verantwoord gebruik | Oordeelsvermogen |
-| Cross-domein integratie | AI-begrip verweven in werkprocessen | Institutionele toepassing |
+| Cross-domein integratie | AI-begrip verweven in werkprocessen | Verankering in werkprocessen |
 
 Organisaties die alleen de eerste dimensie aanbieden (*"we hebben training gegeven"*) voldoen niet aan de AI Act en bouwen geen duurzame competentie op. Meta-skills (de cognitieve en sociale capaciteiten om AI-output te sturen, interpreteren en ethisch te beoordelen) zijn volgens McKinsey.org in 2026 *"the real competitive advantage."*
 
 ### Werkende trainingsformaten
 
-Generieke *"wat is AI?"*-workshops scoren hoog op aanwezigheid en laag op gedragsverandering. Wat wél werkt in de compliance-praktijk: **scenario walkthroughs, tabletop exercises, mock audits, red-team reviews**. Competentie-gebaseerde leeruitkomsten per rol, niet abstracte wettekst. De meetsignalen: herhaalde vragen over risicoklasse, trage classificaties, audit-bevindingen, release-vertragingen.
+Generieke *"wat is AI?"*-workshops scoren hoog op aanwezigheid en laag op gedragsverandering. Wat wél werkt in de toezichts- en auditpraktijk (de manier waarop teams die toezien op naleving van regels als de AI Act hun werk inrichten):
+
+- **Scenario-walkthroughs**: het team loopt stap voor stap door een realistische AI-toepassing en bespreekt op elk knooppunt wie welke beslissing neemt en welke risico's spelen.
+- **Tabletop exercises**: een gespeeld doorlopen van een incident — bijvoorbeeld een fout AI-besluit dat een burger raakt — om te zien of rollen, escalatie en communicatie staan.
+- **Mock audits**: een interne nepaudit volgens de AI Act-criteria, waarin dossiers worden opgevraagd en classificaties worden getoetst zoals een externe toezichthouder dat zou doen.
+- **Red-team reviews**: een aangewezen tegengroep probeert de AI-toepassing actief te breken — via prompt injection, edge cases of misbruikscenario's — en rapporteert over wat ze vonden.
+
+Het gemeenschappelijke kenmerk: rol-specifieke leeruitkomsten gekoppeld aan concrete situaties, niet abstracte wettekst die los staat van het werk. Of de geletterdheid op orde is, blijkt uit operationele signalen: terugkerende vragen over risicoklasse, classificaties die niet vlot worden gemaakt, bevindingen tijdens audits, en releases die vertraging oplopen omdat compliance-vragen niet vooraf zijn beantwoord.
 
 > *"Good training feels like engineering support. Bad training feels like someone reading a regulation at you."*
 
@@ -84,7 +91,7 @@ Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie veran
 
 </BBDisclosure>
 
-<BBDisclosure title="Decision Intelligence: de wens-kant telt meer dan de genie-kant">
+<BBDisclosure title="Decision Intelligence: de juiste vraag stellen wordt het knelpunt">
 
 Cassie Kozyrkov ([Decision Intelligence](/begrippen#decision-intelligence) Substack, februari 2026) stelt dat het knelpunt in het AI-tijdperk verschuift van technische uitvoering naar menselijk oordeelsvermogen. Haar kernobservatie:
 
@@ -103,16 +110,22 @@ Naarmate AI de genie-kant overneemt, verschuift het knelpunt naar de wens-kant. 
 
 > *"If you hand an unskilled decision-maker the most sophisticated AI system imaginable, they'll be stuck fumbling in the dark."*
 
-### Waarom intuïtie in het AI-tijdperk kalibratie verliest
+### Waarom professionele intuïtie minder betrouwbaar wordt in het AI-tijdperk
 
-Kahneman en Klein (*American Psychologist*, 2009) legden vast wanneer professionele intuïtie betrouwbaar is. Twee voorwaarden moeten allebei gelden:
+Kahneman en Klein (*"Conditions for Intuitive Expertise: A Failure to Disagree"*, American Psychologist, 2009) verzoenden hun ogenschijnlijk tegengestelde posities. Klein documenteerde experts wier intuïtie wél werkt (brandweercommandanten, schaakmeesters); Kahneman bewees dat intuïtie in veel beroepen — klinische diagnostiek, aandelen-selectie, sollicitatie-interviews — structureel slechter presteert dan een simpele rekenregel. Hun gedeelde conclusie: intuïtie kan worden vertrouwd, maar alleen als twee strenge voorwaarden allebei gelden — en die zijn in de meeste professionele contexten *niet* vervuld.
 
-1. **Omgeving met hoge voorspelkracht** (*high-validity environment*): stabiele, objectief identificeerbare signalen die voorspellend zijn voor uitkomsten.
-2. **Voldoende leerkans** (*adequate opportunity to learn*): oefening met snelle, consistente feedback.
+1. **Omgeving met hoge voorspelkracht** (*high-validity environment*): de situatie bevat stabiele signalen die werkelijk voorspellend zijn voor de uitkomst. Een schaakbord heeft hoge voorspelkracht; de aandelenmarkt op de korte termijn niet.
+2. **Voldoende leerkans** (*adequate opportunity to learn*): de professional heeft die signalen vaak genoeg in de praktijk meegemaakt mét snelle, eerlijke feedback om er een betrouwbaar gevoel voor op te bouwen.
 
-Hun scherpste observatie: *"Subjective experience is not a reliable indicator of judgment accuracy."* Oftewel: het gevoel dat je een oordeel juist hebt, is geen betrouwbaar bewijs dat het ook klopt. Je kunt je zeker voelen over een oordeel dat objectief vaak mis is.
+Kahneman bleef daarna scherper dan Klein: in veel beroepen waarin mensen op hun gevoel vertrouwen — leiderschap, strategische voorspellingen, klinische oordelen — is voorwaarde 1 niet of nauwelijks vervuld. Wat zich aanvoelt als professionele intuïtie is daar vaak patroonherkenning op signalen die niet écht voorspellend zijn. Hun scherpste observatie: *"Subjective experience is not a reliable indicator of judgment accuracy."* Het gevoel dat je een oordeel juist hebt, is geen betrouwbaar bewijs dat het ook klopt.
 
-Het AI-tijdperk bedreigt beide voorwaarden. AI verandert de geldigheidsomgeving (signalen waaraan experts hun oordeel kalibreren verschuiven), en het breekt de feedbackloops (de uitkomst wordt aan AI toegeschreven, niet aan de menselijke beslissing). Zonder expliciete tegenmaatregelen raken professionals hun ijkpunt kwijt, terwijl ze subjectief nog even zelfverzekerd blijven.
+Het AI-tijdperk knaagt verder aan beide voorwaarden, juist in de domeinen waar intuïtie eerst nog wél werkte:
+
+- **Minder oefenkilometers.** Intuïtie wordt opgebouwd door honderden of duizenden keren een beslissing zélf te nemen en te zien hoe die uitpakt. Als AI die beslissingen overneemt of voorkauwt, krijgt het brein minder voer om patronen te leren herkennen. Bij junioren ontstaat de nieuwe expertiselaag soms helemaal niet meer.
+- **Verstoorde feedbackloop.** Zelfs als de mens nog meebeslist, wordt de uitkomst meestal aan het AI-systeem toegeschreven. De professional krijgt daardoor geen scherp signaal meer over wat-werkte-en-wat-niet aan het eigen oordeel, en kan dat oordeel dus ook niet bijstellen.
+- **Verschoven werkomgeving.** De praktijk waarin de expert ooit zijn intuïtie opbouwde — hoe een dossier eruitziet, welke signalen normaal zijn, wat een rode vlag is — verandert zodra AI ertussen zit. De oude vuistregels passen niet meer een-op-een, terwijl het nieuwe patroon nog niet ingesleten is.
+
+Zonder expliciete tegenmaatregelen raken professionals hun ijkpunt kwijt, terwijl ze subjectief nog even zelfverzekerd blijven.
 
 ### De concrete taak voor Knowledge
 
@@ -127,7 +140,7 @@ Dit raakt aan de **Human Agency**-guardrail (GR_01: mensen behouden controle ove
 
 </BBDisclosure>
 
-<BBDisclosure title="Operating agreements: expertise externaliseren in vier niveaus">
+<BBDisclosure title="Operating agreements: expertise expliciet vastleggen op vier niveaus">
 
 De vaakst gemiste stap in AI-adoptie: *de kwaliteitscriteria van experts blijven in hun hoofden zitten*. Zolang jij de beoordelingsfunctie bent, werkt dat. Maar een AI-systeem kan geen gedachten lezen. Het moet expliciet krijgen wat "goed" betekent.
 
@@ -142,14 +155,14 @@ Chris Lema's **Four Levels of AI Work** biedt een progressiemodel dat de meeste 
 
 ### Level 2: compounding assets
 
-Een AI-sessie is alleen waardevol als ze iets nalaat dat de volgende sessie waardevoller maakt. Wat compoundert:
+Een AI-sessie is alleen waardevol als ze iets nalaat dat de volgende sessie waardevoller maakt: kennis en instrumenten die voorheen in hoofden zaten, nu vastgelegd in een vorm die AI kan gebruiken. Vier categorieën:
 
 - **Skills**: prompt-patronen, evaluatie-routines, workflow-templates die een individu of team beheerst.
 - **Frameworks**: beslisbomen, rubrics, quality gates die expliciet zijn gemaakt.
 - **Specifications**: geschreven beschrijvingen van *wat* goed werk is (niet alleen wat fout is).
 - **Memory**: institutioneel geheugen per klant, project, domein; niet in hoofden, maar in systemen (zie [Dynamic Context](/framework/dynamic-context#kennisgeheugen) voor de geheugenlagen).
 
-De meeste AI-gebruikers produceren wegwerpoutput. Pogingen worden niet hergebruikt, prompts niet versioneerd, kritiekpatronen niet opgeschreven. Het resultaat: elke sessie is weer net zo duur als de vorige.
+De meeste AI-gebruikers produceren wegwerpoutput. Eerdere pogingen worden niet hergebruikt, prompts krijgen geen versiebeheer, en terugkerende kritiekpunten worden nergens vastgelegd. Het resultaat: elke sessie levert ongeveer dezelfde kwaliteit op als de vorige; er wordt niets opgebouwd.
 
 ### Level 3: het [operating agreement](/begrippen#operating-agreement)
 
@@ -167,6 +180,14 @@ Een operating agreement bevat minimaal:
 
 Niet impliciet. Niet in een vergadering besproken. Schriftelijk. Als je het niet kunt opschrijven, heb je het niet begrepen.
 
+### Level 4: van losse interacties naar productie-architecturen
+
+Op niveau 4 stopt AI definitief een gespreks-tool te zijn en wordt het een onderdeel van je productie-omgeving. In plaats van één mens die met één model praat, ontstaat een systeem waarin meerdere [agents](/begrippen#agent) en modellen samenwerken: de ene agent verzamelt informatie, de andere stelt een conceptantwoord op, een derde toetst het tegen kwaliteits- en compliance-regels, en pas daarna komt het bij de mens.
+
+Dat vraagt dezelfde discipline als andere productie-software: versiebeheer voor prompts en agents, monitoring op kwaliteit en kosten, een uitrolproces met testomgeving en terugrol-optie, en duidelijke verantwoordelijkheid wie welke agent beheert. Operating agreements van niveau 3 zijn de bouwstenen; op niveau 4 worden ze gecombineerd tot een werkend systeem.
+
+Dit niveau is geen *Knowledge*-thema meer in enge zin; het raakt direct aan [Tool Integration](/framework/tool-integration), [Model Engines](/framework/model-engines) en [Evaluation Loop](/framework/evaluation-loop). Wat hier wél bij Knowledge hoort: de organisatie moet weten *welke* rol een mens nog heeft in dit systeem. Zonder die rolverdeling vervalt accountability en wordt de menselijke check een formaliteit zonder werkelijk oordeel.
+
 ### Waarom dit werkt: externalisatie vervangt mindreading
 
 Jij weet wanneer een ontwerp klopt. Je herkent solide architectuur als je het ziet. Je voelt wanneer een tekst zijn doel mist. Maar je hebt het nooit hoeven opschrijven, want vóór AI was *jij* de beoordelingsfunctie.
@@ -177,7 +198,7 @@ Begin bij wat je afwijst. Dat is het makkelijkste startpunt: verzamel AI-output 
 
 </BBDisclosure>
 
-<BBDisclosure title="De jagged frontier en de orchestrator-rol">
+<BBDisclosure title="Succesvolle samenwerking vereist diepe kennis van AI">
 
 Dell'Acqua et al. (Harvard/BCG, 2023) publiceerden het meest geciteerde veldexperiment over AI-augmentatie, en introduceerden meteen de term [jagged frontier](/begrippen#jagged-frontier) waarmee we sindsdien over mens-AI-grenzen praten. Pre-geregistreerd, n=758 BCG-consultants. De uitkomsten vormen inmiddels de empirische basis voor hoe we over mens-AI samenwerking denken.
 
@@ -185,9 +206,9 @@ Dell'Acqua et al. (Harvard/BCG, 2023) publiceerden het meest geciteerde veldexpe
 
 - **Binnen de frontier** (taken waar AI sterk is): +12,2% meer taken, +25,1% sneller, +40% hogere kwaliteitsscore
 - **Buiten de frontier** (taken waar AI subtiel faalt): AI-gebruikers **19 procentpunten minder nauwkeurig** dan de controlegroep
-- **Skill-nivellering**: de zwakste consultants verbeterden met +43%, maar alleen binnen de frontier.
+- **Skill-nivellering** (prestatieverschillen tussen mensen worden kleiner doordat AI vooral de zwaksten omhoog tilt): de zwakste consultants verbeterden met +43%, maar alleen binnen de frontier.
 
-De kerninzicht in één zin, van Ethan Mollick:
+Het kerninzicht in één zin, van Ethan Mollick:
 
 > *"On some tasks AI is immensely powerful, and on others it fails completely or subtly. And, unless you use AI a lot, you won't know which is which."*
 
@@ -213,7 +234,7 @@ Dell'Acqua et al. herhaalden het experiment in 2025 bij P&G (n=776). Toen werd e
 
 > *"If you want to empower an individual to be as effective as a team, give them AI. But if you want to be in that top 10% of performers, a full human team plus AI seems like the recipe for success."*
 
-Individuele productiviteit heeft een plafond dat alleen teams doorbreken. BB_01 moet teamcompetentie ontwerpen, niet alleen individuele tool-vaardigheid.
+Individuele productiviteit heeft een plafond dat alleen teams doorbreken. Knowledge (BB_01) moet teamcompetentie ontwerpen, niet alleen individuele tool-vaardigheid.
 
 ### De [orchestrator](/begrippen#orchestrator)-rol voor het agents-tijdperk
 
@@ -232,11 +253,11 @@ McKinsey (april 2026) benoemt de bijbehorende organisatiekeuze:
 
 > *"Hiring determines where human judgment sits in the organization. Capability building determines whether AI amplifies that judgment or bypasses it."*
 
-Voor BB_01 betekent dit: rollen herontwerpen van uitvoerder naar orchestrator, accountability expliciet maken per agent-systeem, institutionele frontier-kennis borgen zodat die niet vertrekt met seniore medewerkers.
+Voor Knowledge (BB_01) betekent dit: rollen herontwerpen van uitvoerder naar orchestrator, accountability expliciet maken per agent-systeem, institutionele frontier-kennis borgen zodat die niet vertrekt met senior-medewerkers.
 
 </BBDisclosure>
 
-<BBDisclosure title="De deskilling-paradox: wanneer erodeert AI expertise">
+<BBDisclosure title="Wanneer versterkt AI je vakkennis, en wanneer neemt die af?">
 
 Augustus 2025 publiceerde *The Lancet Gastroenterology & Hepatology* het eerste klinische bewijs van AI-geïnduceerde [deskilling](/begrippen#deskilling). Het onderzoek is compact, methodologisch scherp, en ongemakkelijk:
 
@@ -249,11 +270,11 @@ Augustus 2025 publiceerde *The Lancet Gastroenterology & Hepatology* het eerste 
 
 Drie maanden. Ervaren specialisten. Patiëntrelevante uitkomst. Dit is geen speculatief risico; het is een gemeten effect.
 
-Parallel vond Gerlich (2025, n=666, VK) in survey-studie een correlatie van **r = −0,68** tussen frequent AI-gebruik en kritische denkvaardigheden, en **r = +0,72** tussen AI-gebruik en cognitieve offloading. Methodologische voorbehouden (correlationeel, zelfrapportage) maken het indicatief, niet causaal; het patroon convergeert echter met de Lancet-bevinding.
+Parallel vond Gerlich (2025, n=666, VK) in survey-studie een correlatie van **r = −0,68** tussen frequent AI-gebruik en kritische denkvaardigheden, en **r = +0,72** tussen AI-gebruik en *cognitieve offloading*; het mentale werk dat normaal in het hoofd zou gebeuren (onthouden, narekenen, redeneren) wordt uitbesteed aan de tool, waardoor de hersenen die spier minder trainen. Methodologische voorbehouden (correlationeel, zelfrapportage) maken het indicatief, niet causaal; het patroon convergeert echter met de Lancet-bevinding.
 
 ### Wanneer versterkt AI expertise, wanneer erodeert het
 
-Uit de convergentie van Lancet, Kahneman-Klein en Dell'Acqua valt een werkbaar onderscheid af te leiden.
+Uit de samenloop van Lancet, Kahneman-Klein en Dell'Acqua valt een werkbaar onderscheid af te leiden.
 
 **AI versterkt expertise wanneer:**
 - De frontier bekend is: de professional weet welke taken AI aankan en welke niet.
@@ -277,13 +298,13 @@ Praktische maatregelen:
 - **Identificeer per rol/domein welke vaardigheden kwetsbaar zijn**: niet alle expertise heeft hetzelfde risico.
 - **Monitor deskilling-signalen**: dalende prestatie op taken zonder AI is een vroege waarschuwing.
 - **Expertise-opbouw-eerste voor nieuwe medewerkers**: eerst blootstelling aan taken zonder AI, daarna AI-assistentie, zodat ze überhaupt een frontier kunnen leren herkennen.
-- **Georganiseerde expertise-overdracht** van seniore medewerkers naar systemen en/of collega's, zodat institutionele frontier-kennis blijft bestaan bij personeelswisselingen.
+- **Georganiseerde expertise-overdracht** van senior-medewerkers naar systemen en/of collega's, zodat institutionele frontier-kennis blijft bestaan bij personeelswisselingen.
 
 Dit raakt direct aan de **Well-being**-guardrail (GR_06: het systeem draagt bij aan maatschappelijk welzijn) en de **Human Agency**-guardrail (GR_01: mensen behouden controle). Controle veronderstelt behouden competentie.
 
 </BBDisclosure>
 
-<BBDisclosure title="Leercultuur, FOBO en de institutionele kloof">
+<BBDisclosure title="Zijn mensen en organisaties klaar voor AI?">
 
 De meest optimistische AI-narratieven komen van leiders. De werkelijkheid op de vloer is minder rooskleurig.
 
@@ -301,7 +322,7 @@ Fortune/WalkMe/SAP (april 2026, n=3.750 over 14 landen) mat een structurele ontk
 | Executives: tools zijn adequaat | 88% |
 | Werknemers: tools zijn adequaat | 21% |
 
-De trust chasm is 52 punten; de tool-adequaatheidsgap 67 punten. En dit is niet omdat de technologie niet werkt. De primaire driver is [**FOBO**](/begrippen#fobo) (Fear of Becoming Obsolete):
+Tussen leiders en medewerkers gaapt een vertrouwenskloof van 52 procentpunten in AI voor complexe beslissingen (61% versus 9%), en een kloof van 67 procentpunten in het oordeel of de tools voldoen (88% versus 21%). En dit is niet omdat de technologie niet werkt. De primaire driver is [**FOBO**](/begrippen#fobo) (Fear of Becoming Obsolete):
 
 > *"Not because it doesn't work. Because they're afraid of what happens when it works too well."*
 
@@ -316,7 +337,7 @@ McKinsey (januari 2025) mat parallelle cijfers vanuit een andere hoek:
 - C-suite schat dat 4% van medewerkers gen AI gebruikt voor 30%+ dagelijks werk; de werkelijkheid is **3× hoger**
 - Bijna de helft van medewerkers wil méér formele training
 
-De twee bevindingen zijn niet contradictoir: adoptie-readiness is heterogeen. In sommige populaties is de medewerker klaar en zit de leider in de weg; in andere populaties werkt FOBO als rem. BB_01 moet beide patronen kunnen onderscheiden in dezelfde organisatie.
+De twee bevindingen zijn niet tegenstrijdig: adoptie-readiness is heterogeen. In sommige populaties is de medewerker klaar en zit de leider in de weg; in andere populaties werkt FOBO als rem. Knowledge (BB_01) moet beide patronen kunnen onderscheiden in dezelfde organisatie.
 
 ### De institutionele versus individuele AI-kloof
 
@@ -336,7 +357,7 @@ Hetzelfde gebeurt nu. Individuele AI-productiviteit stapelt niet automatisch op 
 6. **Voorwaardenscheppen**: process engineering en change management, niet alleen tools verstrekken.
 7. **Proactief handelen**: AI handelt op eigen initiatief, mensen sturen op systeemniveau.
 
-BB_01 moet tool-vaardigheid expliciet scheiden van institutionele AI-volwassenheid. *"Heeft iedereen ChatGPT gezien?"* meet het eerste; het tweede vereist herontwerp van werkprocessen, accountability-structuren, en leiderschap dat dit actief trekt.
+Knowledge (BB_01) moet tool-vaardigheid expliciet scheiden van institutionele AI-volwassenheid. *"Heeft iedereen ChatGPT gezien?"* meet het eerste; het tweede vereist herontwerp van werkprocessen, accountability-structuren, en leiderschap dat dit actief trekt.
 
 ### Zeven werkende patronen voor een AI-leercultuur
 
@@ -366,11 +387,11 @@ De snelste weg naar expliciete kwaliteitscriteria gaat via afwijzing. Verzamel t
 
 ### Behandel FOBO als een gegeven, niet als een bug
 
-Als 80% van je medewerkers AI actief vermijdt en de vertrouwensgap met leidinggevenden 52 punten is, is technische training zinloos tot die psychologische laag is geadresseerd. Maak FOBO bespreekbaar, meet het expliciet, en ontwerp rolveranderingen zo dat medewerkers zien dat hun expertise niet vervangen maar opgewaardeerd wordt naar de orchestrator-rol.
+Als 80% van je medewerkers AI actief vermijdt en de vertrouwensgap met leidinggevenden 52 punten is, is technische training zinloos tot die psychologische laag is geadresseerd. [**FOBO**](/begrippen#fobo) — *Fear of Becoming Obsolete*, de angst dat AI je overbodig maakt — is hier de stille drijfveer. Maak het bespreekbaar, meet het expliciet, en ontwerp rolveranderingen zo dat medewerkers zien dat hun expertise niet vervangen maar opgewaardeerd wordt naar de orchestrator-rol.
 
 ### Bewaak de frontier collectief
 
-De jagged frontier van AI is niet stabiel. Modellen verbeteren, taken verschuiven, nieuwe failure-modes verschijnen. Een organisatie die vertrouwt op individuele ervaring voor frontier-kennis verliest die kennis bij elke senior-uitstroom. Maak een mechanisme (een forum, een wiki, een reguliere reflectie) waarin frontier-observaties collectief worden vastgelegd en bijgewerkt.
+De [**jagged frontier**](/begrippen#jagged-frontier) — de grillige grens tussen taken waar AI betrouwbaar werkt en taken waar het subtiel of compleet faalt — is niet stabiel. Modellen verbeteren, taken verschuiven, en nieuwe manieren waarop AI ergens stilletjes onderuit gaat duiken op. Een organisatie die alleen vertrouwt op individuele ervaring voor die frontier-kennis verliest die kennis bij elke senior-uitstroom. Maak een mechanisme (een forum, een wiki, een reguliere reflectie) waarin frontier-observaties collectief worden vastgelegd en bijgewerkt.
 
 ### Onderhoud kritieke vaardigheden bewust zónder AI
 
@@ -388,6 +409,6 @@ Knowledge staat niet op zichzelf. Deze bouwsteen levert input aan alle andere, e
 - **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is): rol-specifieke AI-geletterdheid is een AI Act-voorwaarde; operating agreements maken accountability concreet.
 - **Well-being**-guardrail (GR_06: maatschappelijk welzijn): deskilling en FOBO zijn welzijnsrisico's, geen IT-problemen.
 
-Knowledge is de bouwsteen waarvan de afwezigheid alle andere stil laat falen. Techniek kan expertise niet vervangen, alleen amplificeren. De vraag is niet of je in Knowledge investeert, maar of je dat bewust doet, of toelaat dat de expertise die jouw organisatie onderscheidt langzaam erodeert terwijl de output-cijfers kortdurend stijgen.
+Knowledge is de bouwsteen waarvan de afwezigheid alle andere stil laat falen. Techniek kan expertise niet vervangen, alleen versterken. De vraag is niet of je in Knowledge investeert, maar of je dat bewust doet, of toelaat dat de expertise die jouw organisatie onderscheidt langzaam erodeert terwijl de output-cijfers kortdurend stijgen.
 
 </BBDisclosure>

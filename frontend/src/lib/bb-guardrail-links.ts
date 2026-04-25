@@ -48,7 +48,7 @@ export const bbGuardrailLinks: Record<string, GuardrailLink[]> = {
   'prompt-design': [
     link('GR_05', 'Een prompt bepaalt wat het model doet en hoe. In productie moet die instructie navolgbaar en uitlegbaar zijn, zodat gebruikers de output kunnen interpreteren.'),
     link('GR_01', 'De prompt bepaalt of gebruikers de output kunnen corrigeren, het systeem kunnen stoppen of kunnen escaleren naar een mens. Zonder expliciete stopcondities en escalatie-paden is menselijke controle een illusie.'),
-    link('GR_07', 'Een production prompt is geen losse tekststring in de code — het is een document waarvoor iemand verantwoordelijk is. Versioning, review-trails en expliciet eigenaarschap zijn voorwaarden voor verantwoording.'),
+    link('GR_07', 'Een production prompt is geen losse tekststring in de code; het is een document waarvoor iemand verantwoordelijk is. Versioning, review-trails en expliciet eigenaarschap zijn voorwaarden voor verantwoording.'),
   ],
   'tool-integration': [
     link('GR_02', 'Externe koppelingen zijn kwetsbaar — robuuste error handling is cruciaal.'),

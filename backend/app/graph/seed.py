@@ -1033,7 +1033,7 @@ TOOLS = [
         "name": "Notion",
         "category": "saas",
         "url": "https://www.notion.so/",
-        "description": "Generieke workspace die in enterprise-context vaak de plek is waar operating agreements, rubrics, frontier-observaties en team-playbooks daadwerkelijk leven. Niet AI-specifiek — en precies daarom geschikt: een operating agreement moet vindbaar en onderhoudbaar zijn waar mensen toch al samenwerken, niet in een aparte AI-silo.",
+        "description": "Generieke workspace die in enterprise-context vaak de plek is waar operating agreements, rubrics, frontier-observaties en team-playbooks daadwerkelijk leven. Niet AI-specifiek, en precies daarom geschikt: een operating agreement moet vindbaar en onderhoudbaar zijn waar mensen toch al samenwerken, niet in een aparte AI-silo.",
         "building_blocks": ["Knowledge"],
         "guardrails": ["Accountability", "Transparency"],
         "sources": [],
