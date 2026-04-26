@@ -16,7 +16,7 @@ checklist:
   - "Is de architectuurkeuze tussen workflow en agent, en tussen RAG, fine-tuning en agent-tooling, onderbouwd?"
   - "Zijn risico's expliciet ontworpen-tegen volgens EU AI Act-tier, HLEG-vereisten, DPIA en OWASP-dreigingen?"
   - "Is een prototype of werkende demo gebruikt om de blueprint met stakeholders te valideren?"
-  - "Is de governance helder, inclusief sign-off-criteria en vendor-eisen?"
+  - "Is de governance helder, inclusief goedkeuringscriteria en leveranciers-eisen?"
 quickStart:
   - |
     Strategisch: bepaal de AI-ambitie expliciet.
@@ -35,7 +35,7 @@ evidence:
   - "AI Solution Canvas en feasibility-check per geselecteerde use case"
   - "Risk register met EU AI Act-tier, DPIA-trigger en OWASP-dreigingen, gekoppeld aan ontwerp-mitigaties"
   - "Prototype-output (werkende gebruikersinterface of demo) ingezet als aanknopingspunt voor het gesprek met stakeholders"
-  - "Vendor governance-document met AI Bill of Materials voor externe componenten"
+  - "Leveranciers-governance-document met AI Bill of Materials voor externe componenten"
 ---
 
 import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
@@ -215,7 +215,7 @@ Hybride architectuur (RAG + fine-tuning + agents) is in 2026 het dominante enter
 
 ### MCP als standaard tooling-laag
 
-Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds eind 2024 de opkomende standaard voor agent-tool-integraties. Adoptie steeg snel: 97 miljoen SDK-downloads per maand medio 2025, OpenAI nam het over in maart 2025, vendor-neutraal gemaakt via de Agentic AI Foundation in december 2025. Beveiligingsrisico's zijn reëel en gedocumenteerd: prompt-injectie, tool-permissie-misbruik voor data-exfiltratie, lookalike-tools die vertrouwde tools vervangen.
+Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds eind 2024 de opkomende standaard voor agent-tool-integraties. Adoptie steeg snel: 97 miljoen SDK-downloads per maand medio 2025, OpenAI nam het over in maart 2025, leverancier-onafhankelijk gemaakt via de Agentic AI Foundation in december 2025. Beveiligingsrisico's zijn reëel en gedocumenteerd: prompt-injectie, tool-permissie-misbruik voor data-exfiltratie, lookalike-tools die vertrouwde tools vervangen.
 
 **Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de standaardkeuze; alle MCP-servers krijgen een eigen entry in het risk register.
 
@@ -282,7 +282,7 @@ Een Client Blueprint die alleen op papier bestaat krijgt zelden een goede review
 
 - **Google Stitch** (introductie Google I/O 2025; versie 2.0 uitgerold maart 2026 met multi-screen canvas en voice commands): live ideation, multi-richting UX-verkenning. Sterk voor het verkennen van *concepten*. Zwakte: geen backend, misleidend voor complexe businesslogica; gratis Labs-product met op piek-momenten beperkte beschikbaarheid.
 - **v0 by Vercel**: productie-rijpe React-componenten; goed als developer-team alignment het doel is. Zwakte: alleen React/Next.js, componenten zijn geen applicaties, vereist technisch publiek.
-- **Lovable**: full-stack MVP (TypeScript, Supabase, auth, hosting), toegankelijk voor niet-technische stakeholders. Zwakte: vendor lock-in, klanten overschatten gereedheid, design-kwaliteit secundair.
+- **Lovable**: full-stack MVP (TypeScript, Supabase, auth, hosting), toegankelijk voor niet-technische stakeholders. Zwakte: leverancier-afhankelijkheid, klanten overschatten gereedheid, design-kwaliteit secundair.
 - **Bolt.new**: snelste output, live demo in meeting, browser-gebaseerd. Zwakte: token-kosten lopen onvoorspelbaar op bij iteratie, eerste output is ruw.
 - **Claude Design** (Anthropic, gelanceerd 17 april 2026, powered by Claude Opus 4.7): genereert prototypes, slides en one-pagers; past een team-design-system toe door codebase en design-files in te lezen. Zwakte: research-preview, feature-set evolueert nog snel.
 - **Claude Artifacts**: één interactieve component, te delen in tien minuten. Zwakte: geen persistente state, beperkt tot één artefact.
@@ -331,7 +331,7 @@ Het FDE-model is niet zonder critici. Drie grenzen die in de blueprint-fase rele
 
 - **Schaalbaarheidsgrens**: FDE-werk is klant-specifiek en niet automatisch schaalbaar tot een algemene productfunctie. Wat voor één klant werkt, hoeft niet de basis te zijn voor de volgende.
 - **Rolvervaging**: de scheidslijn tussen FDE, Solutions Architect, Sales Engineer en Agent Engineer vervaagt. Salesforce's eigen FDE-profiel beschrijft *"praktisch twee beroepen in één"*, wat in de praktijk leidt tot rol-verwarring en burn-out-risico.
-- **Cagan/SVPG-kritiek**: Marty Cagan (Silicon Valley Product Group) waarschuwt dat klant-specifieke aanpassingen de productstrategie kunnen dicteren in plaats van een coherente productvisie. Wie alleen FDE-werk doet, bouwt aan honderden one-offs en nooit aan één schaalbaar product.
+- **Cagan/SVPG-kritiek**: Marty Cagan (Silicon Valley Product Group) waarschuwt dat klant-specifieke aanpassingen de productstrategie kunnen dicteren in plaats van een coherente productvisie. Wie alleen FDE-werk doet, bouwt aan honderden eenmalige oplossingen en nooit aan één schaalbaar product.
 
 ### Wat zit dan in de Client Blueprint?
 
@@ -343,13 +343,13 @@ Niet het volledige FDE-model, wel de FDE-*principes* als blueprint-werkwijze:
 - **Discrepantie-jacht**: actief op zoek naar het verschil tussen *hoe de klant zegt dat het werkt* en *hoe de data laat zien dat het werkt*.
 - **Helicopter-view voor herbruikbaarheid**: stel na elke klant-specifieke oplossing actief de vraag welk patroon zich aftekent dat los van deze klantcontext geldig blijft. Wat begint als één-klant-oplossing kan, met de juiste abstractie en een stap terug, een herbruikbare bouwsteen worden voor volgende klanten.
 
-Met deze vijf principes kun je iteratief werken zonder te vervallen in het volledige FDE-model. De helicopter-view-stap is daarbij de bewuste tegenkracht voor de Cagan-kritiek op one-off-customisaties: niet alle FDE-werk wordt een product-feature, maar wat patroon-waardig is wordt actief opgeschaald.
+Met deze vijf principes kun je iteratief werken zonder te vervallen in het volledige FDE-model. De helicopter-view-stap is daarbij de bewuste tegenkracht voor de Cagan-kritiek op eenmalige klant-aanpassingen: niet alle FDE-werk wordt een product-feature, maar wat patroon-waardig is wordt actief opgeschaald.
 
 </BBDisclosure>
 
-<BBDisclosure title="Governance, sign-off en de Nederlandse context">
+<BBDisclosure title="Governance, goedkeuring en de Nederlandse context">
 
-Een Client Blueprint zonder governance is een wens-lijst. Drie governance-elementen horen expliciet in de blueprint: een AI-comité dat besluiten neemt, vendor-eisen voor externe componenten, en een sign-off-procedure die het verschil tussen *bedacht* en *vrijgegeven* markeert. Voor Nederlandse organisaties komt daar een onderscheidende laag bij: de Nederlandse AI Coalitie en het PACE-platform.
+Een Client Blueprint zonder governance is een wens-lijst. Drie governance-elementen horen expliciet in de blueprint: een AI-comité dat besluiten neemt, leveranciers-eisen voor externe componenten, en een goedkeuringsprocedure die het verschil tussen *bedacht* en *vrijgegeven* markeert. Voor Nederlandse organisaties komt daar een onderscheidende laag bij: de Nederlandse AI Coalitie en het PACE-platform.
 
 ### Het AI-comité
 
@@ -357,13 +357,13 @@ De industriële best practice is een interdisciplinair AI-comité, doorgaans aan
 
 Voor een Client Blueprint betekent dit dat al in de ontwerp-fase wordt vastgelegd:
 
-- Wie tekent op welke beslissingen (architectuur, modellen, vendors, releases)?
+- Wie tekent op welke beslissingen (architectuur, modellen, leveranciers, releases)?
 - Welke besluiten kunnen op team-niveau, welke gaan altijd naar het comité?
 - Hoe worden ethische incidenten gemeld, en aan wie?
 
 Zonder die helderheid blijven beslissingen hangen of escaleren ze ad hoc; beide patronen vertragen de bouw en verlagen de uiteindelijke kwaliteit.
 
-### Vendor governance en de AI Bill of Materials
+### Leveranciers-governance en de AI Bill of Materials
 
 Niet alle componenten worden zelf gebouwd. Een Client Blueprint maakt expliciet welke externe modellen, API's en tools worden gebruikt, en eist van leveranciers een **AI Bill of Materials** (AI BOM): een gestructureerd overzicht van trainingsdata-bronnen, model-aanpassingen, bekende beperkingen en compliance-status. De AI BOM is het AI-equivalent van een ingredient-list; zonder die lijst kun je geen verantwoorde claim doen over wat het systeem doet en niet doet.
 
@@ -376,14 +376,14 @@ De Nederlandse AI Coalitie (NL AIC), in nauwe samenwerking met TNO, biedt twee e
 
 Een Nederlandse organisatie die NL AIC-interoperabiliteit en PACE-ethiek-by-design integreert, positioneert haar AI-oplossing niet alleen als compliance-gericht maar als intrinsiek verantwoord. Voor klant-zichtbare toepassingen is dat geen luxe; het is een onderscheid in marktpositie.
 
-### Sign-off als formele poort
+### Goedkeuring als formele poort
 
 De blueprint heeft een goedkeuringspoort. Een use case is pas klaar voor implementatie als:
 
 - de waarde-stroom expliciet is gemapt
 - het AI Solution Canvas en de feasibility-check zijn goedgekeurd
 - het risk register is ingevuld (EU AI Act-tier, DPIA-trigger, OWASP-dreigingen)
-- vendor-eisen inclusief AI BOM zijn vastgelegd
+- leveranciers-eisen inclusief AI BOM zijn vastgelegd
 - het AI-comité (of zijn delegate) heeft getekend op de eerste implementatie-iteratie
 
 Pas na deze goedkeuring begint de bouw. Voor heel kleine use cases is een lichte versie van deze goedkeuring uiteraard voldoende; voor high-risk-toepassingen is zij niet onderhandelbaar.
