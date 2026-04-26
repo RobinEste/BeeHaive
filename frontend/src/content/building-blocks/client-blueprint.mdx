@@ -313,11 +313,11 @@ Een prototype is een **discovery-instrument**, geen validatie-eindpunt. Het vers
 
 <BBDisclosure title="Iteratief bouwen: FDE-principes en hun grenzen">
 
-Hoe houd je een Client Blueprint levend in plaats van bevroren? Een werkwijze die in de afgelopen jaren grote tractie heeft gekregen is de Forward Deployed Engineer (FDE), oorspronkelijk een Palantir-rol uit de vroege jaren 2010 (intern bekend als "Delta"). Tot circa 2016 had Palantir meer FDE's dan reguliere software-engineers. Sinds 2024-2025 namen meer organisaties het model over: FDE-vacatures stegen met meer dan 800% tussen januari en september 2025; Salesforce committeerde zich aan duizend FDE's.
+Hoe houd je een Client Blueprint levend in plaats van bevroren? Een werkwijze die in de afgelopen jaren grote tractie heeft gekregen is de Forward Deployed Engineer (FDE), oorspronkelijk een Palantir-rol uit de vroege jaren 2010 (intern bekend als "Delta"). Tot circa 2016 had Palantir meer FDE's dan reguliere software-engineers. Sinds 2024-2025 hebben steeds meer organisaties het model overgenomen: FDE-vacatures stegen met meer dan 800% tussen januari en september 2025; Salesforce committeerde zich aan duizend FDE's.
 
 ### Het kernprincipe
 
-*"Dev: één capability, veel klanten; Delta: veel capabilities, één klant."* Een FDE werkt embedded bij de klant, in plaats van vanuit een productlab. OpenAI's drie-fasen-versie van het model:
+*"Ontwikkelaar: één vaardigheid, veel klanten; FDE: veel vaardigheden, één klant."* Een FDE werkt op locatie bij de klant, in plaats van vanuit een productlab. OpenAI's drie-fasen-versie van het model:
 
 - **Scoping**: het klantprobleem begrijpen zoals het werkelijk is, en niet zoals het gerapporteerd wordt; in de praktijk vaak twee verschillende dingen
 - **Validatie**: oplossingen toetsen aan vooraf-vastgestelde evaluatiecriteria
@@ -329,7 +329,7 @@ Een geciteerde observatie uit de praktijk: *"FDEs work with enormous uncertainty
 
 Het FDE-model is niet zonder critici. Drie grenzen die in de blueprint-fase relevant zijn:
 
-- **Schaalbaarheidsgrens**: FDE-werk is klant-specifiek en niet schaalbaar als standaard productcapability. Wat voor één klant werkt, hoeft niet de basis te zijn voor de volgende.
+- **Schaalbaarheidsgrens**: FDE-werk is klant-specifiek en niet automatisch schaalbaar tot een algemene productfunctie. Wat voor één klant werkt, hoeft niet de basis te zijn voor de volgende.
 - **Rolvervaging**: de scheidslijn tussen FDE, Solutions Architect, Sales Engineer en Agent Engineer vervaagt. Salesforce's eigen FDE-profiel beschrijft *"praktisch twee beroepen in één"*, wat in de praktijk leidt tot rol-verwarring en burn-out-risico.
 - **Cagan/SVPG-kritiek**: Marty Cagan (Silicon Valley Product Group) waarschuwt dat klant-specifieke aanpassingen de productstrategie kunnen dicteren in plaats van een coherente productvisie. Wie alleen FDE-werk doet, bouwt aan honderden one-offs en nooit aan één schaalbaar product.
 
@@ -337,12 +337,13 @@ Het FDE-model is niet zonder critici. Drie grenzen die in de blueprint-fase rele
 
 Niet het volledige FDE-model, wel de FDE-*principes* als blueprint-werkwijze:
 
-- **Embedded scoping**: tijd doorbrengen in de waarde-stroom zelf, met de waarde-stroom-eigenaren, niet alleen met de IT-eigenaar.
+- **Scoping op locatie**: tijd doorbrengen in de waarde-stroom zelf, met de waarde-stroom-eigenaren, niet alleen met de IT-eigenaar.
 - **Iteratie boven specificatie**: de blueprint is een levend document, niet een eenmalige requirements-spec.
 - **Bouwen boven adviseren**: een werkend prototype op een echte data-snede is informatiever dan twintig pagina's analyse.
 - **Discrepantie-jacht**: actief op zoek naar het verschil tussen *hoe de klant zegt dat het werkt* en *hoe de data laat zien dat het werkt*.
+- **Helicopter-view voor herbruikbaarheid**: stel na elke klant-specifieke oplossing actief de vraag welk patroon zich aftekent dat los van deze klantcontext geldig blijft. Wat begint als één-klant-oplossing kan, met de juiste abstractie en een stap terug, een herbruikbare bouwsteen worden voor volgende klanten. Niet álles wordt productfunctie (zie schaalbaarheidsgrens), maar zonder deze stap blijft het altijd one-off.
 
-Met deze vier principes kun je iteratief werken zonder te vervallen in het volledige FDE-model, en zonder de Cagan-faalmodus van one-off-customisaties.
+Met deze vijf principes kun je iteratief werken zonder te vervallen in het volledige FDE-model. De helicopter-view-stap is daarbij de bewuste tegenkracht voor de Cagan-kritiek op one-off-customisaties: niet alle FDE-werk wordt een product-feature, maar wat patroon-waardig is wordt actief opgeschaald.
 
 </BBDisclosure>
 
