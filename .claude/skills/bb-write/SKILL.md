@@ -27,6 +27,37 @@ Deze skill is een *forcing function* op de stijlgids in `~/ODIN/projecten/BeeHai
    - `frontend/src/content/building-blocks/knowledge.mdx` (volledige, gereviewde BB met 7 BBDisclosures)
    - `frontend/src/content/building-blocks/dynamic-context.mdx` (de baseline-pagina)
 3. Voor de te schrijven BB/GR: bekijk welke KnowledgeItems er in `backend/app/graph/seed.py` aan gekoppeld zijn — die geven de inhoudelijke ankers.
+4. **Stel een terminologie-decision-log op** voor de pagina (zie Stap 1b). Doe dit *voordat* je begint met schrijven, niet halverwege.
+
+## Stap 1b: Terminologie-decision-log
+
+Inconsistente terminologie binnen één pagina ontstaat structureel: in eerste-conceptzinnen sluipen Engelse terminologie en NL-vertalingen door elkaar (`stream` naast `waarde-stroom`, `playbook` naast `werkboek`, `flow` naast `stroom`). De schrijfstijl-bb §12 (consistente terminologie binnen één pagina) wordt anders pas tijdens lees-review afgedwongen, met handmatige reparatie als gevolg.
+
+**Verplichte stap vóór de eerste body-zin:**
+
+1. Inventariseer de centrale Engelse vakterm(en) van de pagina. Voorbeelden per BB:
+   - BB_02 (Client Blueprint): *value stream*, *workflow*, *playbook*, *prototype*, *value proposition*, *job-to-be-done*
+   - BB_03 (Dynamic Context): *retrieval*, *chunking*, *context window*, *staleness*, *embedding*
+   - BB_04 (Prompt Design): *system prompt*, *few-shot*, *chain-of-thought*, *iterative gesprek*
+
+2. Voor elke vakterm: kies één gehanteerde NL-vorm en houd die vast. Schrijf de keuze op in een korte tabel — in de eigen scratch-buffer of als hidden HTML-comment in de MDX-frontmatter (top-of-file). Bijvoorbeeld voor BB_02:
+
+   | Engelse term | Gehanteerde NL-vorm |
+   |--------------|---------------------|
+   | value stream | waarde-stroom (met koppelteken; samenstellingen waarde-stroom-niveau, waarde-stroom-eigenaar) |
+   | playbook | playbook (ingeburgerd; geen vertaling) |
+   | prototype | prototype (ingeburgerd) |
+   | value proposition | value proposition (Engelstalig in productlogica-context, anders 'waarde-belofte') |
+   | workflow | werkstroom |
+
+3. Hanteer de canonieke parenthese-regel: bij **eerste vermelding** in de body de Engelse term tussen haakjes naast de NL-term: *"Een waarde-stroom (value stream) is..."*. Daarna alleen de NL-vorm.
+
+4. **Uitzonderingen** zijn het waard te noteren:
+   - Letterlijke citaten in de oorspronkelijke taal (Engels) blijven Engels.
+   - Framework-eigennamen (bijv. *Product Value Stream* als unFIX-typenaam, *Operational Value Stream* in SAFe-context) blijven Engels.
+   - Bij eerste check, geef expliciet aan of een term ingeburgerd is in NL business-taal (bijv. *prototype*, *playbook*, *MCP*, *RAG*) of vertaald moet worden.
+
+**Test halverwege schrijven**: pak de term-tabel erbij. Heb je consequent dezelfde NL-vorm gebruikt? Zo niet, herstel onmiddellijk.
 
 ## Stap 2: Hard rules die altijd gelden
 
@@ -180,6 +211,8 @@ Na schrijven en vóór doorgeven aan de gebruiker:
 4. **Sectie-koppen-toets**: lees alleen de koppen. Bevatten ze `-architectuur`, `-engine`, `-tijdperk`, `-pijplijn`? Herschrijf.
 5. **Drie-niveau Quick Start aanwezig?** Strategisch, Tactisch, Operationeel; allemaal als label in de tekst.
 6. **Cross-refs eerste-vermelding-vorm?** Voor elke andere BB/GR die je noemt, eerste keer met naam + code + kernzin.
+7. **Terminologie-consistentie-grep**: pak de term-tabel uit Stap 1b. Voor elke Engelse term die je hebt vertaald, grep op de Engelse vorm in de body (`grep -nE "\b<engelse-term>\b" <bestand>`). Hits moeten te verklaren zijn (canonieke parenthese, citaat, framework-eigennaam) of vervangen worden. Voorbeelden: `\bstream\b`, `\bvalue stream\b`, `\bplaybook\b`.
+8. **Inhoudelijke-feiten-check (kritisch bij externe frameworks)**: voor elke claim over een extern framework (unFIX-typen, Anthropic-patronen, EU AI Act-tiers, OWASP-nummering, etc.) moet je de primaire bron hebben gezien — geen plausibel-klinkende reconstructie uit context. Bij twijfel: WebFetch op de primaire URL of grep in lokale `docs/research/`-pakketten op `verified`-stempel. (Aanleiding: BB_02-eerste-concept noemde verzonnen unFIX-typen Customer/Internal/Innovation/Operational ipv. de werkelijke Product/Service/Event/Project.)
 
 Als één van deze checks faalt: terug naar Stap 3 (pre-write-scan) op het probleemgedeelte.
 
