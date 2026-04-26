@@ -7,8 +7,8 @@ order: 2
 quote: "AI is not the starting point. The business is."
 quoteAuthor: "Sam Obeidat (CAIO Newsletter, 2025)"
 checklist:
-  - "Is de value stream waarin de AI-oplossing past expliciet gemapt, van trigger tot uitkomst?"
-  - "Is helder welke beslissing of werkstap binnen die stream wordt verbeterd?"
+  - "Is de waarde-stroom waarin de AI-oplossing past expliciet gemapt, van trigger tot uitkomst?"
+  - "Is helder welke beslissing of werkstap binnen die waarde-stroom wordt verbeterd?"
   - "Is het succescriterium kwantificeerbaar en gekoppeld aan bestaande prestatie-indicatoren?"
   - "Is getoetst of dit überhaupt een AI-probleem is, met een expliciet geschiktheidskader?"
   - "Zijn processen, rollen, eindgebruikers en stakeholders beschreven?"
@@ -20,18 +20,18 @@ checklist:
 quickStart:
   - |
     Strategisch: bepaal de AI-ambitie expliciet.
-    Welke value streams horen bij de strategische kern, en welke daarvan moeten over twee jaar fundamenteel anders werken? Maak de keuze tussen inward versus outward en tussen everyday versus game-changing voordat de eerste use case in detail wordt uitgewerkt; deze keuze bepaalt de risico-bereidheid en daarmee welke compliance-kaders direct geactiveerd moeten worden.
+    Welke waarde-stromen horen bij de strategische kern, en welke daarvan moeten over twee jaar fundamenteel anders werken? Maak de keuze tussen inward versus outward en tussen everyday versus game-changing voordat de eerste use case in detail wordt uitgewerkt; deze keuze bepaalt de risico-bereidheid en daarmee welke compliance-kaders direct geactiveerd moeten worden.
   - |
-    Tactisch: kies één value stream en map de flow.
-    Beschrijf de end-to-end-stroom van trigger tot uitkomst, kwantificeer de drie grootste knelpunten (uren, foutpercentage, doorlooptijd) en wijs een eigenaar aan die over de afdelingsgrenzen heen gaat. Pas daarna formuleer je de eerste AI-use-case binnen die stream.
+    Tactisch: kies één waarde-stroom en map de flow.
+    Beschrijf de end-to-end-stroom van trigger tot uitkomst, kwantificeer de drie grootste knelpunten (uren, foutpercentage, doorlooptijd) en wijs een eigenaar aan die over de afdelingsgrenzen heen gaat. Pas daarna formuleer je de eerste AI-use-case binnen die waarde-stroom.
   - |
     Operationeel: toets, classificeer en valideer met een prototype.
     Drie-signalen-toets (is dit echt een AI-probleem?), risico-classificatie volgens de EU AI Act, DPIA-trigger en data-readiness. Bouw een prototype dat één concrete knelpunt adresseert en valideer dat als gespreksanker met stakeholders, niet als bewijs van werkzaamheid.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We begonnen niet met 'we willen een AI-tool', maar met de value stream van een audit: van klant-intake tot eindrapport. In die stream identificeerden we één knelpunt: semi-gestructureerde interview-data omzetten naar herhaalbare scoring. Daar lag een AI-probleem (ongestructureerde input, contextvariërende beoordeling); bij eindrapportage en klantbeheer volstond deterministische tooling. De blueprint-scope werd één stap binnen één stream, niet een 'AI-platform voor audits'. Iteratie is geen falen; het is het mechanisme waarmee scope scherp blijft."
+  description: "We begonnen niet met 'we willen een AI-tool', maar met de waarde-stroom van een audit: van klant-intake tot eindrapport. In die waarde-stroom identificeerden we één knelpunt: semi-gestructureerde interview-data omzetten naar herhaalbare scoring. Daar lag een AI-probleem (ongestructureerde input, contextvariërende beoordeling); bij eindrapportage en klantbeheer volstond deterministische tooling. De blueprint-scope werd één stap binnen één waarde-stroom, niet een 'AI-platform voor audits'. Iteratie is geen falen; het is het mechanisme waarmee scope scherp blijft."
 evidence:
-  - "Gemapte value stream(s) met expliciete trigger-, fase- en outcome-definitie"
+  - "Gemapte waarde-stroom (of -stromen) met expliciete trigger-, fase- en outcome-definitie"
   - "AI Solution Canvas en feasibility-check per geselecteerde use case"
   - "Risk register met EU AI Act-tier, DPIA-trigger en OWASP-dreigingen, gekoppeld aan ontwerp-mitigaties"
   - "Prototype-output (werkende UI of demo) ingezet als gespreksanker met stakeholders"
@@ -42,7 +42,7 @@ import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
 
 ## Wat is een Client Blueprint?
 
-Een Client Blueprint is het ontwerp dat een klantvraag verbindt met een werkende AI-oplossing. Niet als waterval-document, maar als een levend overzicht van *welke* value stream wordt geraakt, *welke* beslissing of werkstap wordt verbeterd, *hoe* de oplossing past in de bestaande architectuur, en *welke* risico's al in het ontwerp worden ondervangen.
+Een Client Blueprint is het ontwerp dat een klantvraag verbindt met een werkende AI-oplossing. Niet als waterval-document, maar als een levend overzicht van *welke* waarde-stroom wordt geraakt, *welke* beslissing of werkstap wordt verbeterd, *hoe* de oplossing past in de bestaande architectuur, en *welke* risico's al in het ontwerp worden ondervangen.
 
 Het document overbrugt de afstand tussen klantbehoefte en feitelijke implementatie. Het beschrijft wat de oplossing moet doen, hoe interacties verlopen, en welke componenten (prompts, [agents](/begrippen#agent), data, tools, kwaliteitscriteria) nodig zijn om reproduceerbare, betrouwbare en toetsbare resultaten te leveren. De blueprint is geen eenmalige opdracht aan een bouwteam; hij groeit mee met inzichten uit de bouw.
 
@@ -56,10 +56,10 @@ De grootste fout bij het bouwen van AI-oplossingen is starten met de techniek. S
 
 Een **waarde-stroom** (*value stream*) is de end-to-end-journey die een trigger transformeert in een uitkomst voor een stakeholder. Niet een afdeling, niet een tool, maar een volledige flow van waarde. Dit is Sam Obeidat's brede framing; Jurgen Appelo's unFIX hanteert een nauwere, gebruiker-gecentreerde variant (*"from a signal to an experience"*) die verderop expliciet aan bod komt. De voorbeelden hieronder werken voor beide definities:
 
-- *Trigger:* nieuwe klant tekent contract → *uitkomst:* klant volledig productief in het systeem (onboarding-stream)
-- *Trigger:* support-vraag binnen → *uitkomst:* opgelost ticket met tevreden klant (support-stream)
-- *Trigger:* maand sluit → *uitkomst:* getekende rapportage bij directie (financial-close-stream)
-- *Trigger:* inschrijving training → *uitkomst:* deelnemer behaalt leerdoel (educatie-stream)
+- *Trigger:* nieuwe klant tekent contract → *uitkomst:* klant volledig productief in het systeem (klant-onboarding)
+- *Trigger:* support-vraag binnen → *uitkomst:* opgelost ticket met tevreden klant (support-afhandeling)
+- *Trigger:* maand sluit → *uitkomst:* getekende rapportage bij directie (maand-afsluiting)
+- *Trigger:* inschrijving training → *uitkomst:* deelnemer behaalt leerdoel (leertraject)
 
 Een waarde-stroom loopt vrijwel altijd door meerdere afdelingen heen. Dat is de kern: AI ontworpen *voor één afdeling* automatiseert silo-werk; AI ontworpen *voor een waarde-stroom* pakt de overdrachten en wachttijden tussen afdelingen aan, waar de meeste doorlooptijd verloren gaat.
 
@@ -68,17 +68,17 @@ Een waarde-stroom loopt vrijwel altijd door meerdere afdelingen heen. Dat is de 
 Drie redenen, alle drie gegrond in onafhankelijke bevindingen:
 
 - **Het lost het MIT-95%-faalpatroon op**: pilots falen niet omdat de techniek tekortschiet, maar omdat AI op de verkeerde plek wordt toegepast. Een waarde-stroom legt concreet bloot waar het werk vastloopt: in overdrachten, wachtfases of goedkeuringsmomenten. Dáár hoort de AI-interventie.
-- **Het snijdt door silo's**: een knelpunt zit zelden netjes binnen één afdeling. Door op streamniveau te ontwerpen voorkom je het patroon waarbij elke afdeling z'n eigen AI-tool koopt en de gezamenlijke flow verder verstopt raakt.
-- **Het maakt de eindgebruiker zichtbaar**: de stream-eigenaar (de stakeholder die de uitkomst ontvangt) is meestal niet dezelfde als de IT-eigenaar van het systeem dat AI gaat draaien. Door op stream-niveau te beginnen wordt die afstemming onontkoombaar.
+- **Het snijdt door silo's**: een knelpunt zit zelden netjes binnen één afdeling. Door op waarde-stroom-niveau te ontwerpen voorkom je het patroon waarbij elke afdeling z'n eigen AI-tool koopt en de gezamenlijke flow verder verstopt raakt.
+- **Het maakt de eindgebruiker zichtbaar**: de waarde-stroom-eigenaar (de stakeholder die de uitkomst ontvangt) is meestal niet dezelfde als de IT-eigenaar van het systeem dat AI gaat draaien. Door op waarde-stroom-niveau te beginnen wordt die afstemming onontkoombaar.
 
-### Definities en de vier value-stream-typen (unFIX, Jurgen Appelo)
+### Definities en de vier waarde-stroom-typen (unFIX, Jurgen Appelo)
 
 Twee gangbare definities lopen rond het begrip waarde-stroom; voor een Client Blueprint is het zinvol vooraf vast te stellen welke je hanteert. Sam Obeidat's variant (hierboven gebruikt) is breed-procesmatig: trigger naar uitkomst voor een stakeholder. Jurgen Appelo's unFIX-definitie is nauwer en gebruiker-gecentreerd: *"the set of actions needed to discover or deliver on a job-to-be-done / value proposition from a signal to an experience."* Twee accenten verschillen:
 
 - Appelo's framing begint expliciet bij een gebruiker-*signaal* en eindigt bij een gebruiker-*ervaring*; Obeidat's framing is breder maar minder consument-gericht.
 - Appelo voegt nadrukkelijk *discover* toe: ontdekkings- en innovatie-stromen vallen er expliciet onder, niet alleen levering.
 
-Een Obeidat-stream kan volledig intern zijn (bijvoorbeeld een maand-afsluiting); een Appelo-stream begint en eindigt altijd bij een gebruiker of klant. Beide definities zijn werkbaar; de Appelo-versie sluit beter aan op een commerciële AI-toepassing, de Obeidat-versie is praktischer voor interne automatisering.
+Een waarde-stroom volgens Obeidat kan volledig intern zijn (bijvoorbeeld een maand-afsluiting); volgens Appelo begint en eindigt hij altijd bij een gebruiker of klant. Beide definities zijn werkbaar; de Appelo-versie sluit beter aan op een commerciële AI-toepassing, de Obeidat-versie is praktischer voor interne automatisering.
 
 unFIX onderscheidt vier waarde-stroom-typen:
 
@@ -87,13 +87,13 @@ unFIX onderscheidt vier waarde-stroom-typen:
 - **Event Value Stream**: waarde-stroom voor evenementen
 - **Project Value Stream**: waarde-stroom voor tijdelijke initiatieven met gedefinieerd einde
 
-Belangrijk om te weten: unFIX maakt *geen* onderscheid tussen "Development" en "Operational" value streams (zoals het SAFe-framework dat wel doet). In Appelo's model is een Development Value Stream meestal een Product- of Service-stream; een Operational Value Stream is typisch een naar-binnen-gerichte Service Value Stream. Voor een AI-blueprint betekent dit dat je niet vooraf hoeft te kiezen tussen "AI in onze ontwikkel-keten" of "AI in onze operatie"; het is hetzelfde type stream, met andere accenten in afnemer en KPI.
+Belangrijk om te weten: unFIX maakt *geen* onderscheid tussen "Development" en "Operational" value streams (zoals het SAFe-framework dat wel doet). In Appelo's model is een Development Value Stream meestal een Product- of Service-stroom; een Operational Value Stream is typisch een naar-binnen-gerichte Service Value Stream. Voor een AI-blueprint betekent dit dat je niet vooraf hoeft te kiezen tussen "AI in onze ontwikkel-keten" of "AI in onze operatie"; het is hetzelfde type waarde-stroom, met andere accenten in afnemer en KPI.
 
-Een Crew in unFIX is een cross-functioneel team dat één waarde-stroom *bezit* en continu verbetert (lean-oorsprong); de Crew snijdt door afdelingen heen en is gekoppeld aan de stream, niet aan een functie.
+Een Crew in unFIX is een cross-functioneel team dat één waarde-stroom *bezit* en continu verbetert (lean-oorsprong); de Crew snijdt door afdelingen heen en is gekoppeld aan de waarde-stroom, niet aan een functie.
 
 ### Wanneer is een waarde-stroom niet de juiste lens?
 
-Niet elke AI-toepassing past in één stream. Een bedrijfsbrede zoek-assistent over alle interne kennis is *horizontaal* en raakt meerdere streams tegelijk; een blueprint die zo'n toepassing in één stream wil persen voelt geforceerd. Voor horizontale toepassingen werkt de stream-lens als *secundair* kader: welke streams gaan deze assistent het zwaarst gebruiken, en welke kwaliteitseisen volgen daaruit?
+Niet elke AI-toepassing past in één waarde-stroom. Een bedrijfsbrede zoek-assistent over alle interne kennis is *horizontaal* en raakt meerdere waarde-stromen tegelijk; een blueprint die zo'n toepassing in één waarde-stroom wil persen voelt geforceerd. Voor horizontale toepassingen werkt de waarde-stroom-lens als *secundair* kader: welke waarde-stromen gaan deze assistent het zwaarst gebruiken, en welke kwaliteitseisen volgen daaruit?
 
 De waarde-stroom is daarmee geen wet, het is het meest informatieve startpunt: voor de meeste enterprise-AI-vraagstukken brengt het je de eerste tien stappen in de juiste richting.
 
@@ -109,7 +109,7 @@ Trigger, eindresultaat, hoofdfasen, stakeholders, één-noord-ster-KPI, betrokke
 
 ### Stap 2: Diagnose via TRACE
 
-Binnen de gekozen stream zoom je in op één werkstroom. Het TRACE-mindset (Trigger, Route, Annotate, Check, Escalate) maakt onzichtbaar werk zichtbaar:
+Binnen de gekozen waarde-stroom zoom je in op één werkstroom. Het TRACE-mindset (Trigger, Route, Annotate, Check, Escalate) maakt onzichtbaar werk zichtbaar:
 
 - **Trigger**: wat start de werkstroom?
 - **Route**: welke handen, systemen en stappen volgen?
@@ -336,7 +336,7 @@ Het FDE-model is niet zonder critici. Drie grenzen die in de blueprint-fase rele
 
 Niet het volledige FDE-model, wel de FDE-*principes* als blueprint-werkwijze:
 
-- **Embedded scoping**: tijd doorbrengen in de waarde-stroom zelf, met de stream-eigenaren, niet alleen met de IT-eigenaar.
+- **Embedded scoping**: tijd doorbrengen in de waarde-stroom zelf, met de waarde-stroom-eigenaren, niet alleen met de IT-eigenaar.
 - **Iteratie boven specificatie**: de blueprint is een levend document, niet een eenmalige requirements-spec.
 - **Bouwen boven adviseren**: een werkend prototype op een echte data-snede is informatiever dan twintig pagina's analyse.
 - **Discrepantie-jacht**: actief op zoek naar het verschil tussen *hoe de klant zegt dat het werkt* en *hoe de data laat zien dat het werkt*.
