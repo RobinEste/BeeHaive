@@ -221,7 +221,7 @@ Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds 
 
 </BBDisclosure>
 
-<BBDisclosure title="Risico's als ontwerp-input, niet als afterthought">
+<BBDisclosure title="Risico's als ontwerp-input, niet achteraf bepaald">
 
 In veel projecten verschijnt risico-management pas na de bouw, als het systeem klaar is voor productie. Dat is te laat. De Client Blueprint behandelt risico als ontwerp-input: vóór architectuurkeuzes wordt vastgelegd welk risiconiveau geldt, welke compliance-eisen activeren, en welke dreigingen al in het ontwerp moeten worden ondervangen.
 
@@ -234,11 +234,11 @@ De EU AI Act trad in werking op 1 augustus 2024; de meeste regels gelden vanaf 2
 - **Tier 3, beperkt risico**: chatbots, deepfakes; transparantieverplichting naar de gebruiker.
 - **Tier 4, minimaal risico**: spamfilters, video-game-AI; grotendeels ongereguleerd.
 
-De tier wordt vroeg in de blueprint vastgesteld. Tier 2 betekent dat alle acht design-gates al in de architectuur worden ingebouwd, niet in een latere "compliance-fase".
+De tier wordt vroeg in de blueprint vastgesteld. Tier 2 betekent dat alle acht ontwerp-controlepunten al in de architectuur worden ingebouwd, niet in een latere "compliance-fase".
 
 ### HLEG-vereisten en ALTAI als checklist
 
-De Ethics Guidelines for Trustworthy AI (HLEG, 2019) leveren zeven vereisten die op het BeeHaive-framework één-op-één zijn afgebeeld als guardrails: Human Agency, Robustness, Privacy, Transparency, Fairness, Well-being, Accountability. De **ALTAI-checklist** vertaalt deze zeven vereisten naar een interactieve zelfbeoordeling op `altai.insight-centre.org`. Voor elke high-risk-blueprint draait ALTAI als verplichte gate; voor lager-risico-blueprints als aanbevolen review.
+De Ethics Guidelines for Trustworthy AI (HLEG, 2019) leveren zeven vereisten die op het BeeHaive-framework één-op-één zijn afgebeeld als guardrails: Human Agency, Robustness, Privacy, Transparency, Fairness, Well-being, Accountability. De **ALTAI-checklist** vertaalt deze zeven vereisten naar een interactieve zelfbeoordeling op `altai.insight-centre.org`. Voor elke high-risk-blueprint draait ALTAI als verplicht controlepunt; voor lager-risico-blueprints als aanbevolen review.
 
 ### DPIA en privacy-by-design
 
@@ -376,7 +376,7 @@ Een Nederlandse organisatie die NL AIC-interoperabiliteit en PACE-ethiek-by-desi
 
 ### Sign-off als formele poort
 
-De blueprint heeft een gate. Een use case is pas klaar voor implementatie als:
+De blueprint heeft een goedkeuringspoort. Een use case is pas klaar voor implementatie als:
 
 - de waarde-stroom expliciet is gemapt
 - het AI Solution Canvas en de feasibility-check zijn goedgekeurd
@@ -384,7 +384,7 @@ De blueprint heeft een gate. Een use case is pas klaar voor implementatie als:
 - vendor-eisen inclusief AI BOM zijn vastgelegd
 - het AI-comité (of zijn delegate) heeft getekend op de eerste implementatie-iteratie
 
-Pas na deze gate begint de bouw. Voor heel kleine use cases is een lichte versie van deze gate uiteraard voldoende; voor high-risk-toepassingen is hij niet onderhandelbaar.
+Pas na deze goedkeuring begint de bouw. Voor heel kleine use cases is een lichte versie van deze goedkeuring uiteraard voldoende; voor high-risk-toepassingen is zij niet onderhandelbaar.
 
 </BBDisclosure>
 
@@ -403,7 +403,7 @@ De Client Blueprint is het meest cross-cutting bouwsteen: hij raakt direct alle 
 - **[Prompt Design](/framework/prompt-design) (BB_04: gestructureerde instructies en kwaliteitscriteria voor consistente output)**: welke instructie-architectuur, welke evaluatiecriteria zijn vooraf nodig?
 - **[Tool Integration](/framework/tool-integration) (BB_05: externe tools, MCP-servers en agent-tooling)**: welke externe systemen, welke MCP-servers, welke permissies?
 - **[Model Engines](/framework/model-engines) (BB_06: modelkeuze, routing-strategie en EU-data-residentie)**: welke modellen voor welke taak, welke routing-strategie, welke EU-data-residentie-eisen?
-- **[Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren, opnieuw meten)**: welke meetinstrumenten worden vooraf in het ontwerp ingebouwd, welke gates ontstaan in productie?
+- **[Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren, opnieuw meten)**: welke meetinstrumenten worden vooraf in het ontwerp ingebouwd, welke controles ontstaan in productie?
 
 De blueprint is geen los document; hij is de plek waar de zeven bouwstenen samenkomen tot één coherent ontwerp. Wie deze bouwsteen overslaat, krijgt zes losse implementaties zonder gedeeld doel.
 
