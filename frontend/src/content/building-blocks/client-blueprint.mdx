@@ -71,16 +71,25 @@ Drie redenen, alle drie gegrond in onafhankelijke bevindingen:
 - **Het snijdt door silo's**: een knelpunt zit zelden netjes binnen één afdeling. Door op streamniveau te ontwerpen voorkom je het patroon waarbij elke afdeling z'n eigen AI-tool koopt en de gezamenlijke flow verder verstopt raakt.
 - **Het maakt de eindgebruiker zichtbaar**: de stream-eigenaar (de stakeholder die de uitkomst ontvangt) is meestal niet dezelfde als de IT-eigenaar van het systeem dat AI gaat draaien. Door op stream-niveau te beginnen wordt die afstemming onontkoombaar.
 
-### Crews en value-stream-types (unFIX, Jurgen Appelo)
+### Definities en de vier value-stream-typen (unFIX, Jurgen Appelo)
 
-Jurgen Appelo's unFIX-model maakt deze invalshoek expliciet. Een Crew is een cross-functioneel team dat één waarde-stroom *bezit* en continu verbetert (lean-oorsprong). unFIX onderscheidt vier waarde-stroom-types:
+Twee gangbare definities lopen rond het begrip waarde-stroom; voor een Client Blueprint is het zinvol vooraf vast te stellen welke je hanteert. Sam Obeidat's variant (hierboven gebruikt) is breed-procesmatig: trigger naar uitkomst voor een stakeholder. Jurgen Appelo's unFIX-definitie is nauwer en gebruiker-gecentreerd: *"the set of actions needed to discover or deliver on a job-to-be-done / value proposition from a signal to an experience."* Twee accenten verschillen:
 
-- **Customer Stream**: levert waarde direct aan een externe klant
-- **Internal Stream**: levert waarde aan een interne afnemer (denk aan finance, HR, IT-platform)
-- **Innovation Stream**: ontwikkelt nieuwe waarde-proposities
-- **Operational Stream**: houdt het bestaande operationeel
+- Appelo's framing begint expliciet bij een gebruiker-*signaal* en eindigt bij een gebruiker-*ervaring*; Obeidat's framing is breder maar minder consument-gericht.
+- Appelo voegt nadrukkelijk *discover* toe: ontdekkings- en innovatie-stromen vallen er expliciet onder, niet alleen levering.
 
-Voor een Client Blueprint betekent dit: identificeer welk type stream je wilt versterken; dat bepaalt mede welke risico's, KPI's en stakeholders relevant zijn. Een Customer Stream raakt extern reputatierisico; een Internal Stream raakt vooral efficiëntie en datakwaliteit.
+Een Obeidat-stream kan volledig intern zijn (bijvoorbeeld een maand-afsluiting); een Appelo-stream begint en eindigt altijd bij een gebruiker of klant. Beide definities zijn werkbaar; de Appelo-versie sluit beter aan op een commerciële AI-toepassing, de Obeidat-versie is praktischer voor interne automatisering.
+
+unFIX onderscheidt vier waarde-stroom-typen:
+
+- **Product Value Stream**: waarde-stroom voor productlevering
+- **Service Value Stream**: waarde-stroom voor dienstverlening
+- **Event Value Stream**: waarde-stroom voor evenementen
+- **Project Value Stream**: waarde-stroom voor tijdelijke initiatieven met gedefinieerd einde
+
+Belangrijk om te weten: unFIX maakt *geen* onderscheid tussen "Development" en "Operational" value streams (zoals het SAFe-framework dat wel doet). In Appelo's model is een Development Value Stream meestal een Product- of Service-stream; een Operational Value Stream is typisch een naar-binnen-gerichte Service Value Stream. Voor een AI-blueprint betekent dit dat je niet vooraf hoeft te kiezen tussen "AI in onze ontwikkel-keten" of "AI in onze operatie"; het is hetzelfde type stream, met andere accenten in afnemer en KPI.
+
+Een Crew in unFIX is een cross-functioneel team dat één waarde-stroom *bezit* en continu verbetert (lean-oorsprong); de Crew snijdt door afdelingen heen en is gekoppeld aan de stream, niet aan een functie.
 
 ### Wanneer is een waarde-stroom niet de juiste lens?
 
