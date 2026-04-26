@@ -7,7 +7,7 @@ order: 2
 quote: "AI is not the starting point. The business is."
 quoteAuthor: "Sam Obeidat (CAIO Newsletter, 2025)"
 checklist:
-  - "Is de waarde-stroom waarin de AI-oplossing past expliciet gemapt, van trigger tot uitkomst?"
+  - "Is de waarde-stroom waarin de AI-oplossing past expliciet in kaart gebracht, van trigger tot uitkomst?"
   - "Is helder welke beslissing of werkstap binnen die waarde-stroom wordt verbeterd?"
   - "Is het succescriterium kwantificeerbaar en gekoppeld aan bestaande prestatie-indicatoren?"
   - "Is getoetst of dit überhaupt een AI-probleem is, met een expliciet geschiktheidskader?"
@@ -31,9 +31,9 @@ auditExample:
   title: "AI-Readiness Audit"
   description: "We begonnen niet met 'we willen een AI-tool', maar met de waarde-stroom van een audit: van klant-intake tot eindrapport. In die waarde-stroom identificeerden we één knelpunt: semi-gestructureerde interview-data omzetten naar herhaalbare scoring. Daar lag een AI-probleem (ongestructureerde input, contextvariërende beoordeling); bij eindrapportage en klantbeheer volstond deterministische tooling. De blueprint-scope werd één stap binnen één waarde-stroom, niet een 'AI-platform voor audits'. Iteratie is geen falen; het is het mechanisme waarmee scope scherp blijft."
 evidence:
-  - "Gemapte waarde-stroom (of -stromen) met expliciete trigger-, fase- en outcome-definitie"
+  - "In kaart gebrachte waarde-stroom (of -stromen) met expliciete trigger-, fase- en outcome-definitie"
   - "AI Solution Canvas en feasibility-check per geselecteerde use case"
-  - "Risk register met EU AI Act-tier, DPIA-trigger en OWASP-dreigingen, gekoppeld aan ontwerp-mitigaties"
+  - "Risico-register met EU AI Act-tier, DPIA-trigger en OWASP-dreigingen, gekoppeld aan ontwerp-mitigaties"
   - "Prototype-output (werkende gebruikersinterface of demo) ingezet als aanknopingspunt voor het gesprek met stakeholders"
   - "Leveranciers-governance-document met AI Bill of Materials voor externe componenten"
 ---
@@ -217,7 +217,7 @@ Hybride architectuur (RAG + fine-tuning + agents) is in 2026 het dominante enter
 
 Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds eind 2024 de opkomende standaard voor agent-tool-integraties. Adoptie steeg snel: 97 miljoen SDK-downloads per maand medio 2025, OpenAI nam het over in maart 2025, leverancier-onafhankelijk gemaakt via de Agentic AI Foundation in december 2025. Beveiligingsrisico's zijn reëel en gedocumenteerd: prompt-injectie, tool-permissie-misbruik voor data-exfiltratie, lookalike-tools die vertrouwde tools vervangen.
 
-**Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de standaardkeuze; alle MCP-servers krijgen een eigen entry in het risk register.
+**Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de standaardkeuze; alle MCP-servers krijgen een eigen entry in het risico-register.
 
 </BBDisclosure>
 
@@ -365,11 +365,11 @@ Zonder die helderheid blijven beslissingen hangen of escaleren ze ad hoc; beide 
 
 ### Leveranciers-governance en de AI Bill of Materials
 
-Niet alle componenten worden zelf gebouwd. Een Client Blueprint maakt expliciet welke externe modellen, API's en tools worden gebruikt, en eist van leveranciers een **AI Bill of Materials** (AI BOM): een gestructureerd overzicht van trainingsdata-bronnen, model-aanpassingen, bekende beperkingen en compliance-status. De AI BOM is het AI-equivalent van een ingredient-list; zonder die lijst kun je geen verantwoorde claim doen over wat het systeem doet en niet doet.
+Niet alle componenten worden zelf gebouwd. Een Client Blueprint maakt expliciet welke externe modellen, API's en tools worden gebruikt, en eist van leveranciers een **AI Bill of Materials** (AI BOM): een gestructureerd overzicht van trainingsdata-bronnen, model-aanpassingen, bekende beperkingen en compliance-status. De AI BOM is het AI-equivalent van een ingrediënten-lijst; zonder die lijst kun je geen verantwoorde claim doen over wat het systeem doet en niet doet.
 
 ### Nederland: NL AIC en PACE
 
-De Nederlandse AI Coalitie (NL AIC), in nauwe samenwerking met TNO, biedt twee elementen die voor BeeHaive-klanten relevant zijn:
+De Nederlandse AI Coalitie (NL AIC), in nauwe samenwerking met TNO, biedt twee elementen die voor Nederlandse organisaties relevant zijn:
 
 - **Werkgroep Data Delen**: praktische interoperabiliteits-richtlijnen voor data spaces. Voor blueprints die met soevereine data of partner-ecosystemen moeten omgaan zijn deze richtlijnen direct toepasbaar.
 - **Het PACE-platform**: Participative And Constructive Ethics; ethiek als proactief ontwerpprincipe in plaats van een compliance-vink achteraf. Stakeholders, inclusief maatschappelijke vertegenwoordigers, worden vanaf de ideatie-fase betrokken.
@@ -380,11 +380,11 @@ Een Nederlandse organisatie die NL AIC-interoperabiliteit en PACE-ethiek-by-desi
 
 De blueprint heeft een goedkeuringspoort. Een use case is pas klaar voor implementatie als:
 
-- de waarde-stroom expliciet is gemapt
+- de waarde-stroom expliciet in kaart is gebracht
 - het AI Solution Canvas en de feasibility-check zijn goedgekeurd
-- het risk register is ingevuld (EU AI Act-tier, DPIA-trigger, OWASP-dreigingen)
+- het risico-register is ingevuld (EU AI Act-tier, DPIA-trigger, OWASP-dreigingen)
 - leveranciers-eisen inclusief AI BOM zijn vastgelegd
-- het AI-comité (of zijn delegate) heeft getekend op de eerste implementatie-iteratie
+- het AI-comité (of zijn vertegenwoordiger) heeft de eerste implementatie-iteratie formeel goedgekeurd
 
 Pas na deze goedkeuring begint de bouw. Voor heel kleine use cases is een lichte versie van deze goedkeuring uiteraard voldoende; voor high-risk-toepassingen is zij niet onderhandelbaar.
 
@@ -411,10 +411,10 @@ De blueprint is geen los document; hij is de plek waar de zeven bouwstenen samen
 
 ### De iteratie als fundament
 
-Een blueprint goed maken is geen eenmalige oefening; het is een continu verbeterproces. De waarde zit in het scherper worden van de probleemformulering, het beter leren begrijpen van wat AI in deze specifieke context wel en niet betrouwbaar kan, het herkennen welke architecturen zich uitbetalen en welke achteraf overdimensionering bleken. De beste blueprints zijn niet de meest uitgebreide; ze zijn de meest precieze in hun keuzes en even precies in wat bewust is *niet* gekozen.
+Een blueprint goed maken is geen eenmalige oefening; het is een continu verbeterproces. De waarde zit in het scherper worden van de probleemformulering, het beter leren begrijpen van wat AI in deze specifieke context wel en niet betrouwbaar kan, het herkennen welke architecturen zich uitbetalen en welke achteraf overdimensionering bleken. De beste blueprints zijn niet de meest uitgebreide; ze zijn de meest precieze in hun keuzes en even precies in wat bewust *niet* is gekozen.
 
 ### Het ontwerp-gesprek als product
 
-De ware waarde van een Client Blueprint zit niet alleen in het document zelf en niet alleen in de uitkomsten. Hij zit in de gesprekken die het document afdwingt: tussen klant en consultant, tussen techniek en domein, tussen ambitie en haalbaarheid. Die gesprekken laten een organisatie achter met een helderder zelfbeeld over waar AI past en waar niet. Dat zelfbeeld neem je mee naar het volgende project; en dat is, op de lange termijn, vaak de grootste opbrengst.
+De ware waarde van een Client Blueprint zit niet alleen in het document zelf en niet alleen in de uitkomsten. Het zit met name in de gesprekken die het document afdwingt: tussen klant en consultant, tussen techniek en domein, tussen ambitie en haalbaarheid. Die gesprekken laten een organisatie achter met een helderder zelfbeeld over waar AI past en waar niet. Dat zelfbeeld neem je mee naar het volgende project; en dat is, op de lange termijn, vaak de grootste opbrengst.
 
 </BBDisclosure>
