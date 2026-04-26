@@ -177,9 +177,9 @@ Voordat je workflow versus agent kiest, eerst de toets of dit überhaupt een AI-
 
 - **Complexe contextuele besluitvorming**: als regels per context variëren en niet vooraf zijn vast te leggen, hoort er routing of een agent.
 - **Onderhoudslast op regels**: als regelupdates bij elke wijziging developer-tijd kosten, kan een taalmodel de regel-engine vervangen.
-- **Ongestructureerde data**: als input natuurlijke taal, documenten of gesprekken is, hoort er retrieval of een agent.
+- **Ongestructureerde data**: als input natuurlijke taal, documenten of gesprekken is, hoort er [RAG](/begrippen#rag) (documenten uit een kennisbank ophalen en aan het model meegeven) of een agent.
 
-Geen van de drie? Dan past mogelijk een rule-based workflow of een BI-dashboard beter dan AI. Veel "AI"-projecten zijn eigenlijk dashboard-projecten in vermomming.
+Geen van de drie? Dan past mogelijk een regelgebaseerde werkstroom (als-dan-logica zonder AI) of een BI-dashboard beter dan AI. Veel "AI"-projecten zijn eigenlijk dashboard-projecten in vermomming.
 
 ### Vijf workflow-patronen plus autonome agents
 
@@ -201,15 +201,15 @@ Anthropic's eigen multi-agent research-systeem presteert 90,2% beter dan single-
 - informatie die één contextvenster overschrijdt
 - complexe tool-integraties die specialisatie per agent rechtvaardigen
 
-Niet geschikt voor taken die gedeelde context tussen alle agents vereisen, zware inter-agent-coördinatie, of de meeste coderingstaken. **Default voor de blueprint**: ga uit van single-agent tenzij bewijs multi-agent afdwingt.
+Niet geschikt voor taken waarbij agents tijdens uitvoering met elkaar moeten coördineren of tussenresultaten moeten uitwisselen, en evenmin voor de meeste coderingstaken. (Een swarm waarin elke agent dezelfde input parallel beoordeelt op een ander aspect valt hier *niet* onder; dat is broadcast-input, geen runtime-coördinatie.) **Vertrekpunt voor de blueprint**: ga uit van single-agent tenzij bewijs multi-agent afdwingt.
 
 ### Drie architectuurlagen: kennis, specialisatie, executie
 
 Op een hoger niveau zijn er drie onderscheiden lagen waaruit je kiest, vaak in combinatie:
 
-- **Kennislaag (RAG)**: frequent veranderende kennis, actuele informatie, geen model-hertraining. Default voor "vragen-beantwoorden over onze documenten".
+- **Kennislaag (RAG)**: frequent veranderende kennis, actuele informatie, geen model-hertraining. Standaardkeuze voor "vragen-beantwoorden over onze documenten".
 - **Specialisatielaag (fine-tuning)**: stabiele domeinen, hoog volume met lage latency, gedragspatronen inbakken. Pas relevant als RAG-kwaliteit aantoonbaar tekortschiet.
-- **Executielaag (agents)**: bedrijfsprocessen *uitvoeren* via tools, niet alleen antwoorden.
+- **Executielaag (agents)**: bedrijfsprocessen *uitvoeren* via tools, in plaats van alleen vragen beantwoorden.
 
 Hybride architectuur (RAG + fine-tuning + agents) is in 2026 het dominante enterprise-patroon. De meest gemaakte fout in deze fase: een agent ontwerpen waar RAG voldoende is.
 
@@ -217,7 +217,7 @@ Hybride architectuur (RAG + fine-tuning + agents) is in 2026 het dominante enter
 
 Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds eind 2024 de opkomende standaard voor agent-tool-integraties. Adoptie steeg snel: 97 miljoen SDK-downloads per maand medio 2025, OpenAI nam het over in maart 2025, vendor-neutraal gemaakt via de Agentic AI Foundation in december 2025. Beveiligingsrisico's zijn reëel en gedocumenteerd: prompt-injectie, tool-permissie-misbruik voor data-exfiltratie, lookalike-tools die vertrouwde tools vervangen.
 
-**Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de default-keuze; alle MCP-servers krijgen een eigen entry in het risk register.
+**Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de standaardkeuze; alle MCP-servers krijgen een eigen entry in het risk register.
 
 </BBDisclosure>
 
@@ -247,7 +247,7 @@ Voor AI-systemen die persoonsgegevens verwerken is een Data Protection Impact As
 Vier privacy-by-design-vragen die in de blueprint thuishoren:
 
 - Welke persoonsgegevens, voor welk doel, op welke rechtsgrondslag?
-- DPIA vereist? (default ja, tenzij aantoonbaar niet van toepassing)
+- DPIA vereist? (standaard ja, tenzij aantoonbaar niet van toepassing)
 - Data-minimalisatie: alleen verwerken wat noodzakelijk is?
 - Welke rechten van betrokkenen zijn van toepassing (inzage, bezwaar, uitleg bij geautomatiseerde beslissingen)?
 
