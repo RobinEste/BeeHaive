@@ -1,38 +1,409 @@
 ---
 code: BB_02
 name: Client Blueprint
-tagline: "Van idee naar gestructureerd AI-ontwerp."
+tagline: "Van klantvraag naar gestructureerd AI-ontwerp."
 icon: "🗺️"
 order: 2
-quote: "Our debate about AI is really misplaced, because it's all about 'Is the AI better than the human?' I think instead we should be asking, 'What are the complementary uses of AI?'"
-quoteAuthor: "Jann Spiess"
+quote: "AI is not the starting point. The business is."
+quoteAuthor: "Sam Obeidat (CAIO Newsletter, 2025)"
 checklist:
-  - "Is het doel van de AI-oplossing helder en afgebakend?"
-  - "Zijn processen, rollen en interacties beschreven?"
-  - "Is de gewenste output concreet en toetsbaar gedefinieerd?"
-  - "Zijn gebruikte data, context en bronnen duidelijk?"
-  - "Zijn agents, tools en systeemintegraties uitgewerkt?"
-  - "Zijn risico's, afhankelijkheden en randvoorwaarden benoemd?"
-  - "Is de blueprint afgestemd met stakeholders?"
+  - "Is de value stream waarin de AI-oplossing past expliciet gemapt, van trigger tot uitkomst?"
+  - "Is helder welke beslissing of werkstap binnen die stream wordt verbeterd?"
+  - "Is het succescriterium kwantificeerbaar en gekoppeld aan bestaande prestatie-indicatoren?"
+  - "Is getoetst of dit überhaupt een AI-probleem is, met een expliciet geschiktheidskader?"
+  - "Zijn processen, rollen, eindgebruikers en stakeholders beschreven?"
+  - "Zijn data-vereisten, herkomst en privacy-rechtsgrondslag benoemd?"
+  - "Is de architectuurkeuze tussen workflow en agent, en tussen RAG, fine-tuning en agent-tooling, onderbouwd?"
+  - "Zijn risico's expliciet ontworpen-tegen volgens EU AI Act-tier, HLEG-vereisten, DPIA en OWASP-dreigingen?"
+  - "Is een prototype of werkende demo gebruikt om de blueprint met stakeholders te valideren?"
+  - "Is de governance helder, inclusief sign-off-criteria en vendor-eisen?"
 quickStart:
-  - "Beschrijf in één pagina: wat moet de AI doen, voor wie, en wat is een goed resultaat?"
-  - "Teken de dataflow: welke input gaat erin, welke output komt eruit, en wat zit ertussen?"
-  - "Valideer je ontwerp met minimaal twee stakeholders voordat je begint met bouwen."
+  - |
+    Strategisch: bepaal de AI-ambitie expliciet.
+    Welke value streams horen bij de strategische kern, en welke daarvan moeten over twee jaar fundamenteel anders werken? Maak de keuze tussen inward versus outward en tussen everyday versus game-changing voordat de eerste use case in detail wordt uitgewerkt; deze keuze bepaalt de risico-bereidheid en daarmee welke compliance-kaders direct geactiveerd moeten worden.
+  - |
+    Tactisch: kies één value stream en map de flow.
+    Beschrijf de end-to-end-stroom van trigger tot uitkomst, kwantificeer de drie grootste knelpunten (uren, foutpercentage, doorlooptijd) en wijs een eigenaar aan die over de afdelingsgrenzen heen gaat. Pas daarna formuleer je de eerste AI-use-case binnen die stream.
+  - |
+    Operationeel: toets, classificeer en valideer met een prototype.
+    Drie-signalen-toets (is dit echt een AI-probleem?), risico-classificatie volgens de EU AI Act, DPIA-trigger en data-readiness. Bouw een prototype dat één concrete knelpunt adresseert en valideer dat als gespreksanker met stakeholders, niet als bewijs van werkzaamheid.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We begonnen met een blueprint voor één audit-type. Na het bouwen van de intake bleek de architectuur herbruikbaar voor meerdere audit-varianten (FDE-principe). We gingen terug naar de blueprint, herstructureerden, en bouwden opnieuw — beter. Iteratie is geen falen, het is het proces."
+  description: "We begonnen niet met 'we willen een AI-tool', maar met de value stream van een audit: van klant-intake tot eindrapport. In die stream identificeerden we één knelpunt: semi-gestructureerde interview-data omzetten naar herhaalbare scoring. Daar lag een AI-probleem (ongestructureerde input, contextvariërende beoordeling); bij eindrapportage en klantbeheer volstond deterministische tooling. De blueprint-scope werd één stap binnen één stream, niet een 'AI-platform voor audits'. Iteratie is geen falen; het is het mechanisme waarmee scope scherp blijft."
 evidence:
-  - "Gedocumenteerd systeemontwerp met dataflow-diagram"
-  - "Afgestemde blueprint met stakeholder-sign-off"
-  - "Lijst van geïdentificeerde risico's en mitigatiemaatregelen"
+  - "Gemapte value stream(s) met expliciete trigger-, fase- en outcome-definitie"
+  - "AI Solution Canvas en feasibility-check per geselecteerde use case"
+  - "Risk register met EU AI Act-tier, DPIA-trigger en OWASP-dreigingen, gekoppeld aan ontwerp-mitigaties"
+  - "Prototype-output (werkende UI of demo) ingezet als gespreksanker met stakeholders"
+  - "Vendor governance-document met AI Bill of Materials voor externe componenten"
 ---
+
+import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
 
 ## Wat is een Client Blueprint?
 
-Een client blueprint is een gestructureerde, end-to-end beschrijving van een AI-oplossing binnen een specifieke klantcontext, waarin doel, processen, gebruikersinteracties, agent-workflows, datastromen en gewenste output systematisch worden vastgelegd.
+Een Client Blueprint is het ontwerp dat een klantvraag verbindt met een werkende AI-oplossing. Niet als waterval-document, maar als een levend overzicht van *welke* value stream wordt geraakt, *welke* beslissing of werkstap wordt verbeterd, *hoe* de oplossing past in de bestaande architectuur, en *welke* risico's al in het ontwerp worden ondervangen.
 
-Het document vormt de brug tussen de klantbehoefte en de feitelijke AI-architectuur: het beschrijft *wat* de oplossing moet doen, *hoe* de interacties verlopen, en *welke componenten* (LLM-prompts, agents, systemen, gegevens, kwaliteitscriteria) nodig zijn om reproduceerbare, betrouwbare en toetsbare resultaten te leveren.
+Het document overbrugt de afstand tussen klantbehoefte en feitelijke implementatie. Het beschrijft wat de oplossing moet doen, hoe interacties verlopen, en welke componenten (prompts, [agents](/begrippen#agent), data, tools, kwaliteitscriteria) nodig zijn om reproduceerbare, betrouwbare en toetsbare resultaten te leveren. De blueprint is geen eenmalige opdracht aan een bouwteam; hij groeit mee met inzichten uit de bouw.
 
-## In de praktijk
+Een goede blueprint vermijdt de meest gemaakte fout in enterprise-AI-initiatieven: een AI-tool kiezen vóórdat duidelijk is welk probleem die tool oplost. Dat patroon, gediagnosticeerd in onder andere het MIT NANDA-rapport van augustus 2025, verklaart waarom een aanzienlijk deel van AI-pilots na een succesvolle proof-of-concept stagneert. De oorzaak is meestal geen techniek-probleem; het is een ontwerp-probleem.
 
-Een blueprint is geen watervaldocument dat je schrijft en dan uitvoert. Het is een levend ontwerp dat meegroeit met inzichten uit de bouw. De kunst is om vroeg genoeg te valideren zodat je grote koerswijzigingen voorkomt, maar flexibel genoeg te blijven om terug te gaan als dat nodig is.
+<BBDisclosure title="De waarde-stroom als startpunt">
+
+De grootste fout bij het bouwen van AI-oplossingen is starten met de techniek. Sam Obeidat (CAIO Newsletter, 2025) verwoordt het scherp: *"AI is not the starting point. The business is."* Het juiste startpunt voor een Client Blueprint is niet *welke AI* maar *welke waarde-stroom* binnen de organisatie verbeterd moet worden.
+
+### Wat is een waarde-stroom?
+
+Een **waarde-stroom** (*value stream*) is de end-to-end-journey die een trigger transformeert in een uitkomst voor een stakeholder. Niet een afdeling, niet een tool, maar een volledige flow van waarde. Voorbeelden die elke organisatie kent:
+
+- *Trigger:* nieuwe klant tekent contract → *uitkomst:* klant volledig productief in het systeem (onboarding-stream)
+- *Trigger:* support-vraag binnen → *uitkomst:* opgelost ticket met tevreden klant (support-stream)
+- *Trigger:* maand sluit → *uitkomst:* getekende rapportage bij directie (financial-close-stream)
+- *Trigger:* inschrijving training → *uitkomst:* deelnemer behaalt leerdoel (educatie-stream)
+
+Departementen *bezitten stukken* van een stream. Een waarde-stroom *bezit de uitkomst*. Dat onderscheid is de kern: AI ontworpen *voor een afdeling* automatiseert silo-werk; AI ontworpen *voor een waarde-stroom* versnelt de flow van waarde.
+
+### Waarom dit het juiste startpunt is
+
+Drie redenen, alle drie gegrond in onafhankelijke bevindingen:
+
+- **Het lost het MIT-95%-faalpatroon op**: pilots falen niet omdat de techniek tekortschiet, maar omdat AI op de verkeerde plek wordt geplakt. Een waarde-stroom maakt zichtbaar *waar* in de flow waarde wordt afgeknepen, en daar hoort de AI-interventie.
+- **Het snijdt door silo's**: een knelpunt zit zelden netjes binnen één afdeling. Door op streamniveau te ontwerpen voorkom je het patroon waarbij elke afdeling z'n eigen AI-tool koopt en de gezamenlijke flow verder verstopt raakt.
+- **Het maakt de eindgebruiker zichtbaar**: de stream-eigenaar (de stakeholder die de uitkomst ontvangt) is meestal niet dezelfde als de IT-eigenaar van het systeem dat AI gaat draaien. Door op stream-niveau te beginnen wordt die afstemming onontkoombaar.
+
+### Crews en value-stream-types (unFIX, Jurgen Appelo)
+
+Jurgen Appelo's unFIX-model maakt deze invalshoek expliciet. Een Crew is een cross-functioneel team dat één waarde-stroom *bezit* en continu verbetert (lean-oorsprong). unFIX onderscheidt vier waarde-stroom-types:
+
+- **Customer Stream**: levert waarde direct aan een externe klant
+- **Internal Stream**: levert waarde aan een interne afnemer (denk aan finance, HR, IT-platform)
+- **Innovation Stream**: ontwikkelt nieuwe waarde-proposities
+- **Operational Stream**: houdt het bestaande operationeel
+
+Voor een Client Blueprint betekent dit: identificeer welk type stream je wilt versterken; dat bepaalt mede welke risico's, KPI's en stakeholders relevant zijn. Een Customer Stream raakt extern reputatierisico; een Internal Stream raakt vooral efficiëntie en datakwaliteit.
+
+### Wanneer is een waarde-stroom niet de juiste lens?
+
+Niet elke AI-toepassing past in één stream. Een bedrijfsbrede zoek-assistent over alle interne kennis is *horizontaal* en raakt meerdere streams tegelijk; een blueprint die zo'n toepassing in één stream wil persen voelt geforceerd. Voor horizontale toepassingen werkt de stream-lens als *secundair* kader: welke streams gaan deze assistent het zwaarst gebruiken, en welke kwaliteitseisen volgen daaruit?
+
+De waarde-stroom is daarmee geen wet, het is het meest informatieve startpunt: voor de meeste enterprise-AI-vraagstukken brengt het je de eerste tien stappen in de juiste richting.
+
+</BBDisclosure>
+
+<BBDisclosure title="De zeven stappen van use-case-discovery">
+
+Sam Obeidat's playbook (CAIO Newsletter, gevalideerd met World AI Council, geüpdatet december 2025) levert een gestructureerde discovery-flow van zeven stappen plus een vervolg-canvas. Het is op dit moment de meest complete, gepubliceerde en praktijkgevalideerde aanpak om van waarde-stroom naar AI-use-case te komen. De zeven stappen worden hieronder samengevat; de aanvullende AI Business Model Canvas verschijnt aan het eind van de flow als validatiepoort vóór architectuur-commitment.
+
+### Stap 1: Map de waarde-stroom
+
+Trigger, eindresultaat, hoofdfasen, stakeholders, één-noord-ster-KPI, betrokken afdelingen. Eindresultaat is een één-regel-map (Trigger → Fasen → Uitkomst). Dit is de input voor alle volgende stappen.
+
+### Stap 2: Diagnose via TRACE
+
+Binnen de gekozen stream zoom je in op één werkstroom. Het TRACE-mindset (Trigger, Route, Annotate, Check, Escalate) maakt onzichtbaar werk zichtbaar:
+
+- **Trigger**: wat start de werkstroom?
+- **Route**: welke handen, systemen en stappen volgen?
+- **Annotate**: waar wordt informatie toegevoegd of vertaald?
+- **Check**: waar zijn controles, goedkeuringen, validaties?
+- **Escalate**: waar gaan zaken naar een hogere autoriteit?
+
+Bij elke stap kwantificeer je de friction (uren, foutpercentage, herwerk, doorlooptijd). Een principe dat bij Obeidat hard staat: *"Never optimize a step that shouldn't exist."* Voor je AI op een knelpunt zet, vraag je of die stap überhaupt nodig is.
+
+### Stap 3: Scherpe probleemformulering
+
+Een probleem dat AI kan oplossen is één meetbaar zin: *Probleem = huidige toestand + pijn + gekwantificeerde impact + wie wordt geraakt*. Vergelijk:
+
+- ✗ "Cashflow-zicht is slecht": vaag, niet meetbaar, geen AI-aangrijpingspunt.
+- ✓ "Cashflow-consolidatie kost 4-6 uur per project, leunt op vijf spreadsheets en biedt geen forecast, waardoor management beslissingen neemt op verouderde cijfers": concreet, gekwantificeerd, identificeert de eindgebruiker.
+
+Dit sluit aan bij Cassie Kozyrkov's [decision intelligence](/begrippen#decision-intelligence): de relevante vraag is niet "welke AI gebruiken we?" maar "welke beslissing willen we beter maken?" De probleem-formulering vertaalt die beslissing naar een meetbare uitspraak.
+
+### Stap 4: Waarde-propositie langs zes objectieven
+
+De waarde-propositie definieert de gewenste verbetering, los van de techniek. Obeidat brengt de keuze terug tot zes AI-waarde-objectieven:
+
+- **Speed/Time**: snellere verwerking
+- **Cost**: lagere operationele kosten
+- **Revenue**: meer omzet of conversie
+- **Quality**: minder fouten
+- **Robustness**: consistente prestaties zonder uitval
+- **Impact**: betekenisvolle uitkomsten voor gebruikers of samenleving
+
+Een waarde-propositie noemt expliciet welke objectieven worden gediend en welke trade-offs worden geaccepteerd.
+
+### Stap 5: AI Solution Canvas
+
+Vijf niet-technische velden die de basis leggen voor het architectuurgesprek:
+
+- **Main Inputs**: welke informatie gaat de AI bekijken?
+- **Main Job of AI**: wat moet de AI met die input *doen*?
+- **How Humans Use It**: dashboard, alerts, copilot, achtergrond-automatisering?
+- **AI Role Name**: een leesbare titel ("AI Financial Copilot", "AI Klant-Adviseur")
+- **AI Solution Summary**: één tot twee zinnen die de oplossing samenvatten
+
+De waarde van dit canvas is dat het niet-technische stakeholders een beeld geeft van *wat* de AI gaat doen, vóórdat het gesprek over modellen, vector-databases of [MCP](/begrippen#mcp) begint.
+
+### Stap 6: Feasibility-check
+
+Twee vragen die meestal bepalen of het project haalbaar is: *hebben we de data?* en *hebben we de tech-readiness?* Per use case wordt vastgesteld welke data nodig is, of die beschikbaar en kwalitatief op orde is, en of de tech-stack (toegang, integraties, dashboards) het ondersteunt. Verdict: ready now, needs prep work, of not feasible yet. Dit voorkomt de frequente faalmodus waarin een prachtig ontwerp bij de bouw vastloopt op afwezige data.
+
+### Stap 7: Impact-estimatie
+
+Een korte tabel met vier rijen: tijd, kosten, kwaliteit/risico, beslissingsimpact. Per rij: huidige toestand versus verwachte verbetering. Doel is niet een volledig ROI-model maar een *richtinggevend* beeld dat een directie kan beoordelen.
+
+### Daarna: AI Business Model Canvas
+
+De zeven stappen produceren een use-case; de AI Business Model Canvas (Obeidat 2025) zet die om in een executive-leesbaar businessmodel met elf blokken: Value Proposition, Data, Capabilities, Team, Key Metrics, Systems & Platforms, Stakeholders, End Users, Key Dependencies, Estimated Cost, Business Outcome. Functie: validatie-poort vóór architectuur-commitment. *"Most AI projects don't fail because the technology is weak — they fail because the business model is missing."*
+
+</BBDisclosure>
+
+<BBDisclosure title="Architectuur: wanneer kies je een workflow, wanneer een agent?">
+
+Met een gevalideerde use case komt de architectuurkeuze. Hier geldt Anthropic's fundamentele regel uit *Building Effective Agents* (december 2024): begin met een eenvoudige prompt-keten met retrieval en voorbeelden. Voeg complexiteit pas toe als dat aantoonbaar nodig is. De meest gemaakte ontwerpfout is een autonoom agent-systeem ontwerpen voor een probleem dat een simpele [RAG](/begrippen#rag)-keten oplost.
+
+### Drie-signalen-toets vóór architectuur
+
+Voordat je workflow versus agent kiest, eerst de toets of dit überhaupt een AI-probleem is. WorkOS' synthese van Anthropic- en OpenAI-richtlijnen werkt met drie signalen:
+
+- **Complexe contextuele besluitvorming**: als regels per context variëren en niet vooraf zijn vast te leggen, hoort er routing of een agent.
+- **Onderhoudslast op regels**: als regelupdates bij elke wijziging developer-tijd kosten, kan een taalmodel de regel-engine vervangen.
+- **Ongestructureerde data**: als input natuurlijke taal, documenten of gesprekken is, hoort er retrieval of een agent.
+
+Geen van de drie? Dan past mogelijk een rule-based workflow of een BI-dashboard beter dan AI. Veel "AI"-projecten zijn eigenlijk dashboard-projecten in vermomming.
+
+### Vijf werkstroom-patronen plus autonome agents
+
+Anthropic onderscheidt vijf patronen voor systemen waarin taalmodellen en tools in vooraf gedefinieerde codepaden werken:
+
+- **Prompt chaining**: sequentiële taalmodel-aanroepen; geschikt als een taak deelbaar is in stappen.
+- **Routing**: classificeer de input, stuur door naar gespecialiseerde handlers (denk: facturatie-vraag naar de finance-handler).
+- **Parallellisatie**: simultane aanroepen via *sectioning* (parallelle deeltaken) of *voting* (zelfde vraag, meerdere pogingen, kies de meest consistente).
+- **Orchestrator-workers**: een centraal taalmodel decomposeert dynamisch en delegeert aan workers; geschikt voor onvoorspelbare taken.
+- **Evaluator-optimizer**: iteratieve verfijning met ingebouwde evaluator; effectief als duidelijke evaluatiecriteria bestaan.
+
+Daarnaast bestaan **autonome agents**: taalmodellen met tools in een feedback-lus, gereserveerd voor open-ended problemen waarbij het aantal stappen niet vooraf voorspelbaar is.
+
+### Single-agent of multi-agent?
+
+Anthropic's eigen multi-agent research-systeem presteert 90,2% beter dan single-agent op interne research-evaluatie, maar verbruikt ongeveer 15× meer tokens dan chat-interacties. De economische consequentie is significant. Multi-agent is gerechtvaardigd bij:
+
+- taken met sterke parallelisatie-potentie
+- informatie die één contextvenster overschrijdt
+- complexe tool-integraties die specialisatie per agent rechtvaardigen
+
+Niet geschikt voor taken die gedeelde context tussen alle agents vereisen, zware inter-agent-coördinatie, of de meeste coderingstaken. **Default voor de blueprint**: ga uit van single-agent tenzij bewijs multi-agent afdwingt.
+
+### Drie architectuurlagen: kennis, specialisatie, executie
+
+Op een hoger niveau zijn er drie onderscheiden lagen waaruit je kiest, vaak in combinatie:
+
+- **Kennislaag (RAG)**: frequent veranderende kennis, actuele informatie, geen model-hertraining. Default voor "vragen-beantwoorden over onze documenten".
+- **Specialisatielaag (fine-tuning)**: stabiele domeinen, hoog volume met lage latency, gedragspatronen inbakken. Pas relevant als RAG-kwaliteit aantoonbaar tekortschiet.
+- **Executielaag (agents)**: bedrijfsprocessen *uitvoeren* via tools, niet alleen antwoorden.
+
+Hybride architectuur (RAG + fine-tuning + agents) is in 2026 het dominante enterprise-patroon. De meest gemaakte fout in deze fase: een agent ontwerpen waar RAG voldoende is.
+
+### MCP als standaard tooling-laag
+
+Voor agent-systemen is het [MCP](/begrippen#mcp) (Model Context Protocol) sinds eind 2024 de opkomende standaard voor agent-tool-integraties. Adoptie steeg snel: 97 miljoen SDK-downloads per maand medio 2025, OpenAI nam het over in maart 2025, vendor-neutraal gemaakt via de Agentic AI Foundation in december 2025. Beveiligingsrisico's zijn reëel en gedocumenteerd: prompt-injectie, tool-permissie-misbruik voor data-exfiltratie, lookalike-tools die vertrouwde tools vervangen.
+
+**Blueprint-regel voor agent-systemen**: de vraag *"welke tools heeft de agent nodig, via welke interface, met welke permissies?"* is een eerste-orde architectuurvraag, niet een implementatie-detail. MCP wordt de default-keuze; alle MCP-servers krijgen een eigen entry in het risk register.
+
+</BBDisclosure>
+
+<BBDisclosure title="Risico's als ontwerp-input, niet als afterthought">
+
+In veel projecten verschijnt risico-management pas na de bouw, als het systeem klaar is voor productie. Dat is te laat. De Client Blueprint behandelt risico als ontwerp-input: vóór architectuurkeuzes wordt vastgelegd welk risiconiveau geldt, welke compliance-eisen activeren, en welke dreigingen al in het ontwerp moeten worden ondervangen.
+
+### EU AI Act: vier risico-tiers als eerste filter
+
+De EU AI Act trad in werking op 1 augustus 2024; de meeste regels gelden vanaf 2 augustus 2026. Vier tiers structureren het ontwerp:
+
+- **Tier 1, verboden**: sociale scoring, manipulatieve AI die menselijke autonomie ondermijnt, realtime gezichtsherkenning in openbare ruimtes, emotieherkenning op de werkvloer.
+- **Tier 2, hoog risico**: biometrie, kritieke infrastructuur, onderwijs (toelating, beoordeling), werkgelegenheid (werving, prestatie-beoordeling), essentiële diensten (krediet, uitkeringen, noodoproep-dispatching), ordehandhaving, migratie, rechtspraak. Acht concrete design-verplichtingen: risicomanagement-systeem, datagovernance, technische documentatie, automatische event-logging, gebruikersinstructies, menselijke controle, nauwkeurigheid en cybersecurity, kwaliteitsmanagementsysteem.
+- **Tier 3, beperkt risico**: chatbots, deepfakes; transparantieverplichting naar de gebruiker.
+- **Tier 4, minimaal risico**: spamfilters, video-game-AI; grotendeels ongereguleerd.
+
+De tier wordt vroeg in de blueprint vastgesteld. Tier 2 betekent dat alle acht design-gates al in de architectuur worden ingebouwd, niet in een latere "compliance-fase".
+
+### HLEG-vereisten en ALTAI als checklist
+
+De Ethics Guidelines for Trustworthy AI (HLEG, 2019) leveren zeven vereisten die op het BeeHaive-framework één-op-één zijn afgebeeld als guardrails: Human Agency, Robustness, Privacy, Transparency, Fairness, Well-being, Accountability. De **ALTAI-checklist** vertaalt deze zeven vereisten naar een interactieve zelfbeoordeling op `altai.insight-centre.org`. Voor elke high-risk-blueprint draait ALTAI als verplichte gate; voor lager-risico-blueprints als aanbevolen review.
+
+### DPIA en privacy-by-design
+
+Voor AI-systemen die persoonsgegevens verwerken is een Data Protection Impact Assessment (DPIA) onder de AVG in de overgrote meerderheid van gevallen verplicht. De Britse ICO formuleert het stellig: *"In de overgrote meerderheid van gevallen zal het gebruik van AI een verwerking betreffen die waarschijnlijk een hoog risico inhoudt voor de rechten en vrijheden van individuen."* De EU AI Act voegt daar een Fundamental Rights Impact Assessment (FRIA) aan toe voor high-risk-systemen; FRIA en DPIA overlappen maar zijn niet identiek, wat dubbeling oplevert die de blueprint moet adresseren.
+
+Vier privacy-by-design-vragen die in de blueprint thuishoren:
+
+- Welke persoonsgegevens, voor welk doel, op welke rechtsgrondslag?
+- DPIA vereist? (default ja, tenzij aantoonbaar niet van toepassing)
+- Data-minimalisatie: alleen verwerken wat noodzakelijk is?
+- Welke rechten van betrokkenen zijn van toepassing (inzage, bezwaar, uitleg bij geautomatiseerde beslissingen)?
+
+### OWASP LLM Top-10 als threat-modeling-checklist
+
+OWASP publiceerde in november 2024 de Top-10 risico's voor LLM-applicaties (gebruikt door 2025-2026):
+
+- **LLM01 Prompt Injection**: kwaadaardige input manipuleert het model.
+- **LLM02 Sensitive Information Disclosure**: PII of vertrouwelijke data lekt via output.
+- **LLM03 Supply Chain**: kwetsbaarheden in trainings- en deploymentsketens.
+- **LLM04 Data and Model Poisoning**: manipulatie tijdens pre-training of fine-tuning.
+- **LLM05 Improper Output Handling**: onvoldoende validatie of sanitisatie.
+- **LLM06 Excessive Agency**: te veel autonomie zonder checks.
+- **LLM07 System Prompt Leakage**: interne systeem-prompts liggen bloot.
+- **LLM08 Vector and Embedding Weaknesses**: kwetsbaarheden in RAG en vector-databases.
+- **LLM09 Misinformation**: model-output gepresenteerd als autoritatief.
+- **LLM10 Unbounded Consumption**: ongecontroleerd resource-gebruik.
+
+Voor elke blueprint loopt deze lijst als check: welke dreigingen zijn van toepassing, welke verdediging-in-de-diepte ontwerpen we erin (input-filtering, gedrags-constrainering, output-validatie, privilege-scheiding, monitoring)? Guardrails zijn geen toegevoegde laag; ze zijn ontwerp-parameters.
+
+### Ethiek als ontwerp-veld in het canvas (BrandKarma)
+
+Klassieke business-canvassen vangen ethiek niet op. Het BrandKarma AI/Tech Use Case Canvas voegt expliciete velden toe: *Human Interaction* (impact op vertrouwen en emoties), *Ethics & Legal* (bias, inclusiviteit, AVG, EU AI Act), *Stakeholders & Impact* (ecologisch, organisatorisch, maatschappelijk). Voor blueprints met externe of klant-zichtbare AI hoort dit canvas-veld er expliciet bij; ethiek wordt een ontwerp-veld, niet een achteraf-vinkje.
+
+</BBDisclosure>
+
+<BBDisclosure title="Het prototype als gespreksanker">
+
+Een Client Blueprint die alleen op papier bestaat krijgt zelden een goede review. Stakeholders kunnen moeilijk reageren op tekstbeschrijvingen van wat een AI-oplossing gaat doen; ze kunnen wél reageren op iets wat ze *zien werken*. De afgelopen twee jaar is daarvoor een nieuwe categorie tools volwassen geworden: AI-prototyping-platforms die in uren een werkende UI of demo opleveren.
+
+### De vier dominante tools (2025-2026)
+
+- **Google Stitch** (aangekondigd op Google I/O 2025): live ideation, multi-richting UX-verkenning, voice canvas in meetings. Sterk voor het verkennen van *concepten*. Zwakte: geen backend, misleidend voor complexe businesslogica, Labs-status schept onzekerheid.
+- **v0 by Vercel**: productie-rijpe React-componenten; goed als developer-team alignment het doel is. Zwakte: alleen React/Next.js, componenten zijn geen applicaties, vereist technisch publiek.
+- **Lovable**: full-stack MVP (TypeScript, Supabase, auth, hosting), toegankelijk voor niet-technische stakeholders. Zwakte: vendor lock-in, klanten overschatten gereedheid, design-kwaliteit secundair.
+- **Bolt.new**: snelste output, live demo in meeting, browser-gebaseerd. Zwakte: token-kosten lopen onvoorspelbaar op bij iteratie, eerste output is ruw.
+- **Claude Artifacts**: één interactieve component, te delen in tien minuten. Zwakte: geen persistente state, beperkt tot één artefact.
+
+### Wanneer is een prototype productief?
+
+Drie patronen waarbij prototypen waarde toevoegt aan de blueprint-fase:
+
+- **Gespreks-anker**: stakeholders zien iets concreets in plaats van een tekstdocument; reacties worden specifieker, eerder, en in eigen woorden.
+- **Aanname-invalidatie**: een prototype laat zien wat *niet* werkt, niet alleen wat kan. Een UI die er goed uitziet maar bij de eerste echte vraag spaak loopt is waardevolle informatie.
+- **Versnelde scope-verkenning**: voordat architectuurkeuzes worden vastgelegd zie je welke functies écht nodig zijn en welke optisch indrukwekkend maar inhoudelijk leeg.
+
+### Wanneer is het contraproductief?
+
+Drie faalmodi waar een prototype meer kwaad dan goed doet:
+
+- **Surrogaat voor gebruikersonderzoek**: een gepolijste UI creëert schijn-zekerheid over probleemvalidatie. *"Ziet er goed uit"* is geen bewijs dat het probleem klopt.
+- **Validatie zonder criteria**: zonder vooraf afgesproken evaluatiecriteria valideert een prototype niets; het oogt alleen overtuigend.
+- **Vervanging voor het gesprek**: het prototype neemt het gesprek over doel, data en risico's niet weg. Wie het inzet als presentatie in plaats van als gespreksstarter, mist het meest waardevolle deel van de discovery-fase.
+
+Lenny Rachitsky vat het bondig samen: *"AI is not a substitute for critical thinking; human judgment is still necessary to interpret generated insights and make informed product decisions."*
+
+### Blueprint-regel
+
+Een prototype is een **discovery-instrument**, geen validatie-eindpunt. Het versnelt het gesprek over doel, succescriteria, data en risico's; het vervangt dat gesprek niet. Een blueprint die op een prototype rust zonder dat de zeven discovery-stappen daaronder zijn ingevuld, is een blueprint zonder fundament; hoe mooi de UI ook is.
+
+</BBDisclosure>
+
+<BBDisclosure title="Iteratief bouwen: FDE-principes en hun grenzen">
+
+Hoe houd je een Client Blueprint levend in plaats van bevroren? Een werkwijze die in de afgelopen jaren grote tractie heeft gekregen is de Forward Deployed Engineer (FDE), oorspronkelijk een Palantir-rol uit de vroege jaren 2010 (intern bekend als "Delta"). Tot circa 2016 had Palantir meer FDE's dan reguliere software-engineers. Sinds 2024-2025 namen meer organisaties het model over: FDE-vacatures stegen met meer dan 800% tussen januari en september 2025; Salesforce committeerde zich aan duizend FDE's.
+
+### Het kernprincipe
+
+*"Dev: één capability, veel klanten; Delta: veel capabilities, één klant."* Een FDE werkt embedded bij de klant, in plaats van vanuit een productlab. OpenAI's drie-fasen-versie van het model:
+
+- **Scoping**: het klantprobleem begrijpen zoals het werkelijk is, en niet zoals het gerapporteerd wordt; in de praktijk vaak twee verschillende dingen
+- **Validatie**: oplossingen toetsen aan vooraf-vastgestelde evaluatiecriteria
+- **Implementatie**: productie-oplossingen leveren, niet adviesnota's
+
+Een geciteerde observatie uit de praktijk: *"FDEs work with enormous uncertainty, and what clients describe often doesn't match the reality of their data."* Het Forward-Deployed-principe is precies daarvoor ontworpen: de discrepantie tussen rapportage en realiteit zichtbaar maken door bij de bron te werken.
+
+### De grenzen van het model
+
+Het FDE-model is niet zonder critici. Drie grenzen die in de blueprint-fase relevant zijn:
+
+- **Schaalbaarheidsgrens**: FDE-werk is klant-specifiek en niet schaalbaar als standaard productcapability. Wat voor één klant werkt, hoeft niet de basis te zijn voor de volgende.
+- **Rolvervaging**: de scheidslijn tussen FDE, Solutions Architect, Sales Engineer en Agent Engineer vervaagt. Salesforce's eigen FDE-profiel beschrijft *"praktisch twee beroepen in één"*, wat in de praktijk leidt tot rol-verwarring en burn-out-risico.
+- **Cagan/SVPG-kritiek**: Marty Cagan (Silicon Valley Product Group) waarschuwt dat klant-specifieke aanpassingen de productstrategie kunnen dicteren in plaats van een coherente productvisie. Wie alleen FDE-werk doet, bouwt aan honderden one-offs en nooit aan één schaalbaar product.
+
+### Wat zit dan in de Client Blueprint?
+
+Niet het volledige FDE-model, wel de FDE-*principes* als blueprint-werkwijze:
+
+- **Embedded scoping**: tijd doorbrengen in de waarde-stroom zelf, met de stream-eigenaren, niet alleen met de IT-eigenaar.
+- **Iteratie boven specificatie**: de blueprint is een levend document, niet een eenmalige requirements-spec.
+- **Bouwen boven adviseren**: een werkend prototype op een echte data-snede is informatiever dan twintig pagina's analyse.
+- **Discrepantie-jacht**: actief op zoek naar het verschil tussen *hoe de klant zegt dat het werkt* en *hoe de data laat zien dat het werkt*.
+
+Met deze vier principes kun je iteratief werken zonder te vervallen in het volledige FDE-model, en zonder de Cagan-faalmodus van one-off-customisaties.
+
+</BBDisclosure>
+
+<BBDisclosure title="Governance, sign-off en de Nederlandse context">
+
+Een Client Blueprint zonder governance is een wens-lijst. Drie governance-elementen horen expliciet in de blueprint: een AI-comité dat besluiten neemt, vendor-eisen voor externe componenten, en een sign-off-procedure die het verschil tussen *bedacht* en *vrijgegeven* markeert. Voor Nederlandse organisaties komt daar een onderscheidende laag bij: de Nederlandse AI Coalitie en het PACE-platform.
+
+### Het AI-comité
+
+De industriële best practice is een interdisciplinair AI-comité, doorgaans aangestuurd door een Head of AI of Chief AI Officer. Vertegenwoordigers vanuit techniek, juridisch, informatiebeveiliging en datavolwassenheid. Voorbeelden uit de markt: JLL (een wereldwijde dienstverlener) hanteert een formeel AI-comité met executief mandaat; Workday weeft AVG-conforme privacy-principes direct in de Machine Learning-ontwerplevenscyclus.
+
+Voor een Client Blueprint betekent dit dat al in de ontwerp-fase wordt vastgelegd:
+
+- Wie tekent op welke beslissingen (architectuur, modellen, vendors, releases)?
+- Welke besluiten kunnen op team-niveau, welke gaan altijd naar het comité?
+- Hoe worden ethische incidenten gemeld, en aan wie?
+
+Zonder die helderheid blijven beslissingen hangen of escaleren ze ad hoc; beide patronen vertragen de bouw en verlagen de uiteindelijke kwaliteit.
+
+### Vendor governance en de AI Bill of Materials
+
+Niet alle componenten worden zelf gebouwd. Een Client Blueprint maakt expliciet welke externe modellen, API's en tools worden gebruikt, en eist van leveranciers een **AI Bill of Materials** (AI BOM): een gestructureerd overzicht van trainingsdata-bronnen, model-aanpassingen, bekende beperkingen en compliance-status. De AI BOM is het AI-equivalent van een ingredient-list; zonder die lijst kun je geen verantwoorde claim doen over wat het systeem doet en niet doet.
+
+### Nederland: NL AIC en PACE
+
+De Nederlandse AI Coalitie (NL AIC), in nauwe samenwerking met TNO, biedt twee elementen die voor BeeHaive-klanten relevant zijn:
+
+- **Werkgroep Data Delen**: praktische interoperabiliteits-richtlijnen voor data spaces. Voor blueprints die met soevereine data of partner-ecosystemen moeten omgaan zijn deze richtlijnen direct toepasbaar.
+- **Het PACE-platform**: Participative And Constructive Ethics; ethiek als proactief ontwerpprincipe in plaats van een compliance-vink achteraf. Stakeholders, inclusief maatschappelijke vertegenwoordigers, worden vanaf de ideatie-fase betrokken.
+
+Een Nederlandse organisatie die NL AIC-interoperabiliteit en PACE-ethiek-by-design integreert, positioneert haar AI-oplossing niet alleen als compliance-gericht maar als intrinsiek verantwoord. Voor klant-zichtbare toepassingen is dat geen luxe; het is een onderscheid in marktpositie.
+
+### Sign-off als formele poort
+
+De blueprint heeft een gate. Een use case is pas klaar voor implementatie als:
+
+- de waarde-stroom expliciet is gemapt
+- het AI Solution Canvas en de feasibility-check zijn goedgekeurd
+- het risk register is ingevuld (EU AI Act-tier, DPIA-trigger, OWASP-dreigingen)
+- vendor-eisen inclusief AI BOM zijn vastgelegd
+- het AI-comité (of zijn delegate) heeft getekend op de eerste implementatie-iteratie
+
+Pas na deze gate begint de bouw. Voor heel kleine use cases is een lichte versie van deze gate uiteraard voldoende; voor high-risk-toepassingen is hij niet onderhandelbaar.
+
+</BBDisclosure>
+
+<BBDisclosure title="In de praktijk">
+
+### Een levend document, geen waterval-spec
+
+Een blueprint die *na* de bouw wordt geopend om te kijken of de bouw "volgens spec" was, is een mislukte blueprint. De waarde zit in de iteratieve verbinding tussen ontwerp en uitvoering: nieuwe inzichten uit de bouw voeden het ontwerp terug, het ontwerp stuurt de volgende bouwstap. Documenteer beslissingen, niet eenmalige snapshots.
+
+### Cross-bouwsteen: hoe de Client Blueprint de andere zes BB's aanstuurt
+
+De Client Blueprint is het meest cross-cutting bouwsteen: hij raakt direct alle zes andere BB's.
+
+- **[Knowledge](/framework/knowledge) (BB_01: domein-expertise externaliseren tot reproduceerbare kwaliteitscriteria)**: welke domein-expertise moet worden geëxternaliseerd, wie zijn de experts, welke operating agreements horen erbij?
+- **[Dynamic Context](/framework/dynamic-context) (BB_03: data, retrieval-architectuur en context-strategie die het model voedt)**: welke data, welke chunking-strategie, welke retrieval-architectuur, welke privacy-grenzen?
+- **[Prompt Design](/framework/prompt-design) (BB_04: gestructureerde instructies en kwaliteitscriteria voor consistente output)**: welke instructie-architectuur, welke evaluatiecriteria zijn vooraf nodig?
+- **[Tool Integration](/framework/tool-integration) (BB_05: externe tools, MCP-servers en agent-tooling)**: welke externe systemen, welke MCP-servers, welke permissies?
+- **[Model Engines](/framework/model-engines) (BB_06: modelkeuze, routing-strategie en EU-data-residentie)**: welke modellen voor welke taak, welke routing-strategie, welke EU-data-residentie-eisen?
+- **[Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren, opnieuw meten)**: welke meetinstrumenten worden vooraf in het ontwerp ingebouwd, welke gates ontstaan in productie?
+
+De blueprint is geen los document; hij is de plek waar de zeven bouwstenen samenkomen tot één coherent ontwerp. Wie deze bouwsteen overslaat, krijgt zes losse implementaties zonder gedeeld doel.
+
+### De iteratie als fundament
+
+Een blueprint goed maken is geen eenmalige oefening; het is een continu verbeterproces. De waarde zit in het scherper worden van de probleemformulering, het beter leren begrijpen van wat AI in deze specifieke context wel en niet betrouwbaar kan, het herkennen welke architecturen zich uitbetalen en welke achteraf overdimensionering bleken. De beste blueprints zijn niet de meest uitgebreide; ze zijn de meest precieze in hun keuzes en even precies in wat bewust is *niet* gekozen.
+
+### Het ontwerp-gesprek als product
+
+De ware waarde van een Client Blueprint zit niet alleen in het document zelf en niet alleen in de uitkomsten. Hij zit in de gesprekken die het document afdwingt: tussen klant en consultant, tussen techniek en domein, tussen ambitie en haalbaarheid. Die gesprekken laten een organisatie achter met een helderder zelfbeeld over waar AI past en waar niet. Dat zelfbeeld neem je mee naar het volgende project; en dat is, op de lange termijn, vaak de grootste opbrengst.
+
+</BBDisclosure>
