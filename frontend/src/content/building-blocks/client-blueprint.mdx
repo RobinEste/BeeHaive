@@ -109,7 +109,7 @@ Trigger, eindresultaat, hoofdfasen, stakeholders, één-noord-ster-KPI, betrokke
 
 ### Stap 2: Diagnose via TRACE
 
-Binnen de gekozen waarde-stroom zoom je in op één werkstroom. Het TRACE-mindset (Trigger, Route, Annotate, Check, Escalate) maakt onzichtbaar werk zichtbaar:
+Een waarde-stroom is end-to-end (trigger naar uitkomst) en bestaat uit meerdere **werkstromen**: afgebakende deel-processen met een eigen begin, einde en betrokken handen. Elke werkstroom bestaat op zijn beurt uit concrete **werkstappen** (één handeling op één moment). De analyse zoomt nu één niveau in: binnen de gekozen waarde-stroom kies je één werkstroom, en daarop wordt het TRACE-mindset (Trigger, Route, Annotate, Check, Escalate) toegepast om onzichtbaar werk zichtbaar te maken:
 
 - **Trigger**: wat start de werkstroom?
 - **Route**: welke handen, systemen en stappen volgen?
@@ -181,9 +181,9 @@ Voordat je workflow versus agent kiest, eerst de toets of dit überhaupt een AI-
 
 Geen van de drie? Dan past mogelijk een rule-based workflow of een BI-dashboard beter dan AI. Veel "AI"-projecten zijn eigenlijk dashboard-projecten in vermomming.
 
-### Vijf werkstroom-patronen plus autonome agents
+### Vijf workflow-patronen plus autonome agents
 
-Anthropic onderscheidt vijf patronen voor systemen waarin taalmodellen en tools in vooraf gedefinieerde codepaden werken:
+Op architectuurniveau hanteren we hier de Engelse term **workflow-patroon**: een vooraf-gedefinieerd codepad waarin taalmodellen en tools opereren. Dit is iets anders dan de werkstroom uit de voorgaande sectie (een lean-meso-niveau binnen een waarde-stroom); een workflow-patroon is een ontwerp-structuur, niet een organisatorische scope. Anthropic onderscheidt vijf van die patronen:
 
 - **Prompt chaining**: sequentiële taalmodel-aanroepen; geschikt als een taak deelbaar is in stappen.
 - **Routing**: classificeer de input, stuur door naar gespecialiseerde handlers (denk: facturatie-vraag naar de finance-handler).
