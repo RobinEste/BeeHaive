@@ -12,9 +12,15 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | design | 1 |
 | development | 31 |
 | infrastructure | 0 |
-| process | 1 |
+| process | 2 |
 | testing | 2 |
-| **Totaal** | **58** |
+| **Totaal** | **59** |
+
+## Failures
+
+| ID | Titel | Categorie | Datum | Relevantie |
+|----|-------|-----------|-------|------------|
+| KNW-2026-059 | Externe framework-typen niet uit context reconstrueren — primaire bron eerst | process | 2026-04-26 | hoog |
 
 ## Inzichten
 
@@ -78,3 +84,4 @@ Overzicht van alle vastgelegde sessie-inzichten.
 | KNW-2026-056 | Disclosure-isolatie — elke collapsable sectie moet zelfdragend zijn | design | 2026-04-25 | hoog |
 | KNW-2026-057 | Numerieke claims uit tabellen expliciet uitwerken in proza | development | 2026-04-25 | midden |
 | KNW-2026-058 | Anglicisme-drift in woordkeuze — sibling van em-dash drift | development | 2026-04-25 | midden |
+| KNW-2026-059 | Externe framework-typen niet uit context reconstrueren — primaire bron eerst | process | 2026-04-26 | hoog |
