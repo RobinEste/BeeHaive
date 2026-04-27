@@ -7,32 +7,440 @@ order: 6
 quote: "The peril of AI is the same as the promise of AI: it's a thoughtlessness enabler."
 quoteAuthor: "Cassie Kozyrkov"
 checklist:
-  - "Is het juiste modeltype gekozen voor de taak?"
-  - "Zijn latency, kosten en schaalbaarheid passend?"
-  - "Is er inzicht in trainingsbasis en beperkingen?"
-  - "Is er support voor function calling, reasoning, tools?"
-  - "Is de runtime veilig en stabiel (cloud, lokaal, hybride)?"
-  - "Zijn er fallback-modellen of versies beschikbaar?"
-  - "Is het model getest in combinatie met prompts en context?"
+  - "Is per taak vastgesteld of dit een LLM-probleem, een klassiek-ML-probleem of een regel-probleem is?"
+  - "Is de modelkeuze onderbouwd op zeven dimensies: taakcomplexiteit, kosten op realistisch volume, latency en betrouwbaarheid, privacy en data-residentie, determinisme, ecosysteem-volwassenheid en vendor-trajectory?"
+  - "Is het gekozen model getoetst op 50–200 eigen representatieve voorbeelden in plaats van alleen publieke benchmarks?"
+  - "Zijn meerdere modellen vergeleken op dezelfde taak voordat de keuze viel?"
+  - "Is er een tier-strategie (frontier, pro, standaard, budget, lokaal), in plaats van één model voor alles?"
+  - "Is data-residentie en US CLOUD Act-blootstelling juridisch beoordeeld voor gevoelige data?"
+  - "Zijn fallback-modellen aangewezen bij uitval, rate-limiting of kwaliteitsdegradatie?"
+  - "Is prompt caching geactiveerd waar minimaal 20% van de input-tokens identiek is over aanroepen?"
+  - "Worden kwaliteitsmetrieken naast latency en beschikbaarheid gemonitord?"
+  - "Zijn toeleveringsketen- en data-vergiftigingsrisico's (OWASP LLM03 en LLM04) als ontwerp-input meegenomen?"
 quickStart:
-  - "Definieer je eisen: snelheid, kosten, privacy, taalondersteuning, reasoning-capaciteit."
-  - "Test minimaal twee modellen op dezelfde taak en vergelijk de output."
-  - "Overweeg een hybride aanpak: lokaal waar privacy het vereist, cloud waar kwaliteit het vraagt."
+  - |
+    Strategisch: bepaal het model-bestedingsbeleid voor de organisatie.
+    Welke modellen mogen onder welke voorwaarden voor welke datasoorten worden gebruikt? Leg vast welk percentage van AI-uitgaven naar frontier-modellen mag, welke EU-data-eisen gelden, en welke modellen worden uitgesloten omdat ze juridisch of strategisch onaanvaardbaar zijn (bijvoorbeeld DeepSeek voor overheids- en defensiedata vanwege ondoorzichtige trainingsherkomst).
+  - |
+    Tactisch: kies een tier-strategie en een routing-aanpak.
+    Wijs per use-case-type een primaire tier toe (frontier voor 5% van de aanroepen, mid-tier voor het dagelijkse werk, budget voor hoog-volume eenvoudige taken). Stel een fallback-keten op die rate-limiting en uitval opvangt. Stel vooraf een evaluatie-set van 50–200 eigen voorbeelden samen waarop elke modelkeuze wordt getoetst.
+  - |
+    Operationeel: implementeer de evaluatie- en observability-pijplijn vóór je het eerste model in productie zet.
+    Bouw een model-agnostische gateway (bijvoorbeeld via LiteLLM of een eigen abstractielaag) zodat van model wisselen een kwestie van uren is. Activeer prompt caching waar mogelijk. Configureer monitoring op vijf pijlers: latency, kosten, kwaliteit, betrouwbaarheid en drift.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We gebruiken lokale LLMs (Llama 3.1 8B via Ollama) voor interviews vanwege privacy — geen data verlaat de EU. Voor rapportgeneratie met geanonimiseerde data schakelen we over naar frontier modellen (Claude) voor superieure analysekwaliteit."
+  description: "We hanteren een drie-tier-aanpak. Voor interviews met klantmedewerkers gebruiken we Llama 3.1 8B lokaal via Ollama: geen data verlaat de EU, transcripten blijven op infrastructuur die wij beheren. Voor rapportgeneratie met geanonimiseerde data schakelen we over naar Claude Sonnet voor sterkere analyse, met Mistral Large 3 als juridisch beoordeelde fallback. Voor classificatie en transcript-clean-up draait Claude Haiku als kostenefficiënte werker. De keuze per tier is per use case onderbouwd op vier dimensies en getoetst op een eigen evaluatie-set; ze is geen technische voorkeur, maar een ontwerp-beslissing met expliciete trade-offs."
 evidence:
-  - "Vergelijkingstabel van geteste modellen (kwaliteit, kosten, latency, privacy)"
-  - "Gedocumenteerde modelkeuze met onderbouwing per use case"
-  - "Fallback-strategie bij model-uitval of -degradatie"
+  - "Beslismatrix per use case (LLM, klassiek ML of regels) met onderbouwing op de vier dimensies"
+  - "Vergelijkingstabel van minimaal twee geteste modellen op een eigen evaluatie-set van 50–200 voorbeelden"
+  - "Tier-strategie en routing-architectuur, gedocumenteerd inclusief fallback-keten en circuit-breaker-drempels"
+  - "Observability-dashboard met latency-percentielen, kosten per aanroep, kwaliteitsmetriek en drift-detectie"
+  - "Data-soevereiniteitsreview en juridische goedkeuring per modelaanbieder, inclusief CLOUD Act-beoordeling waar van toepassing"
 ---
+
+import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
 
 ## Wat zijn Model Engines?
 
-Model engines zijn de AI-modellen en runtime-omgevingen die de kernfunctionaliteit van een AI-oplossing aandrijven. Het gaat om elk type model dat input verwerkt en tot uitvoer komt — taalmodellen, redeneermodellen, vision-modellen, embedding-modellen, classificatie- of andere gespecialiseerde modellen.
+Model engines zijn de denk- en rekenkern van een AI-oplossing: het model dat input verwerkt tot uitvoer, plus de operationele laag waarmee dat model wordt aangestuurd. Het gaat niet alleen om grote taalmodellen (LLMs); ook redeneer-modellen, multimodale modellen, wereld-modellen (*world models*), diffusiemodellen, embedding-modellen en klassieke machine-learning-algoritmen zijn legitieme architectuurcomponenten.
 
-Een model engine omvat zowel het **model zelf** (architectuur, parameters, trainingsbasis) als de **operationele laag** waarmee het wordt aangestuurd: runtime-infrastructuur, API's, optimalisaties, schaalbaarheid en performance. Een model engine bepaalt daarmee *hoe* de AI informatie verwerkt of handelt, *welke kwaliteit* haalbaar is en *welke beperkingen* of risico's gelden binnen de toepassing.
+Een model engine omvat het **model zelf** (architectuur, parameters, trainingsherkomst) én de **operationele laag**: de programmeerinterface (API), runtime-infrastructuur, optimalisaties, schaalbaarheid en bewaking. Die combinatie bepaalt wat haalbaar is qua kwaliteit, kosten, snelheid en privacy. Een verkeerde modelkeuze valt zelden direct op; ze openbaart zich als oplopende kosten, achterblijvende kwaliteit, of een juridische verrassing wanneer een audit zich aandient.
 
-## In de praktijk
+De [Client Blueprint](/framework/client-blueprint) (BB_02: van klantvraag naar gestructureerd AI-ontwerp) bepaalt *welke* taken AI moet doen; Model Engines bepaalt *waarmee* die taken worden uitgevoerd. De keuze is geen technisch detail aan het eind van het ontwerp, maar een eerste-orde ontwerpvraag die het verschil kan maken tussen een betrouwbaar product en een oncontroleerbare kostenpost.
 
-De modelkeuze is zelden zwart-wit. In de praktijk werk je vaak met meerdere modellen die elk een andere rol vervullen. De kunst is om per taak het juiste model te kiezen op basis van een afweging tussen kwaliteit, kosten, snelheid en privacy — niet om overal het grootste model in te zetten.
+<BBDisclosure title="Het juiste gereedschap voor de taak: niet altijd een LLM">
+
+Het overheersende anti-patroon in 2026 is de reflex om overal het grootste, nieuwste frontier-LLM in te zetten. Dat is duurder, trager en minder verklaarbaar dan nodig. Voor de meerderheid van enterprise-taken is het simpelweg het verkeerde gereedschap.
+
+### Drie redenen waarom "het grootste model overal" niet werkt
+
+- **Kosten**: een frontier-LLM kost $0,01–$0,50 per aanroep; klassiek machine learning $0,001–$0,01; een regelgebaseerd systeem nagenoeg nul. Bij honderdduizend aanroepen per maand scheelt dit tussen €900 en €45.000 per maand voor exact dezelfde taak.
+- **Latency**: klassiek ML reageert binnen 10–100 ms; een LLM heeft 200 ms tot enkele seconden nodig. Voor gesloten, gestructureerde taken is dat vijf tot vijftig keer sneller, wat het verschil tussen "voelt instant" en "voelt traag" maakt.
+- **Verklaarbaarheid**: classifiers en regressiemodellen zijn statistisch te valideren; LLMs zijn juridisch nauwelijks auditeerbaar. In gereguleerde sectoren (financiën, zorg, overheid) is dat geen detail maar een blokkade.
+
+### De zeven beslisfactoren
+
+Elke modelselectie draait om zeven dimensies. Geen ervan is optioneel; hoe je ze weegt hangt af van industrie en risico-tolerantie.
+
+- **Taakcomplexiteit**: open-ended (vrije tekst, ambigu) of gesloten en gestructureerd?
+- **Kosten op realistisch volume**: niet de gepubliceerde prijs per token, maar de *full loaded rate*: input plus output, vermenigvuldigd met verwacht volume, plus retries op timeouts en safety-filters, plus prompt-engineering-budget, plus observability- en egress-kosten. Modelleer twaalf maanden vooruit op verwacht volume, niet huidig volume.
+- **Latency en betrouwbaarheid onder belasting**: meet P95 en P99 (niet alleen gemiddelden) onder verwachte piekbelasting. Een model dat 300 ms sneller is in gemiddelde maar twee keer zoveel uur-lange uitval per kwartaal heeft, is niet sneller in een betekenis die voor de eindgebruiker telt.
+- **Privacy en data-residentie**: wat mag de data verlaten, en naar welk rechtsgebied? Region-specifiek; verifieer in writing per deployment-regio.
+- **Determinisme versus generatie**: vereist de uitkomst absolute, herhaalbare zekerheid of mag ze probabilistisch zijn? Generatieve modellen voorspellen het meest waarschijnlijke volgende woord; ze kunnen per definitie hallucineren. Bij hypotheekrente-berekeningen, regelgedreven compliance-checks of medische dosering-validatie is een taalmodel het verkeerde gereedschap; daar horen klassieke softwarelogica of deterministische ML-classifiers.
+- **Ecosysteem en integratie-oppervlak**: welke SDK's worden ondersteund? Bestaat er native tool-use en gestructureerde-output-modus die past bij je werkbelasting, of moet je adapters bouwen? Levert de aanbieder een observability-stack (traces, token-accounting, prompt-diffing) waar je platform-team mee uit de voeten kan? Een tweede-plaats-model met eersteklas tooling verschijnt sneller in productie dan een eerste-plaats-model waarvan je het integratie-oppervlak zelf moet bouwen.
+- **Vendor-trajectory**: wat is de financiële positie van de leverancier, hun release-cadence, hun bereikbaarheid bij productie-incidenten en de helderheid van hun publieke roadmap? Dit is de as die enterprises het zwaarst onderwegen, en die bepaalt of je over achttien maanden opnieuw door dit selectieproces moet. *De verborgen kostenpost van de verkeerde vendor-keuze is niet de modelkosten, maar de migratiekosten als je weg moet.*
+
+Een belangrijke nuance: publieke benchmarks (MMLU, HumanEval, GPQA) correleren zwak met bedrijfsprestaties. De enige zinvolle kwaliteitstest is een eigen evaluatie-set van 50–200 representatieve voorbeelden uit de eigen werkelijkheid. Meet niet alleen accuratesse, maar ook *de vorm van de fouten*: een model dat 85% correct is met spectaculaire, onvoorspelbare missers is voor productie vaak slechter dan een model dat 80% correct is met fouten die clusteren rond een paar voorspelbare patronen. Wie modellen kiest op basis van leaderboards, kiest op basis van iemand anders zijn taken.
+
+### Beslismatrix: LLM, klassiek ML of regels?
+
+- **Regels**: kosten nagenoeg nul, perfect waar de logica vooraf vastligt, maar geen ruimte voor ambiguïteit. Setup: dagen tot weken. Latency: sub-milliseconde. Verklaarbaarheid: uitstekend.
+- **Klassiek ML** (XGBoost, LightGBM, BERT-classifiers, ARIMA voor tijdreeksen): kosten $0,001–$0,01 per aanroep, hoog presterend op afgebakende taken met voldoende gelabelde data. Setup: weken tot maanden. Latency: 10–100 ms. Verklaarbaarheid: laag tot gemiddeld, maar statistisch toetsbaar.
+- **LLMs**: kosten $0,01–$0,50 per aanroep, sterk in open-ended taken en bij ambiguïteit. Setup: uren tot dagen. Latency: 200 ms tot 5 seconden. Verklaarbaarheid: zeer moeilijk.
+
+### Diagnostische vragen voor je een model kiest
+
+Loop deze vragen langs voordat je een model selecteert:
+
+- Is de uitvoer een gestructureerd getal of label? Probeer eerst klassiek ML of regels.
+- Heb je 1.000 of meer gelabelde voorbeelden? Klassiek ML is een serieuze kandidaat.
+- Moet het resultaat statistisch verklaarbaar zijn voor een auditor? Klassiek ML of regels.
+- Is een latency van onder 100 ms een harde eis? Klassiek ML of een gespecialiseerd model.
+- Gaat het om tabellaire, historische data? Probeer XGBoost of LightGBM eerst.
+- Is de taak open-ended of bevat ze ambiguïteit? Een LLM is geschikt.
+- Is er onvoldoende gelabelde data voor een klassiek model? LLM met few-shot-voorbeelden.
+
+### Aanbevolen progressie
+
+Als een LLM het juiste gereedschap is, bouw dan in deze volgorde op: begin met prompt engineering op een generalistisch model; voeg [RAG](/begrippen#rag) toe wanneer kenniscontext ontbreekt; pas fine-tunen toe als laatste stap, en alleen als je 1.000 of meer kwaliteitsvoorbeelden hebt én een meetbare evaluatiecriterium. Fine-tunen zonder evaluatiepijplijn is "schieten in het donker": je weet niet of je verbeterd hebt voordat het in productie staat.
+
+</BBDisclosure>
+
+<BBDisclosure title="Het modeltype-landschap: meer dan LLMs alleen">
+
+Het modeltype-landschap is in 2026 breder dan ooit. Een model engine kan een LLM zijn, maar even goed een redeneer-model, een multimodaal model, een wereld-model, een diffusiemodel, een embedding-model of een klassiek ML-algoritme. De architectuur-vraag *"welk modeltype past hier?"* gaat aan de model-keuze vooraf.
+
+### Algemene LLMs en redeneer-modellen
+
+Generieke LLMs (Claude Sonnet 4.6, GPT-5.5, Gemini 3.1 Pro) zijn de standaardkeuze voor open-ended taalkundige taken: vrije-tekst-generatie, samenvatten, vraagbeantwoording, code-generatie, documentanalyse, conversatie.
+
+Redeneer-modellen (Claude Opus 4.7 met *extended thinking*, OpenAI o3 en o3 Pro, GPT-5.5 in thinking-modus) reserveren expliciet rekentijd voor stapsgewijze redenering. Sterk bij wiskundige bewijzen, multi-stap-planning en complexe code-architectuur. Nadeel: hogere latency en aanzienlijk hogere kosten (o3 Pro: $150 per miljoen input-tokens). Reserveren voor taken waarbij de kwaliteitsverbetering meetbaar én gerechtvaardigd is.
+
+### Multimodale modellen voor tekst, beeld en video
+
+Verwerken tekst, beeld en soms audio of video in één model. Voorbeelden: Claude Sonnet 4.6, GPT-5.5 (multimodaal native), Gemini 3.1 Pro (tekst, beeld én video). Toepassingen: documentbegrip, productafbeeldingsanalyse, formulierverwerking, medische beeldherkenning. Wanneer wel: input is inherent visueel en een tekstuele beschrijving verliest te veel informatie. Wanneer niet: bij zuivere teksttaken; multimodale varianten zijn duurder dan hun tekst-only tegenhangers.
+
+### Wereld-modellen: opkomend voor robotica en simulatie
+
+Wereld-modellen (*world models*) modelleren hoe de wereld reageert op acties. Ze zijn vooral relevant voor organisaties in robotica, autonome voertuigen of industriële simulatie. Drie spelers in 2025–2026:
+
+- **Meta V-JEPA 2** (juni 2025): 1,2 miljard parameters, getraind op meer dan 1 miljoen uur video; zero-shot-robotbesturing in nieuwe omgevingen na slechts 62 uur ongelabelde robotdata. Open-source onder MIT-licentie.
+- **Google DeepMind Genie 3** (augustus 2025): eerste real-time interactieve wereld-model met fysisch accurate 3D-omgevingen. Toepassingen: training van agents, simulatie-omgevingen, onderwijs, gaming. Beperkt beschikbaar voor testers.
+- **NVIDIA Cosmos** (CES 2025): drie modelfamilies — Predict (toestandssimulatie), Transfer (sim-to-real-overdracht), Reason (fysica-bewust redeneren) — getraind op 9.000 biljoen tokens uit 20 miljoen uur real-world data. Enterprise-adoptie bij 1X, Agility Robotics, Figure AI, Uber en XPENG.
+- **Wayve GAIA-2 en LINGO-2** (autonoom rijden): GAIA-2 is een generatief wereld-model dat hyperrealistische, controleerbare verkeersscenario's en zeldzame edge-cases simuleert om logistieke en autonome systemen te trainen. LINGO-2 voegt daar een vision-language-action-laag aan toe, waardoor het voertuig in natuurlijke taal kan uitleggen *waarom* het remt of uitwijkt (*"ik rem af omdat de fietser onverwacht naar het midden van de rijstrook beweegt"*). Dit niveau van verklaarbaarheid is van directe waarde voor compliance, veiligheidsaudits en het opbouwen van vertrouwen in autonome logistiek.
+
+Voor de meeste Nederlandse organisaties zijn wereld-modellen in 2026 nog niet operationeel relevant buiten de genoemde sectoren. Verwachte horizon voor brede enterprise-inzetbaarheid: 2027–2028. Volg de ontwikkeling, maar wacht met grootschalige inzet.
+
+### Diffusiemodellen voor beeld en video
+
+Stable Diffusion 3, DALL-E 3, Midjourney v7 (beeld) en Sora, Veo 3, Runway Gen-3 (video). Toepassingen: marketingvisualisaties, productafbeeldingen, prototyping van interfaces, video-content. Niet geschikt voor gereguleerde sectoren waar visuele uitvoer auditeerbaar moet zijn.
+
+### Embedding-modellen
+
+Een [embedding-model](/begrippen#embedding-model) zet tekst om naar getalreeksen waarmee semantische gelijkenis meetbaar wordt. Onmisbaar voor RAG, semantisch zoeken, clustering en anomaliedetectie. Kosten zijn significant lager dan generatieve LLMs: typisch $0,0001–$0,002 per miljoen tokens. Wie RAG implementeert, gebruikt altijd een embedding-model.
+
+### Klassieke en gespecialiseerde modellen
+
+XGBoost, LightGBM, Random Forest, BERT-classifiers, ARIMA en Prophet voor tijdreeksen. Vaak overgeslagen, maar superieur aan LLMs op:
+
+- **Tabellaire gestructureerde data**: churn-voorspelling, fraudedetectie, voorraadbeheer, kredietscores.
+- **Tijdreeksen met duidelijke patronen**: energieverbruik, productieforecast, sensordata.
+- **Hoog-volume classificatie**: content-moderatie, transactie-labeling, typisch honderd keer goedkoper per aanroep.
+- **Gereguleerde omgevingen** waar statistisch valideren verplicht is.
+- **Latency-kritische toepassingen** onder 100 ms.
+
+Kernregel: als je een gestructureerd getal of label wilt voorspellen op basis van historische data, begin bij XGBoost, niet bij een LLM. De diagnostische vraag *"is dit wel een LLM-probleem?"* hoort vóór elke andere modelkeuzevraag.
+
+</BBDisclosure>
+
+<BBDisclosure title="Het frontier-landschap april 2026: geen universele winnaar">
+
+De frontier-markt is in 2026 ingrijpend veranderd. Drie aanbieders convergeren op de moeilijkste benchmarks tot binnen tienden van procentpunten, terwijl het prijsverschil tussen het goedkoopste en duurste frontier-aanbod is opgelopen tot een factor 1.250. De vraag *"welk model is het beste?"* heeft geen algemeen antwoord; alleen een taak-specifiek antwoord.
+
+### De drie grote, drie verschillende inzetten
+
+- **Anthropic Claude Opus 4.7**: $5 input / $25 output per miljoen tokens, context-window van 1 miljoen tokens. Sterkste op productie-code (SWE-bench Pro 64,3%), tool-zware agents (MCP-Atlas 77,3%) en desktop-automatisering (OSWorld 78,0%).
+- **OpenAI GPT-5.5**: $5 input / $30 output (release 23 april 2026; het "new class of intelligence"-tarief verdubbelt de prijs van de GPT-5-generatie). Sterkste op webonderzoek (BrowseComp 89,3%, tien punten boven de concurrentie).
+- **Google Gemini 3.1 Pro**: $2 input / $12 output (context tot 200K), $4 input / $18 output (boven 200K). Sterkste op kostenefficiënte doorvoer en meertalige kennis (MMMLU 92,6%); context-window van 1 miljoen tokens.
+
+Op het zwaarste redeneer-benchmark GPQA Diamond (graduate-niveau redeneren) zitten alle drie binnen 0,2 procentpunt van elkaar (rond 94%). Op SpectrumAILab (april 2026) staat het bondig: *"Three different bets. No overlapping winner."*
+
+### Het hele prijsgebouw
+
+Onder de drie groten ligt een tier-structuur waarin prijs en gebruiksprofiel sterker uiteenlopen:
+
+- **Pro-tier**: Claude Sonnet 4.6 ($3 / $15), GPT-5 ($1,25 / $10), Gemini 2.5 Pro ($1,25 / $5).
+- **Standaard-tier**: Claude Haiku 4.5 ($0,25 / $1,25), Gemini 2.5 Flash ($0,15 / $0,60).
+- **Budget-tier**: GPT-5 Nano ($0,05 / $0,40), Gemini 2.5 Flash-Lite ($0,10 / $0,40), DeepSeek V4 Flash ($0,14 / $0,28).
+- **Open-weight-tier**: Llama 4 Scout ($0,11–$0,25 via API; ook 2.600 tokens/seconde bij 0,33 s tijd-tot-eerste-token), Mistral Large 3 ($0,50 / $1,50; Apache 2.0 voor zelf-hosten), Mistral Small 3.2 ($0,06 / $0,18), DeepSeek V4 Pro ($1,74 / $3,48; preview 24 april 2026, MIT-licentie, getraind op Huawei Ascend-chips).
+- **Reasoning-uitschieters**: o3 Pro ($150 input), GPT-5.5 Pro ($30 / $180).
+
+Het totale prijsverschil tussen DeepSeek V4 Flash ($0,14 input) en GPT-5.5 Pro ($30 input) is een factor ruim 200; tussen die uitersten ligt de hele beslisruimte voor architecten. Hetzelfde model voor alle taken inzetten betekent vrijwel altijd geld weggooien.
+
+### Twee praktische valkuilen
+
+**Tokenizer-inflatie.** Claude Opus 4.7 levert een nieuwe tokenizer die 1,0 tot 1,35 keer meer tokens gebruikt dan Opus 4.6, afhankelijk van de inhoud. De stickerprijs is gelijk gebleven, maar de effectieve kostenstijging is 10–35%. Wie alleen op stickerprijzen vergelijkt, mist deze stille kostenpost.
+
+**Een upgrade is niet altijd een verbetering.** Claude Opus 4.7 ging op het webonderzoek-benchmark BrowseComp achteruit van 83,7% naar 79,3% ten opzichte van Opus 4.6. Voor wie webonderzoek de hoofdtaak is, is "upgraden" een verslechtering. Daarom geldt: evalueer altijd op je eigen taken vóór je migreert.
+
+### Tier-indeling als architectuurkader
+
+In de praktijk werkt vrijwel geen enterprise-architectuur met één model. Een typische verdeling van aanroepen:
+
+- **Frontier** (Claude Opus 4.7, GPT-5.5 in thinking-modus): complexe redenering en agentic workflows; circa 5% van het volume.
+- **Pro** (Sonnet 4.6, GPT-5): dagelijks professioneel werk, code-generatie; circa 35%.
+- **Standaard** (Haiku 4.5, Gemini 2.5 Flash): gebalanceerd op snelheid en kwaliteit; circa 30%.
+- **Budget** (GPT-5 Nano, DeepSeek V4 Flash): hoog-volume classificatie en eenvoudige taken; circa 30%.
+- **Lokaal** (Llama 4, Mistral Large 3 zelf-gehost): privacy-kritisch werk, situationeel.
+
+Wie elk van deze tiers in zijn architectuur opneemt, heeft de hefboom binnen handbereik om kosten met 60–80% te verlagen zonder kwaliteit op te geven. Dat brengt ons bij routing.
+
+</BBDisclosure>
+
+<BBDisclosure title="Routing en hybride strategieën: wanneer is een combinatie meer waard dan één model?">
+
+Multi-model-routing — het slim combineren van modellen per aanvraag — kan kosten met 60–83% verlagen bij minimaal kwaliteitsverlies. Maar de aanpak voegt complexiteit toe die alleen gerechtvaardigd is bij voldoende volume en variatie in werkbelasting. De vraag *"wanneer wel en wanneer niet?"* is hier kritischer dan bij vrijwel elke andere ontwerp-keuze.
+
+### Vier patronen
+
+- **Direct routing** (intent-based): een classificator herkent het type aanvraag binnen 50 ms en stuurt naar de juiste tier. Werkt goed bij duidelijk onderscheid tussen categorieën. Vereist een nauwkeurige classifier en monitoring op zijn drift. Tooling: LiteLLM (open-source), OpenRouter, Martian, Not Diamond, Amazon Bedrock Intelligent Prompt Routing.
+- **Cascading** (sequentieel-escalerend): elke aanvraag gaat eerst naar het goedkoopste model; bij onvoldoende confidence escaleert het naar een groter model. Voordeel: geen vooraf-classificatie nodig. Nadeel: bij escalatie betaal je een latency-taks bovenop de basisaanroep.
+- **Cascade routing** (gecombineerd): directe routing voor duidelijke gevallen, cascading voor het ambigue middengebied. Theoretisch én empirisch optimaler dan beide andere patronen afzonderlijk (Dekoninck et al., ETH Zürich, PMLR 2024/2025): *"Cascade routing consistently outperforms both routing and cascading."* In de praktijk de beste keuze bij gemengde werkbelasting.
+- **Ensemble-voting**: dezelfde aanvraag gaat naar meerdere modellen; het antwoord ontstaat door stemming of fusie. Gebruik een oneven aantal (3 of 5) om gelijkspel te voorkomen. Alleen rechtvaardigen bij hoge-inzet-beslissingen, want de kosten lopen drie keer of meer per aanroep op.
+
+### Drie architectuurfilosofieën, drie tegengestelde adviezen
+
+In de industrie heerst geen consensus over hoe complexe AI-systemen ontworpen moeten worden. De drie grote labs hanteren ideologisch tegengestelde posities, en hun publieke richtlijnen leveren elkaar tegensprekend advies op:
+
+- **Anthropic** propageert *Safety as Infrastructure*: hiërarchische orchestrator-worker-architecturen waarin een planner de taak opbreekt, een werker uitvoert en een onafhankelijke evaluator de output beoordeelt. Hun multi-agent research-systeem presteert 90,2% beter dan een enkel sterk model op complexe retrievetaken.
+- **OpenAI** kiest verticale integratie en autonomie: één capabel model (GPT-5.5) regelt zelf het hele traject van planning tot uitvoering via een interne routeringslaag tussen snel en langzaam denken. De Agents SDK handelt sandboxing en tool-orkestratie centraal af.
+- **Google-onderzoekers waarschuwen expliciet** voor over-engineering: zij toonden in 2026 aan dat overmatige multi-agent-coördinatie sequentiële logische taken **39% tot 70% slechter** maakt door communicatie-overhead en fout-cascades.
+
+De drie posities zijn alle drie verdedigbaar voor hun specifieke werkbelasting; geen ervan is universeel correct. Praktische regel voor de blueprint: kies een filosofie die past bij je eigen werk én je team-volwassenheid, en weet dat een ander lab je een tegengestelde aanpak zal aanbevelen.
+
+### Anthropic's regel: start simpel
+
+In *Building Effective Agents* (december 2024) formuleert Anthropic de fundamentele regel: *"Start with a simple prompt chain optimized with retrieval and examples. Add complexity only when it demonstrably improves outcomes."* Vertaal: voeg orchestratie en routing pas toe als je hebt aangetoond dat het nodig is. De meest gemaakte ontwerpfout is een multi-agent systeem ontwerpen voor een probleem dat een eenvoudige RAG-keten oplost.
+
+### Multi-agent: wanneer rechtvaardigt het 15× meer tokens?
+
+Anthropic's eigen multi-agent onderzoekssysteem presteert 90,2% beter dan single-agent op interne research-evaluatie, maar verbruikt circa 15× meer tokens dan chat-interacties. Een belangrijke vondst uit hetzelfde onderzoek: *"Upgrading to Claude Sonnet 4 is a larger performance gain than doubling the token budget on Claude Sonnet 3.7."* Modelkwaliteit weegt zwaarder dan extra tokens.
+
+Multi-agent is gerechtvaardigd bij:
+
+- taken met sterke parallelisatie-potentie;
+- informatie die één context-window overschrijdt;
+- complexe tool-integraties die specialisatie per agent rechtvaardigen.
+
+Niet geschikt voor taken waarbij agents tijdens uitvoering moeten coördineren of tussenresultaten uitwisselen, en evenmin voor de meeste coderingstaken. Vertrekpunt voor de blueprint: ga uit van single-agent tenzij bewijs multi-agent afdwingt.
+
+In multi-agent-architecturen werkt de tier-indeling expliciet door:
+
+- **Opus** (frontier) voor orchestrators (planners, synthesizers) die lange redeneerketens dragen;
+- **Sonnet** (pro) voor parallel uitvoerende werkers;
+- **Haiku** (standaard) voor informatieverzamelaars die in 5–10 parallelle aanroepen kunnen werken.
+
+### Wanneer multi-model-routing niet de moeite waard is
+
+Multi-model-routing voegt operationele complexiteit toe. Sla het over bij:
+
+- **Kleine volumes**: routing-infrastructuur-overhead is groter dan de besparing.
+- **Homogene werkbelasting**: alle aanvragen zijn vergelijkbaar complex, dus tier-onderscheid is academisch.
+- **Geen monitoring**: zonder observability kun je niet zien of routing goed werkt; je optimaliseert blind.
+- **Latency-kritisch werk**: een drie-tier cascade kan latency in het slechtste geval verergeren in plaats van verbeteren.
+
+</BBDisclosure>
+
+<BBDisclosure title="EU-data-soevereiniteit: meer dan een EU-regio kiezen">
+
+Voor Nederlandse en Europese organisaties is data-soevereiniteit geen voorkeurkwestie maar een juridisch vraagstuk. De US CLOUD Act en de EU AI Act stellen elk eisen die direct doorwerken in de modelkeuze. *Een EU-regio kiezen bij een US-aanbieder is onvoldoende* voor werkelijke soevereiniteit; dat is een veel-gehoord misverstand dat in de blueprint-fase moet worden rechtgezet.
+
+### De juridische kern: CLOUD Act bovenop AVG
+
+De US CLOUD Act (2018) machtigt Amerikaanse autoriteiten om data op te eisen bij Amerikaanse bedrijven, ongeacht of die data op EU-servers staat. AWS, Microsoft, Google, Anthropic en OpenAI zijn allemaal Amerikaanse bedrijven en vallen onder de CLOUD Act. De AVG bepaalt hoe je data verwerkt; de CLOUD Act bepaalt wie daar onafhankelijk van jouw wens toegang toe kan eisen.
+
+### Aanbieders naar soevereiniteitspositie
+
+- **Mistral AI** (Parijs): EU-bedrijf, niet onder CLOUD Act, EU-regio's standaard. Sterkste positie voor strikte compliance. Belangrijke kanttekening: Mistral heeft Amerikaanse investeerders (Andreessen Horowitz, Salesforce Ventures); CLOUD Act-blootstelling via investeerdersrelaties is juridisch ongetest. Laat de juridische afdeling de keuze beoordelen bij hoog-gevoelige toepassingen.
+- **Anthropic** (San Francisco): onder CLOUD Act. Beschikbaar via AWS Bedrock in EU-regio's (Ierland, Duitsland, Frankrijk). Geschikt voor enterprise-inzet met EU Standard Contractual Clauses, maar geen categoriale soevereiniteit.
+- **OpenAI** (San Francisco): onder CLOUD Act. EU Data Residency-optie voor enterprise-klanten (Ierland, Duitsland, Nederland) met DPA. Vergelijkbaar profiel met Anthropic.
+- **Google Vertex AI** (Mountain View): onder CLOUD Act. Configureerbaar op zeven EU-regio's (België, Nederland, Duitsland, Finland, Polen, Italië, Frankrijk).
+- **Meta Llama 4 zelf-gehost**: niet van toepassing; er is geen externe aanbieder. Volledige controle, maar volledige eigen verantwoordelijkheid voor schaalbaarheid en beveiliging.
+
+Julien Simon vat de positie scherp samen (*AI Sovereignty in Europe*, januari 2026): *"Mistral's position is stronger than US-native providers, but do not assume categorical immunity."*
+
+### AWS European Sovereign Cloud
+
+AWS lanceerde in 2025 de European Sovereign Cloud, met directe toegang tot Amazon Bedrock-modellen (Anthropic, Meta, Mistral, Amazon-eigen). Het haalt het niveau van SecNumCloud (de hoogste Franse overheidsnorm) niet, maar is een praktische tussenoplossing voor organisaties die Bedrock willen gebruiken en EU-data-residentie nodig hebben.
+
+### De Nationale AI Fabriek: een Nederlands soevereiniteits-anker
+
+Voor uiterst gevoelige toepassingen — ongeanonimiseerde overheidsdata, defensie, kerninfrastructuur — bouwen Nederland en de EU samen aan een eigen rekencapaciteit. De **Nationale AI Fabriek** in Groningen, met €200 miljoen EuroHPC-subsidie, wordt beheerd door SURF en TNO in samenwerking met de Nederlandse AI Coalitie. Het systeem (operationeel rond 2027) levert een AI-gespecialiseerde supercomputer voor training én inferentie, gestoeld op Europese waarden ("AI Fair Tech") en buiten de invloedssfeer van Amerikaanse Big Tech. Voor blueprints in de hoogste risico-categorieën is dit op termijn een serieus alternatief naast Mistral en zelf-gehoste open-weight modellen.
+
+### Lokaal of op eigen infrastructuur draaien
+
+Voor de hoogste graad van soevereiniteit — geen externe datatransfers — zijn er vier volwassen tools:
+
+- **Ollama**: lokale runtime met eenvoudige installatie en breed model-support; goede keuze voor experimenten en kleine deployments.
+- **vLLM**: productie-grade serving met hoge doorvoer en continuous batching; standaard voor zelf-gehost productiewerk.
+- **Text Generation Inference** (Hugging Face): productie-grade serving, geoptimaliseerd voor Hugging Face-modellen.
+- **llama.cpp**: draait op CPU én GPU met lage hardware-eisen; Llama 4 Scout draait al op een M4 Mac.
+
+Lokale inferentie elimineert externe datatransfers, maar kent grenzen:
+
+- **Kwaliteitskloof**: Mistral Large 3 zelf-gehost benadert maar overtreft niet consistent Claude Opus 4.7 of GPT-5.5 op alle taken.
+- **Agentic tooling**: ondersteuning voor [MCP](/begrippen#mcp) (Model Context Protocol) en computer-use is bij EU-native aanbieders minder volwassen.
+- **Hardware-investering**: $15.000–$50.000 voor een on-premise Llama 4-deployment. Break-even tegenover cloud-API: rond $10.000–$30.000 maandelijkse cloudkosten.
+
+### EU AI Act-verplichtingen voor model-aanbieders
+
+GPAI-model-aanbieders (artikel 53 EU AI Act, grotendeels van kracht augustus 2025) moeten voldoen aan:
+
+- technische documentatie (Annex XI/XII), bruikbaar voor toezichthouder én downstream-integratoren;
+- trainingsdata-samenvatting en respect voor Europees auteursrecht;
+- voor modellen met "systemisch risico" (artikel 55): aanvullende veiligheidsevaluaties.
+
+De **systemisch-risico-drempel** ligt op 10²⁵ FLOPs trainingscompute (ongeacht open-source of closed-weight). Boven die drempel zijn aanbieders verplicht de Commissie te notificeren, onafhankelijke red-teaming uit te voeren, cyberincidenten te melden en over de hele levenscyclus de hoogste cybersecurity-standaarden te waarborgen.
+
+**Handhavingsstart**: 2 augustus 2026. Het EU AI Office krijgt vanaf die datum volledig mandaat. Boetes voor non-compliance lopen op tot **€35 miljoen of 7% van de wereldwijde jaaromzet**. Voor Nederlandse organisaties die "black-box"-modellen integreren — waarbij de leverancier weigert inzicht te geven in trainingsbronnen — betekent dat directe blootstelling.
+
+Voor de financiële sector geldt aanvullend de Digital Operational Resilience Act (DORA); voor zorginstellingen de European Health Data Space (EHDS). Beide bevatten data-lokalisatieverplichtingen die het gebruik van API's bij US-aanbieders voor kritieke systemen praktisch uitsluiten.
+
+Mistral biedt sinds eind 2025 compliance-templates en audittrail-tooling specifiek voor de EU AI Act, en heeft met **Mistral Forge** een dedicated on-premise-trainingsoptie voor overheid en defensie.
+
+</BBDisclosure>
+
+<BBDisclosure title="Kostenoptimalisatie: vijf hefbomen, in volgorde">
+
+LLM-kosten lopen op een schaal die in 2024 nog niet zichtbaar was. Een chatbot met honderdduizend dagelijkse aanroepen op GPT-5.5 Pro kan tienduizenden euro's per maand kosten; dezelfde chatbot op een tier-strategie met caching kost vaak een fractie. Vijf hefbomen, in volgorde van impact:
+
+### Hefboom 1: modelschaal afstemmen op de taak (60–80% besparing)
+
+Verschuif een deel van het werk naar lagere tiers. Zoals beschreven in de tier-indeling: hooguit 5% van aanroepen heeft frontier-niveau nodig. Implementatietijd: een tot twee weken, mits er een evaluatie-set ligt om kwaliteit te bewaken. Dit is bijna altijd de eerste stap, want een eenmalige investering in tiering blijft jaren renderen.
+
+### Hefboom 2: prompt caching (50–90% besparing op input)
+
+[Prompt caching](/begrippen#prompt-caching) maakt al-door-het-model-verwerkte input herbruikbaar tussen aanroepen. Concrete kortingen bij grote aanbieders:
+
+- Anthropic Sonnet 4.6: van $3,00 naar $0,30 per miljoen tokens (90% korting).
+- Gemini 2.5 Pro: van $1,25 naar $0,31 per miljoen tokens (75% korting).
+- GPT-5.5: van $2,50 naar $1,25 per miljoen tokens (50% korting).
+
+Vereiste: een stabiele, herhalende prefix in de prompt; typisch een system-prompt, vaste instructies, of een persistent klantprofiel. Vuistregel: als meer dan 20% van je input-tokens identiek is over aanroepen, levert caching significante besparing op binnen één tot drie dagen implementatietijd. Bij lokale modellen (Ollama, vLLM, llama.cpp) is API-prompt-caching niet beschikbaar; eigen implementatie is mogelijk maar arbeidsintensief.
+
+### Hefboom 3: batch-API (50% op niet-realtime werk)
+
+Voor taken zonder strakke latency-eis bieden Anthropic, OpenAI en Google batch-API's met circa 50% korting. Geschikt voor: rapport-generatie, bulk-classificatie, nachtelijke verwerking, embedding-generatie van grote corpora. Implementatietijd: één tot twee weken voor de pijplijn-aanpassing.
+
+### Hefboom 4: prompt-lengte trimmen (20–40% op input)
+
+Veel prompts bevatten overtollige uitleg, voorbeelden of context die het model niet nodig heeft. Een grondige iteratie op de prompt — gestuurd door evaluaties — levert routinematig 20–40% reductie op. Implementatietijd: één tot twee weken, intensief tijdens de iteratie maar duurzaam in de besparing.
+
+### Hefboom 5: open-source migratie (50–90% bij schaal)
+
+Bij voldoende volume — honderdduizend tot een miljoen aanroepen per dag — wordt zelf-hosting van Llama 4 of Mistral Large 3 financieel aantrekkelijk. Hardware-investering: $15.000–$50.000 voor een productiedeployment; break-even tegenover cloud-API rond $10.000–$30.000 maandelijks cloudgebruik. Implementatietijd: vier tot twaalf weken, inclusief observability en fallback-architectuur.
+
+### Hefboom 6: speculative decoding (3–10× latency-winst, geen kwaliteitsverlies)
+
+Speculative decoding lost het *memory-bandwidth*-knelpunt van autoregressieve generatie op zonder de output te veranderen. Een klein, ultrasnel draft-model (bijvoorbeeld Qwen3-0.6B) fantaseert vijf tot tien tokens vooruit; het grote target-model verifieert die in één parallelle stap. Klopt de gok, dan zijn meerdere tokens gegenereerd in de tijd die normaal voor één wordt betaald. In vLLM-productieomgevingen op NVIDIA-hardware levert dit circa 21% extra doorvoer en 19,4% lagere kosten per miljoen output-tokens. Praktijkmetingen bij cloud-providers laten 7,2× speedup zien; bij klantenservice-chat 87% latency-reductie (4,8 s naar 0,7 s). Implementatietijd: vier tot twintig weken, oplopend naar volwassen draft-model-tuning.
+
+### Self-hosting: kwantisatie en distillatie
+
+Wie zelf-hostet, heeft twee aanvullende technieken om kosten verder te drukken:
+
+- **Kwantisatie**: modelgewichten van 32-bit floating-point omzetten naar 8-bit (INT8) of 4-bit (INT4) integer representatie. INT8 levert 50% geheugenreductie en 1,5–2× snelheidswinst bij minder dan 1% kwaliteitsverlies. INT4 (AWQ-formaat) levert 75% geheugenreductie en 2–3× snelheidswinst bij 1–3% kwaliteitsverlies. Kritisch detail: INT8 versnelt alleen op runtimes met native ondersteuning (TensorRT, ONNX Runtime, llama.cpp); standaard PyTorch berekent INT8 als FP32 en levert dan alleen overhead op.
+- **Distillatie**: een groot model "leren" aan een kleiner model voor een specifieke taak. Een 70B-model destilleren naar 7B kan 90% inferentiekosten besparen met 90–95% kwaliteitsbehoud op de specifieke taak. Vereist: duizenden kwaliteits-uitkomsten als trainingsdata én ML-infrastructuur.
+
+</BBDisclosure>
+
+<BBDisclosure title="Operationele runtime: kwaliteit naast beschikbaarheid monitoren">
+
+Een LLM-stack draait niet stabiel zonder bewaking, en bewaking met traditionele application-monitoring volstaat niet. Een HTTP 200-respons kan een hallucinatie bevatten; een latency-stijging kan een retrieval-probleem maskeren. LLM-observability vergt een eigen kader.
+
+### Latency-budgetten en rate-limiting
+
+- **30+ tokens per seconde streaming**: voelt instant voor de eindgebruiker.
+- **Tijd-tot-eerste-token (TTFT) onder 200 ms**: doel voor interactieve toepassingen.
+- **P95 onder 10 seconden**: alarmdrempel voor asynchrone LLM-aanroepen.
+- **P99 als primaire SLA-maatstaf**: P50 en P95 verbergen de staart-latency die gebruikers daadwerkelijk ervaren bij ongelukkige timing.
+
+Het grootste runtime-probleem in 2026 is echter geen pure snelheid maar leveranciers-stabiliteit. Datadog's *State of AI Engineering 2026* rapporteert dat **bijna 60% van alle geregistreerde LLM-fouten in februari 2026 HTTP 429 rate-limit-fouten waren** (33% in maart, na automatische retry-implementaties). Autonome agents in feedbackloops slaan binnen seconden tegen aanbieders-limieten op, wat zonder circuit-breakers tot catastrofaal falen van het hele bedrijfsproces leidt.
+
+### Versie-pinning of auto-upgrade?
+
+Beide aanpakken hebben risico's:
+
+- **Versie-pinning**: voorspelbaar gedrag, eenvoudiger compliance, maar je mist beveiligingspatches en kwaliteitsverbeteringen.
+- **Auto-upgrade**: altijd recente kwaliteit, maar stille gedragswijzigingen kunnen achterliggende logica breken (zie de Opus 4.7 BrowseComp-regressie).
+
+Aanbeveling: pin op major-versie in productie; test elke upgrade in staging tegen de eigen evaluatie-set vóór uitrol. Auto-upgrade alleen voor lage-risico use cases.
+
+### Fallback-patronen
+
+Bij uitval, rate-limiting of degradatie van het primaire model:
+
+- **Primair-naar-secundair**: bijvoorbeeld Anthropic naar OpenAI of omgekeerd.
+- **Stap-down binnen familie**: Opus naar Sonnet naar Haiku.
+- **Circuit-breaker**: stop escalatie naar duurdere fallback wanneer de foutfrequentie te hoog is, om kosten-explosies bij upstream-incidenten te voorkomen.
+- **Activatie-monitoring**: een stijgende `fallback_activation_rate` is vaak het eerste signaal van een leveranciers-incident.
+
+### Observability: vijf pijlers
+
+Een minimale metriekenset voor LLM-stacks:
+
+- **Latency**: TTFT, totale generatietijd, P50/P95/P99. Doel: gebruikerservaring en bottleneck-detectie.
+- **Kosten**: tokens per aanroep (input én output), kosten per model. Doel: budget en anomaliedetectie.
+- **Kwaliteit**: LLM-as-judge-score op een steekproef van 5–15%, plus guardrail-trigger-rate. Doel: regressies vroeg detecteren.
+- **Betrouwbaarheid**: error-rate per type, retry-rate, fallback-activatie-rate. Doel: leverancierstabiliteit bewaken.
+- **Drift**: 7-daagse trend in antwoordlengte, embedding-verdrift. Doel: stille degradatie zichtbaar maken.
+
+### Vier incident-correlaties dekken 80%
+
+Coverge (2026) toont in praktijkdata dat vier patronen het leeuwendeel van LLM-incidenten verklaren:
+
+- **Latency stijgt + grounding-score daalt**: retrieval-degradatie. Onderzoek de [Dynamic Context](/framework/dynamic-context) (BB_03: data, retrieval-architectuur en context-strategie die het model voedt).
+- **Latency stabiel + hallucinaties stijgen**: prompt- of model-wijziging. Onderzoek recente wijzigingen in [Prompt Design](/framework/prompt-design) (BB_04: gestructureerde instructies en kwaliteitscriteria voor consistente output).
+- **Escalatie-rate stijgt + kosten stijgen**: classifier-drift in routing. Onderzoek de classificator-prestatie tegen de evaluatie-set.
+- **Provider-foutrate stijgt + fallback-rate stijgt**: upstream-incident. Activeer het externe communicatieprotocol.
+
+### Toeleveringsketen- en data-vergiftigingsrisico's
+
+Twee OWASP LLM-risico's horen op model-niveau in elke ontwerp-overweging:
+
+- **LLM03 Toeleveringsketen**: gemanipuleerde pre-trained modellen, vergiftigde datasets, kwetsbare bibliotheken, gecompromitteerde MCP-tools. Open-source modellen van Hugging Face kunnen backdoors bevatten via *malicious pickling* tijdens het inladen. Mitigaties: cryptografische checksums voor modelintegriteit, vendor acceptance testing, statische scan met ModelAudit, gedetailleerde logging van trainingswijzigingen.
+- **LLM04 Data- en model-vergiftiging**: tijdens pre-training, fine-tuning of embedding-fase kan een model worden gemanipuleerd om backdoors of biases te bevatten. Een slapende agent (*sleeper agent*) gedraagt zich normaal totdat een specifieke trigger het kwaadaardige gedrag activeert. Mitigaties: bias-detectietests, consistentietests, red-teaming, herkomstregistratie van trainingsdata.
+
+Voor governance op modelniveau is een **AI Bill of Materials** (AI-BOM) het instrument: een gestructureerd, machinaal-leesbaar overzicht van trainingsdata-bronnen, modelaanpassingen, bekende beperkingen en compliance-status. Twee formaten zijn in 2026 marktstandaard: **CycloneDX-AI** en **SPDX-AI 3.0.1**. Voor hoog-risico-systemen onder de EU AI Act (artikel 13) is een AI-BOM in praktijk verplicht. Aanbieders verschillen in transparantie: Meta (Llama 4) en Mistral zijn relatief open over trainingsdata; OpenAI, Anthropic en Google zijn geslotener.
+
+</BBDisclosure>
+
+<BBDisclosure title="In de praktijk">
+
+### Cross-bouwsteen: hoe Model Engines de andere zes BB's raakt
+
+Model Engines is geen geïsoleerde keuze; het werkt door op alle andere bouwstenen.
+
+- **[Knowledge](/framework/knowledge) (BB_01: domein-expertise externaliseren tot reproduceerbare kwaliteitscriteria)**: welk type model past bij de kennisstructuur? Vaak een combinatie: een embedding-model voor retrieval, een LLM voor generatie, een classifier voor categorisering.
+- **[Client Blueprint](/framework/client-blueprint) (BB_02: van klantvraag naar gestructureerd AI-ontwerp)**: de blueprint bepaalt de taken; Model Engines bepaalt waarmee die taken worden uitgevoerd. Zonder evaluatie-set in de blueprint kun je geen verantwoorde modelkeuze maken.
+- **[Dynamic Context](/framework/dynamic-context) (BB_03: data, retrieval-architectuur en context-strategie die het model voedt)**: het context-window van het gekozen model bepaalt hoeveel retrieval het zinvol verwerkt.
+- **[Prompt Design](/framework/prompt-design) (BB_04: gestructureerde instructies en kwaliteitscriteria voor consistente output)**: prompts moeten worden afgestemd op het modeltype; een prompt die werkt voor Claude Opus werkt niet automatisch voor Gemini Flash.
+- **[Tool Integration](/framework/tool-integration) (BB_05: externe tools, MCP-servers en agent-tooling)**: tool-zware agents stellen eisen aan het model (Claude Opus 4.7 leidt op MCP-Atlas met 77,3%); modelkeuze en tool-architectuur zijn gekoppeld.
+- **[Evaluation Loop](/framework/evaluation-loop) (BB_07: meten, analyseren, verbeteren, opnieuw meten)**: zonder evaluatiepijplijn kun je geen modellen vergelijken, geen regressies detecteren en geen kwaliteitsdrift signaleren. Model Engines en Evaluation Loop zijn elkaars voorwaarde.
+
+### Bouw model-agnostisch
+
+Modellen veranderen elke drie maanden. Een goede evaluatie-pijplijn vertelt je wanneer het tijd is om te wisselen; een model-agnostische gateway maakt die wissel een kwestie van uren in plaats van maanden. Concrete invulling: gebruik een abstractielaag (LiteLLM, een eigen wrapper, of cloud-native gateways) waarin model-keuze één configuratiewaarde is en geen code-wijziging vereist. Investeer hierin vóór je een tweede modelaanbieder nodig hebt, niet erna.
+
+### Drie selectie-profielen voor de blueprint
+
+Niet elke organisatie hoeft dezelfde positie te kiezen. In de praktijk zien we drie profielen die elk consistent zijn met een bepaald risicoprofiel en volume-niveau:
+
+- **Frontier-first**: kies de capability-leider, accepteer leveranciers- en kostenrisico, en plan om elke zes tot twaalf maanden opnieuw te evalueren. Past bij kleine pilots en hoog-waarde, laag-volume use cases waar de beste output direct waarde levert.
+- **Enterprise-stable**: kies een aanbieder met sterke compliance, voorspelbare prijzen en helder enterprise-support, ook als die een modelgeneratie achter de frontier loopt. Past bij gereguleerde sectoren en werkbelastingen die je jaren laat draaien. De capability-gap is met prompt-engineering en domain-context vaak te dichten; de compliance-gap niet.
+- **Portfolio-routing**: meerdere aanbieders, per werkbelasting routeren naar het meest passende model. Past op schaal, mits voldoende volume om de routing-laag te rechtvaardigen en in-house capaciteit om hem te onderhouden.
+
+Een vuistregel: een model sterk op capability en ecosysteem maar zwak op vendor-trajectory is een val. Je gaat erop bouwen, het bevallen, en daarna een pijnlijk jaar migreren wanneer de aanbieder pivot maakt of je uit de markt prijst.
+
+### Quarterly review als institutionele discipline
+
+Modelkeuze is geen eenmalige procurement-beslissing maar een proces dat je institutionaliseert. Een ritme dat in de praktijk werkt: per kwartaal de eigen evaluatie-set opnieuw draaien, het kostenmodel verfrissen tegen werkelijk gefactureerde usage, en de vendor-trajectory-view herzien. Het doel is niet elke drie maanden van leverancier wisselen; het doel is altijd weten wat wisselen zou kosten, zodat je — wanneer de beslissing daadwerkelijk nodig is — het huiswerk al gedaan hebt. Behandel modelkeuze zoals je cloud-leverancier-keuze behandelt: een lange-horizon-, op-schema-herziene, architectonische beslissing.
+
+### Het ontwerp-gesprek over modellen
+
+De waarde van modelkeuze zit niet alleen in het uiteindelijke gekozen model, maar in het gesprek dat de keuze afdwingt: tussen techniek en juridisch over CLOUD Act-blootstelling, tussen architectuur en finance over tier-strategie, tussen product en compliance over evaluatie-criteria. Wie deze gesprekken vóór de bouw voert, voorkomt de meeste verrassingen na ingebruikname. Wie ze overslaat, voert ze later alsnog; meestal onder druk en met minder ruimte om te corrigeren.
+
+### Een laatste regel
+
+Een model is geen merk dat je trouw blijft, maar een gereedschap dat je periodiek heroverweegt. Een model engine is geen technologie-keuze, maar een ontwerp-discipline: telkens opnieuw bepalen welk gereedschap past bij welke taak, en de architectuur zo bouwen dat die heroverweging geen herontwerp vergt.
+
+</BBDisclosure>
