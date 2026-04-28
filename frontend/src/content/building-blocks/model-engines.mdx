@@ -29,9 +29,9 @@ quickStart:
     Bouw een model-agnostische gateway (bijvoorbeeld via LiteLLM of een eigen abstractielaag) zodat van model wisselen een kwestie van uren is. Activeer prompt caching waar mogelijk. Configureer monitoring op vijf pijlers: latency, kosten, kwaliteit, betrouwbaarheid en drift.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We hanteren een drie-tier-aanpak. Voor interviews met klantmedewerkers gebruiken we Llama 3.1 8B lokaal via Ollama: geen data verlaat de EU, transcripten blijven op infrastructuur die wij beheren. Voor rapportgeneratie met geanonimiseerde data schakelen we over naar Claude Sonnet voor sterkere analyse, met Mistral Large 3 als juridisch beoordeelde fallback. Voor classificatie en transcript-clean-up draait Claude Haiku als kostenefficiënte werker. De keuze per tier is per use case onderbouwd op vier dimensies en getoetst op een eigen evaluatie-set; ze is geen technische voorkeur, maar een ontwerp-beslissing met expliciete trade-offs."
+  description: "We hanteren een drie-tier-aanpak. Voor interviews met klantmedewerkers gebruiken we Llama 3.1 8B lokaal via Ollama: geen data verlaat de EU, transcripten blijven op infrastructuur die wij beheren. Voor rapportgeneratie met geanonimiseerde data schakelen we over naar Claude Sonnet voor sterkere analyse, met Mistral Large 3 als juridisch beoordeelde fallback. Voor classificatie en transcript-clean-up draait Claude Haiku als kostenefficiënte werker. De keuze per tier is per use case onderbouwd op zeven dimensies en getoetst op een eigen evaluatie-set; ze is geen technische voorkeur, maar een ontwerp-beslissing met expliciete trade-offs."
 evidence:
-  - "Beslismatrix per use case (LLM, klassiek ML of regels) met onderbouwing op de vier dimensies"
+  - "Beslismatrix per use case (LLM, klassiek ML of regels) met onderbouwing op de zeven dimensies"
   - "Vergelijkingstabel van minimaal twee geteste modellen op een eigen evaluatie-set van 50–200 voorbeelden"
   - "Tier-strategie en routing-architectuur, gedocumenteerd inclusief fallback-keten en circuit-breaker-drempels"
   - "Observability-dashboard met latency-percentielen, kosten per aanroep, kwaliteitsmetriek en drift-detectie"
@@ -112,7 +112,7 @@ Verwerken tekst, beeld en soms audio of video in één model. Voorbeelden: Claud
 
 ### Wereld-modellen: opkomend voor robotica en simulatie
 
-Wereld-modellen (*world models*) modelleren hoe de wereld reageert op acties. Ze zijn vooral relevant voor organisaties in robotica, autonome voertuigen of industriële simulatie. Drie spelers in 2025–2026:
+Wereld-modellen (*world models*) modelleren hoe de wereld reageert op acties. Ze zijn vooral relevant voor organisaties in robotica, autonome voertuigen of industriële simulatie. Vier spelers in 2025–2026:
 
 - **Meta V-JEPA 2** (juni 2025): 1,2 miljard parameters, getraind op meer dan 1 miljoen uur video; zero-shot-robotbesturing in nieuwe omgevingen na slechts 62 uur ongelabelde robotdata. Open-source onder MIT-licentie.
 - **Google DeepMind Genie 3** (augustus 2025): eerste real-time interactieve wereld-model met fysisch accurate 3D-omgevingen. Toepassingen: training van agents, simulatie-omgevingen, onderwijs, gaming. Beperkt beschikbaar voor testers.
@@ -145,7 +145,7 @@ Kernregel: als je een gestructureerd getal of label wilt voorspellen op basis va
 
 <BBDisclosure title="Het frontier-landschap april 2026: geen universele winnaar">
 
-De frontier-markt is in 2026 ingrijpend veranderd. Drie aanbieders convergeren op de moeilijkste benchmarks tot binnen tienden van procentpunten, terwijl het prijsverschil tussen het goedkoopste en duurste frontier-aanbod is opgelopen tot een factor 1.250. De vraag *"welk model is het beste?"* heeft geen algemeen antwoord; alleen een taak-specifiek antwoord.
+De frontier-markt is in 2026 ingrijpend veranderd. Drie aanbieders convergeren op de moeilijkste benchmarks tot binnen tienden van procentpunten, terwijl hun prijzen factor 2,5 uiteenlopen: Gemini 3.1 Pro op $2 input tegenover Opus 4.7 en GPT-5.5 op $5. Wie tier-onbewust kiest, betaalt voor vergelijkbare output al snel twee tot drie keer te veel. Open-weight challengers vergroten die spreiding: DeepSeek V4 Pro ($1,74 / $3,48) presteert op SWE-Bench en GPQA Diamond binnen enkele procentpunten van Opus 4.7 en GPT-5.5, tegen drie tot zeven keer lagere kosten per miljoen tokens. De vraag *"welk model is het beste?"* heeft geen algemeen antwoord; alleen een taak-specifiek antwoord.
 
 ### De drie grote, drie verschillende inzetten
 
@@ -300,9 +300,9 @@ Mistral biedt sinds eind 2025 compliance-templates en audittrail-tooling specifi
 
 </BBDisclosure>
 
-<BBDisclosure title="Kostenoptimalisatie: vijf hefbomen, in volgorde">
+<BBDisclosure title="Kostenoptimalisatie: zes hefbomen, in volgorde">
 
-LLM-kosten lopen op een schaal die in 2024 nog niet zichtbaar was. Een chatbot met honderdduizend dagelijkse aanroepen op GPT-5.5 Pro kan tienduizenden euro's per maand kosten; dezelfde chatbot op een tier-strategie met caching kost vaak een fractie. Vijf hefbomen, in volgorde van impact:
+LLM-kosten lopen op een schaal die in 2024 nog niet zichtbaar was. Een chatbot met honderdduizend dagelijkse aanroepen op GPT-5.5 Pro kan tienduizenden euro's per maand kosten; dezelfde chatbot op een tier-strategie met caching kost vaak een fractie. Zes hefbomen, in volgorde van impact:
 
 ### Hefboom 1: modelschaal afstemmen op de taak (60–80% besparing)
 
