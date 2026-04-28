@@ -66,7 +66,7 @@ const accent = bbAccentMap[block.id] || 'var(--teal)';
     <div class="bb-content">
       <BBProseSection
         eyebrow="Wat is het"
-        title={`Wat is ${data.name}?`}
+        title={data.introTitle ?? `Wat is ${data.name}?`}
         sectionId={BB_SECTIONS.WAT_IS_HET.id}
       >
         <Content />

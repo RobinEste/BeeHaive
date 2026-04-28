@@ -6,6 +6,7 @@ const buildingBlocks = defineCollection({
   schema: z.object({
     code: z.string(),           // BB_01, BB_02, etc.
     name: z.string(),           // Knowledge, Client Blueprint, etc.
+    introTitle: z.string().optional(), // Override for "Wat is X?" intro heading (e.g. plural names)
     tagline: z.string(),        // One-line summary
     icon: z.string(),           // Emoji or icon reference
     order: z.number(),          // Sort order (1-7)

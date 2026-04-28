@@ -291,7 +291,7 @@ KNOWLEDGE_ITEMS = [
         "source_url": "https://www.oreilly.com/library/view/prompt-engineering-for/9781098153427/",
         "source_type": "guideline",
         "is_current": True,
-        "building_blocks": ["Prompt Design", "Model Engines"],
+        "building_blocks": ["Prompt Design"],
         "guardrails": ["Transparency", "Robustness"],
         "topics": ["Prompt Engineering"],
         "authors": ["O'Reilly Media"],

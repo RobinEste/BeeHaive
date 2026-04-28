@@ -282,6 +282,106 @@ export const BEGRIPPEN: Term[] = [
     zieOok: ['werkgeheugen', 'ervaringsgeheugen'],
   },
   {
+    slug: 'llm',
+    naam: 'LLM',
+    engels: 'Large Language Model',
+    uitleg:
+      'Een groot taalmodel: een AI-model getraind op enorme hoeveelheden tekst om woorden te voorspellen en zo open-ended taken uit te voeren — schrijven, samenvatten, vragen beantwoorden, code genereren, gesprek voeren. In 2026 zijn de bekendste voorbeelden Claude, GPT en Gemini.',
+    categorie: 'ai-basis',
+    zieOok: ['frontier-model', 'redeneer-model', 'token'],
+  },
+  {
+    slug: 'frontier-model',
+    naam: 'Frontier-model',
+    uitleg:
+      'Het grootste, nieuwste model dat een aanbieder in het publieke domein heeft uitgebracht: duurder, krachtiger en doorgaans beter op de moeilijkste benchmarks dan oudere generaties. In 2026 zijn de bekendste voorbeelden Claude Opus 4.7, OpenAI GPT-5.5 Pro en Google Gemini 3.1 Pro. De keerzijde: hoge kosten, hogere latency en beperkte verklaarbaarheid maken een frontier-model lang niet altijd het juiste gereedschap.',
+    categorie: 'ai-basis',
+    zieOok: ['llm', 'open-weight-model'],
+  },
+  {
+    slug: 'redeneer-model',
+    naam: 'Redeneer-model',
+    engels: 'reasoning model',
+    uitleg:
+      'Een taalmodel dat expliciet rekentijd reserveert om stap-voor-stap door een probleem te denken voordat het antwoordt — herkenbaar aan een hogere latency en duurdere prijs, maar sterker op wiskunde, complexe code-vraagstukken en multi-stap-planning. Voorbeelden in 2026: Claude Opus 4.7 met *extended thinking*, OpenAI o3, GPT-5.5 in thinking-modus.',
+    categorie: 'ai-basis',
+    zieOok: ['llm', 'frontier-model'],
+  },
+  {
+    slug: 'multimodaal-model',
+    naam: 'Multimodaal model',
+    uitleg:
+      'Een model dat meerdere soorten input tegelijk kan verwerken: tekst, beeld, soms audio of video. Toepassingen: documentbegrip, medische beeldanalyse, formulierverwerking. Geschikt wanneer een tekstuele beschrijving van een visueel ding te veel informatie verliest; voor pure teksttaken is een tekst-model meestal goedkoper.',
+    categorie: 'ai-basis',
+    zieOok: ['llm', 'embedding-model'],
+  },
+  {
+    slug: 'wereld-model',
+    naam: 'Wereld-model',
+    engels: 'world model',
+    uitleg:
+      'Een model dat leert hoe de wereld reageert op acties, in plaats van alleen taal of beeld te interpreteren. Vooral relevant voor robotica, autonome voertuigen en industriële simulatie. Voorbeelden in 2025–2026: Meta V-JEPA 2, Google DeepMind Genie 3, World Labs Marble, NVIDIA Cosmos (Cosmos 3 aangekondigd op GTC maart 2026) en Wayve GAIA-2/LINGO-2.',
+    categorie: 'ai-basis',
+    zieOok: ['llm', 'multimodaal-model'],
+  },
+  {
+    slug: 'diffusiemodel',
+    naam: 'Diffusiemodel',
+    uitleg:
+      'Een model dat beelden of video genereert door geleidelijk uit "ruis" naar een gewenst eindresultaat te werken. Toepassingen: marketingvisualisaties, prototyping van interfaces, productafbeeldingen, video-content. Voorbeelden: Stable Diffusion, DALL-E, Midjourney (beeld) en Sora, Veo, Runway (video).',
+    categorie: 'ai-basis',
+    zieOok: ['multimodaal-model', 'llm'],
+  },
+  {
+    slug: 'embedding-model',
+    naam: 'Embedding-model',
+    uitleg:
+      'Een model dat tekst (of beeld, of audio) omzet naar een wiskundige representatie waarmee semantische gelijkenis meetbaar wordt: de zogenaamde [embedding](/begrippen#embedding). Onmisbaar voor RAG, semantisch zoeken, clustering en anomaliedetectie. Significant goedkoper dan generatieve LLMs.',
+    categorie: 'ai-basis',
+    zieOok: ['embedding', 'rag'],
+  },
+  {
+    slug: 'klassieke-ml',
+    naam: 'Klassiek machine learning',
+    uitleg:
+      'Statistische of regelgebaseerde modellen voor afgebakende, gestructureerde taken: XGBoost, LightGBM, Random Forest, BERT-classifiers en ARIMA voor tijdreeksen. Vaak superieur aan een LLM voor tabellaire data, voorspellingen op historische cijfers, hoog-volume classificatie en gereguleerde omgevingen waar statistisch valideren verplicht is.',
+    categorie: 'ai-basis',
+    zieOok: ['llm'],
+  },
+  {
+    slug: 'tier',
+    naam: 'Tier',
+    uitleg:
+      'Een prijs- en prestatie-niveau waarop modellen worden ingedeeld in het marktaanbod. In 2026 onderscheidt het veld vijf tiers: frontier (de grootste, duurste modellen voor het zwaarste werk), pro (dagelijks professioneel werk), standaard (gebalanceerd), budget (hoog-volume eenvoudige taken) en lokaal (zelf-gehost voor privacy-kritisch werk). Een tier-strategie betekent: per type taak het juiste niveau kiezen in plaats van overal hetzelfde model gebruiken.',
+    categorie: 'ai-basis',
+    zieOok: ['frontier-model', 'open-weight-model', 'llm'],
+  },
+  {
+    slug: 'open-weight-model',
+    naam: 'Open-weight model',
+    uitleg:
+      'Een model waarvan de gewichten (de getrainde parameters) publiek beschikbaar zijn, zodat je het zelf kunt draaien op eigen infrastructuur in plaats van alleen via de API van de leverancier. Voorbeelden in 2026: Meta Llama 4, Mistral Large 3, en een opkomende groep Chinese frontier-peers op coding-benchmarks (DeepSeek V4 Pro, Kimi K2.6 van Moonshot AI, GLM-5.1 van Z.ai, MiniMax M2.7). Voordelen: data-soevereiniteit, lagere kosten bij schaal, controle over upgrades. Nadelen: hardware-investering en eigen verantwoordelijkheid voor schaalbaarheid en beveiliging.',
+    categorie: 'ai-basis',
+    zieOok: ['frontier-model', 'llm'],
+  },
+  {
+    slug: 'tokenizer',
+    naam: 'Tokenizer',
+    uitleg:
+      'De software-laag die ruwe tekst opbreekt in [tokens](/begrippen#token), de rekeneenheden van een taalmodel. Elk model heeft een eigen tokenizer; dezelfde zin kan dus in het ene model 100 tokens kosten en in het andere 135. Daardoor kan een gelijk gebleven prijs-per-token-tarief in de praktijk een onzichtbare kostenstijging betekenen wanneer een leverancier zijn tokenizer vernieuwt.',
+    categorie: 'ai-basis',
+    zieOok: ['token', 'context-window'],
+  },
+  {
+    slug: 'sdk',
+    naam: 'SDK',
+    engels: 'Software Development Kit',
+    uitleg:
+      'Een meegeleverde verzameling code-bouwstenen waarmee een ontwikkelaar een dienst (zoals een AI-model) snel in een eigen toepassing kan inbouwen, zonder zelf alle communicatie met de API te schrijven. Vergelijkbaar met een gereedschapskoffer die past op de schroeven die de leverancier gebruikt: je hoeft niet meer elk stuk maatwerk zelf te smeden.',
+    categorie: 'ai-basis',
+    zieOok: ['mcp', 'agent'],
+  },
+  {
     slug: 'mcp',
     naam: 'MCP',
     engels: 'Model Context Protocol',
@@ -325,6 +425,14 @@ export const BEGRIPPEN: Term[] = [
       'Samengestelde meting van hoe actueel een kennisbank is, opgebouwd uit vier dimensies: leeftijd van de inhoud, indexering-vertraging, verouderingspercentage en corpusdrift. Een score onder de 85% triggert typisch een waarschuwing, onder 70% wordt het zichtbaar voor eindgebruikers.',
     categorie: 'kwaliteit',
     zieOok: ['stale-context'],
+  },
+  {
+    slug: 'drift',
+    naam: 'Drift',
+    uitleg:
+      'Een stille verandering in het gedrag of de input van een AI-systeem over tijd, zonder dat een foutmelding of duidelijke degradatie het zichtbaar maakt. Een classifier die uit kalibratie raakt omdat de werkelijkheid is verschoven, embeddings die niet meer aansluiten bij de huidige documenten, of een routing-laag die steeds vaker escaleert: het zijn allemaal vormen van drift. Detecteer je niet door alarmen, maar door trends te monitoren: antwoordlengte, escalatie-rate, kwaliteitsmetrieken.',
+    categorie: 'kwaliteit',
+    zieOok: ['stale-context', 'context-rot', 'degradeert'],
   },
   {
     slug: 'faithfulness',
