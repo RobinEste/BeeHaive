@@ -1,6 +1,6 @@
 # BeeHaive - Roadmap & Status Overzicht
 
-**Laatst bijgewerkt:** 2026-04-22
+**Laatst bijgewerkt:** 2026-04-28
 
 ---
 
@@ -57,8 +57,9 @@
 
 ### Fase 5: Training Portal 🔴
 
+- [x] ✅ Training-design naslagwerk (#33) — Compleet: `docs/research/TRAINING-DESIGN.md` (894 regels) met evidence-onderbouwde ontwerpkeuzes per dimensie (formaat, curriculum, modaliteiten, retentie, AI-tutor, meting) + zes deelrapporten in `training-design-2026-04/`. Lokale skill `/training-ontwerper` om concrete pilot-ontwerpen te produceren.
 - [ ] Stap 12: OAuth integratie — Auth.js via Astro (#12)
-- [ ] Stap 13: Cursusstructuur en leermodules (#13)
+- [ ] Stap 13: Cursusstructuur en leermodules (#13) — gebruik `/training-ontwerper` voor structuur-keuzes
 - [ ] Stap 14: Voortgang tracking voor trainingen (#14)
 
 ### Fase 6: Betalingen & Launch 🔴

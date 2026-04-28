@@ -8,6 +8,10 @@ Het formaat is gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/1.0
 
 ## [Unreleased]
 
+### Toegevoegd (sessie 2026-04-28)
+- Training-design naslagwerk `docs/research/TRAINING-DESIGN.md` (#33) — 894-regels synthese van zes onderzoeksrapporten (didactiek, retentie, AI-tutor) tot per-dimensie ontwerpkeuzes met evidence-rating en BeeHaive-vertaling; checklist per nieuwe training in Bijlage B; anti-patroon-lijst in Bijlage A (VAK, 70:20:10, Learning Pyramid)
+- Lokale skill `/training-ontwerper` (`.claude/skills/training-ontwerper/`) — produceert concrete training-ontwerpen in `docs/trainings/<datum>/ontwerp.md` op basis van het naslagwerk, met scope-vragen, dimensie-loop en hard goedkeuringsgate
+
 ## [0.2.0] - 2026-04-20
 
 ### Toegevoegd (sessie 2026-04-17)
