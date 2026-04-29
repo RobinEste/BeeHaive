@@ -382,6 +382,14 @@ export const BEGRIPPEN: Term[] = [
     zieOok: ['mcp', 'agent'],
   },
   {
+    slug: 'function-calling',
+    naam: 'Function calling',
+    uitleg:
+      'Het mechanisme waarmee een taalmodel aangeeft welke externe tool of functie het wil laten uitvoeren, met welke parameters. Het model voert nooit zelf code uit; het retourneert een gestructureerd tool-call-blok dat de toepassing afhandelt. Resultaat gaat terug naar het model, dat verder redeneert. Function calling is de basis voor alle tool-gebruik in moderne agents.',
+    categorie: 'ai-basis',
+    zieOok: ['agent', 'mcp', 'sdk'],
+  },
+  {
     slug: 'mcp',
     naam: 'MCP',
     engels: 'Model Context Protocol',
@@ -433,6 +441,14 @@ export const BEGRIPPEN: Term[] = [
       'Een stille verandering in het gedrag of de input van een AI-systeem over tijd, zonder dat een foutmelding of duidelijke degradatie het zichtbaar maakt. Een classifier die uit kalibratie raakt omdat de werkelijkheid is verschoven, embeddings die niet meer aansluiten bij de huidige documenten, of een routing-laag die steeds vaker escaleert: het zijn allemaal vormen van drift. Detecteer je niet door alarmen, maar door trends te monitoren: antwoordlengte, escalatie-rate, kwaliteitsmetrieken.',
     categorie: 'kwaliteit',
     zieOok: ['stale-context', 'context-rot', 'degradeert'],
+  },
+  {
+    slug: 'circuit-breaker',
+    naam: 'Circuit breaker',
+    uitleg:
+      'Mechanisme dat een falende afhankelijkheid tijdelijk afschermt om te voorkomen dat een agent blijft hameren op een dienst die toch niet antwoordt. Drie staten: gesloten (alles werkt), open (alle aanvragen falen direct, zonder de dienst te belasten) en half-open (één testaanvraag om te kijken of de dienst weer werkt). Productie-richtlijn: per leverancier een eigen breaker, drempel typisch 50% mislukkingen over 20 aanvragen, oplopende afkoeltijd van 30 seconden tot maximaal 5 minuten.',
+    categorie: 'kwaliteit',
+    zieOok: ['drift', 'stale-context'],
   },
   {
     slug: 'faithfulness',
@@ -497,6 +513,15 @@ export const BEGRIPPEN: Term[] = [
       'Databasetechniek die elke wijziging in een bronsysteem als event doorgeeft, zodat een kennisbank of index binnen seconden kan worden bijgewerkt — in plaats van te wachten op een geplande nachtelijke batch.',
     categorie: 'privacy',
     zieOok: ['freshness-score', 'stale-context'],
+  },
+  {
+    slug: 'prompt-injection',
+    naam: 'Prompt-injectie',
+    engels: 'prompt injection',
+    uitleg:
+      'Aanval waarbij een aanvaller via tekstuele input — een gebruikersbericht, opgehaald document, webpagina of tool-beschrijving — instructies binnensmokkelt die het AI-model overschrijven. OWASP rangschikt prompt-injectie sinds 2025 als hoogste risico voor LLM-toepassingen (LLM01). De gevaarlijkste variant is indirecte injectie: kwaadaardige instructies komen binnen via tool-resultaten waardoor het model zonder dat de gebruiker iets merkt acties uitvoert die de aanvaller wilde. Verdediging hoort op de executielaag, niet bij het model — een model dat via prompt-injectie kan worden gemanipuleerd, kan ook geen veiligheidsgrens bewaken die afhangt van zijn eigen instructies.',
+    categorie: 'privacy',
+    zieOok: ['mcp', 'data-lineage'],
   },
 ];
 
