@@ -387,7 +387,223 @@ export const BEGRIPPEN: Term[] = [
     uitleg:
       'Het mechanisme waarmee een taalmodel aangeeft welke externe tool of functie het wil laten uitvoeren, met welke parameters. Het model voert nooit zelf code uit; het retourneert een gestructureerd tool-call-blok dat de toepassing afhandelt. Resultaat gaat terug naar het model, dat verder redeneert. Function calling is de basis voor alle tool-gebruik in moderne agents.',
     categorie: 'ai-basis',
-    zieOok: ['agent', 'mcp', 'sdk'],
+    zieOok: ['agent', 'mcp', 'sdk', 'json-schema'],
+  },
+  {
+    slug: 'json-schema',
+    naam: 'JSON-schema',
+    uitleg:
+      'Een gestandaardiseerde manier om de structuur van JSON-data te beschrijven: welke velden bestaan, welke types ze hebben, welke waardes geldig zijn en welke verplicht zijn. Bij tool-integratie is het JSON-schema het contract waarmee het model precies weet hoe een tool aangeroepen moet worden — vergelijkbaar met een formulier dat per veld voorschrijft welk soort antwoord verwacht wordt.',
+    categorie: 'ai-basis',
+    zieOok: ['function-calling', 'snake-case'],
+  },
+  {
+    slug: 'snake-case',
+    naam: 'snake_case',
+    uitleg:
+      'Schrijfwijze waarbij meerdere woorden met een liggend streepje (underscore) worden verbonden, zoals get_customer_orders. Standaard in Python en in JSON-schemas voor tool-namen. De tegenhanger camelCase (getCustomerOrders) komt vaker voor in JavaScript-code.',
+    categorie: 'ai-basis',
+    zieOok: ['json-schema'],
+  },
+  {
+    slug: 'semantic-versioning',
+    naam: 'Semantic versioning',
+    engels: 'semver',
+    uitleg:
+      'Versienummering volgens MAJOR.MINOR.PATCH (bijvoorbeeld 2.1.4). Een nieuwe MAJOR-versie betekent een wijziging die bestaande gebruikers raakt: een verplicht veld erbij, of een veldnaam verandert. MINOR voegt iets toe zonder bestaand gedrag te breken, bijvoorbeeld een optioneel veld. PATCH lost een fout op of verduidelijkt iets zonder dat gedrag verandert. Door deze afspraak weet iedereen die jouw tool gebruikt vooraf welke impact een update heeft.',
+    categorie: 'ai-basis',
+  },
+  {
+    slug: 'turn',
+    naam: 'Turn',
+    engels: 'beurt, ronde',
+    uitleg:
+      'Eén beurt in het gesprek met een AI-model: van het moment dat de toepassing een bericht stuurt, tot het moment dat het model klaar is met antwoorden (al dan niet via tussentijdse tool-aanroepen). Een agent-taak bestaat vaak uit meerdere turns; "binnen één turn" betekent dat alles in één modelantwoord is afgehandeld zonder tussentijdse rondes.',
+    categorie: 'ai-basis',
+    zieOok: ['agent', 'function-calling'],
+  },
+  {
+    slug: 'api',
+    naam: 'API',
+    engels: 'Application Programming Interface',
+    uitleg:
+      'Een afgesproken manier waarop twee softwaresystemen met elkaar kunnen praten. Vergelijkbaar met een menukaart in een restaurant: de keuken (de andere applicatie) bepaalt welke gerechten beschikbaar zijn en hoe je ze bestelt; jij hoeft niet te weten hoe ze worden klaargemaakt. Bij tool-integratie roept een agent vrijwel altijd APIs aan: een betaal-API, een agenda-API, een eigen interne API.',
+    categorie: 'ai-basis',
+    zieOok: ['function-calling', 'rest', 'webhook'],
+  },
+  {
+    slug: 'rest',
+    naam: 'REST',
+    engels: 'Representational State Transfer',
+    uitleg:
+      'De meest gebruikte stijl van APIs op het web. Je doet een verzoek naar een adres (URL) met een werkwoord (GET om op te halen, POST om aan te maken, PUT om te wijzigen, DELETE om te verwijderen) en krijgt een antwoord terug, meestal in JSON. De meeste externe diensten waarmee een agent praat, bieden een REST-API.',
+    categorie: 'ai-basis',
+    zieOok: ['api', 'webhook'],
+  },
+  {
+    slug: 'webhook',
+    naam: 'Webhook',
+    uitleg:
+      'Het omgekeerde van een API-aanroep: in plaats van dat jouw systeem regelmatig vraagt of er iets nieuws is, stuurt de externe dienst zelf een bericht zodra er iets gebeurt. Mollie meldt bijvoorbeeld via een webhook dat een betaling is voltooid. Voor agents handig om gebeurtenissen op te vangen zonder steeds te hoeven kijken.',
+    categorie: 'ai-basis',
+    zieOok: ['api', 'rest'],
+  },
+  {
+    slug: 'orm',
+    naam: 'ORM',
+    engels: 'Object-Relational Mapping',
+    uitleg:
+      'Een laag tussen je code en de database die je in plaats van handgeschreven SQL met objecten en methodes laat werken (bijvoorbeeld `User.find(id)`). De ORM vertaalt dat veilig naar SQL en houdt gebruikers-input automatisch gescheiden van de query, waardoor SQL-injectie-aanvallen worden voorkomen. Bekende voorbeelden: SQLAlchemy (Python), Prisma (TypeScript), ActiveRecord (Ruby).',
+    categorie: 'ai-basis',
+  },
+  {
+    slug: 'rpa',
+    naam: 'RPA',
+    engels: 'Robotic Process Automation',
+    uitleg:
+      'Software die handmatige bureauwerk-stappen automatiseert door applicaties te bedienen alsof er een mens achter zit: klikken, formulieren invullen, gegevens kopiëren tussen systemen. Wordt vooral ingezet voor oudere systemen zonder fatsoenlijke API. Bekende leveranciers: UiPath, Blue Prism, Automation Anywhere.',
+    categorie: 'ai-basis',
+    zieOok: ['computer-use'],
+  },
+  {
+    slug: 'computer-use',
+    naam: 'Computer Use',
+    uitleg:
+      'Een functie van Anthropic waarmee Claude een normale computer kan bedienen: schermafbeeldingen interpreteren, klikken, typen, scrollen. Eerste publieke versie eind 2024 op Claude 3.5 Sonnet; sindsdien doorontwikkeld op nieuwere modellen (4.x-reeks) en geïntegreerd in het Claude Agent SDK. Recente versies zijn sneller en accurater. Bedoeld voor systemen zonder API. Fundamentele beperkingen blijven: elke handeling vereist een nieuwe schermafbeelding (relatief traag) en de aanvalsoppervlakte is groot. Alleen inzetten waar geen specifiekere tool bestaat.',
+    categorie: 'ai-basis',
+    zieOok: ['rpa', 'agent', 'aanvalsoppervlakte'],
+  },
+  {
+    slug: 'sandbox',
+    naam: 'Afgeschermde omgeving',
+    engels: 'sandbox',
+    uitleg:
+      'Een afgesloten uitvoer-omgeving waarin code mag draaien zonder bij de rest van het systeem te kunnen. Als de code uit de hand loopt of kwaadaardig is, blijft de schade binnen de sandbox. Standaard voor het uitvoeren van AI-gegenereerde code: Anthropic biedt een eigen sandbox aan, of je gebruikt een eigen Docker-container.',
+    categorie: 'ai-basis',
+  },
+  {
+    slug: 'git',
+    naam: 'Git',
+    uitleg:
+      'Het standaardsysteem voor versiebeheer van code. Houdt bij wie wat wijzigde en wanneer, maakt het mogelijk om eerdere versies terug te halen, en laat meerdere mensen tegelijk aan dezelfde codebase werken zonder elkaars werk te overschrijven. GitHub en GitLab zijn populaire hosting-platformen bovenop Git.',
+    categorie: 'ai-basis',
+    zieOok: ['pull-request'],
+  },
+  {
+    slug: 'pull-request',
+    naam: 'Pull request',
+    engels: 'PR, merge request',
+    uitleg:
+      'Een formeel verzoek om een wijziging in code op te nemen in de hoofdversie. Voordat de wijziging wordt overgenomen, beoordelen collega-ontwikkelaars de code, voeren tests uit, en geven feedback. Dit is de plek waar kwaliteit en veiligheid worden geborgd voordat iets de productiecode raakt — vergelijkbaar met een vier-ogen-principe in financiën.',
+    categorie: 'ai-basis',
+    zieOok: ['git'],
+  },
+  {
+    slug: 'aanvalsoppervlakte',
+    naam: 'Aanvalsoppervlakte',
+    engels: 'attack surface',
+    uitleg:
+      'De som van alle plekken waar een aanvaller een systeem zou kunnen binnenkomen of beïnvloeden: open netwerkpoorten, ingangen voor invoer, externe afhankelijkheden, gebruikersaccounts. Hoe meer mogelijkheden, hoe groter de aanvalsoppervlakte. Een tool die een hele computer kan bedienen heeft een veel grotere aanvalsoppervlakte dan een tool die alleen één API kan aanroepen.',
+    categorie: 'privacy',
+  },
+  {
+    slug: 'stack-trace',
+    naam: 'Stack-trace',
+    uitleg:
+      'Een technische foutrapportage waarin precies staat in welke regel code de fout optrad, langs welke functies de uitvoering daarheen kwam, en welk soort fout het was. Heel waardevol voor ontwikkelaars die debuggen, maar onleesbaar voor een AI-model dat moet beslissen wat het nu moet doen. Daarom levert een goede tool aan een agent geen stack-trace, maar een korte leesbare foutboodschap.',
+    categorie: 'ai-basis',
+  },
+  {
+    slug: 'idempotent',
+    naam: 'Idempotent',
+    uitleg:
+      'Eigenschap van een actie die je meerdere keren mag uitvoeren met hetzelfde eindresultaat als één keer. Een lichtschakelaar op "uit" zetten is idempotent: of je hem één keer of vijf keer op "uit" zet, het lampje is uit. Een nieuwe bestelling plaatsen daarentegen is niet idempotent: vijf keer aanroepen levert objectief vijf aparte bestellingen op, met vijf factuurnummers en vijf leveringen. Bij tool-integratie moeten schrijf-acties expliciet idempotent gemaakt worden, vaak met een unieke identifier (idempotency-key) die de ontvanger laat herkennen dat een herhaalde aanroep dezelfde actie betreft als de vorige — en dus geen tweede bestelling moet aanmaken.',
+    categorie: 'ai-basis',
+  },
+  {
+    slug: 'owasp',
+    naam: 'OWASP',
+    engels: 'Open Worldwide Application Security Project',
+    uitleg:
+      'Een internationale non-profit die best-practices en risico-overzichten publiceert voor software-beveiliging. De OWASP Top 10 is de bekendste lijst — een actuele rangorde van de meest voorkomende kwetsbaarheden in webapplicaties. Sinds 2023 is er ook een specifieke OWASP Top 10 voor LLM-toepassingen, met prompt-injectie op de eerste plek.',
+    categorie: 'privacy',
+    zieOok: ['prompt-injection'],
+  },
+  {
+    slug: 'data-exfiltratie',
+    naam: 'Data-exfiltratie',
+    engels: 'data exfiltration',
+    uitleg:
+      'Het ongeautoriseerd wegsluizen van vertrouwelijke gegevens uit een systeem, vaak op een manier die op gewone activiteit lijkt. Bij AI-agents is een typisch scenario: een gemanipuleerde tool stuurt naast het normale antwoord stilletjes ook de gebruikers-vraag en interne data naar een externe server. Omdat de hoofdtaak gewoon doorgaat, valt het in standaard-monitoring nauwelijks op.',
+    categorie: 'privacy',
+    zieOok: ['prompt-injection', 'aanvalsoppervlakte'],
+  },
+  {
+    slug: 'blast-radius',
+    naam: 'Blast radius',
+    uitleg:
+      'De omvang van de schade als iets misgaat: hoeveel systemen, accounts of klanten worden geraakt. Term uit de explosieven-wereld die in IT-beveiliging is overgenomen. Een agent die toegang heeft tot één klantdossier heeft een kleine blast radius; een agent met toegang tot alle klantdossiers, betalingen én e-mail heeft een veel grotere. Bij ontwerp altijd minimaliseren — alleen de rechten geven die strikt nodig zijn voor de taak.',
+    categorie: 'privacy',
+    zieOok: ['aanvalsoppervlakte'],
+  },
+  {
+    slug: 'post-market-monitoring',
+    naam: 'Post-market monitoring',
+    uitleg:
+      'Het systematisch volgen van een AI-systeem nadat het in productie is genomen, om in de praktijk afwijkingen, kwaliteitsverlies of nieuwe risico\'s op te merken die bij oplevering nog niet zichtbaar waren. Equivalent van post-market surveillance bij medische hulpmiddelen. Onder de EU AI Act (Artikel 72) verplicht voor hoogrisico-systemen: een gedocumenteerd plan, structurele analyse van logs en gebruiksdata, en meldingsplicht bij ernstige incidenten (Artikel 73). De audit-logs uit Artikel 12 zijn de directe invoer.',
+    categorie: 'privacy',
+    zieOok: ['data-lineage', 'kill-switch'],
+  },
+  {
+    slug: 'kill-switch',
+    naam: 'Kill-switch',
+    engels: 'noodstop',
+    uitleg:
+      'Een direct werkend uitschakelmechanisme waarmee een operator een AI-agent acuut kan stilleggen: alle lopende tool-aanroepen worden afgebroken, nieuwe aanroepen worden geblokkeerd, en het systeem komt in een veilige stoptoestand. Onder Artikel 14 van de EU AI Act verplicht voor hoogrisico-systemen, naast vooraf gedefinieerde stopcondities die het systeem ook autonoom afkappen. De kill-switch is de menselijke variant; de stopcondities zijn de geautomatiseerde.',
+    categorie: 'privacy',
+    zieOok: ['agent', 'circuit-breaker'],
+  },
+  {
+    slug: 'wrapper',
+    naam: 'Wrapper',
+    uitleg:
+      'Een dunne tussenlaag die bestaande functionaliteit verpakt zodat ze in een ander systeem bruikbaar wordt. Bij tool-integratie typisch: een stukje code dat een externe API vertaalt naar de tool-vorm die jouw agent-framework verwacht. Per leverancier en per framework was dat tot voor kort eigen werk; MCP probeert dat herhaalwerk overbodig te maken.',
+    categorie: 'ai-basis',
+    zieOok: ['mcp', 'api'],
+  },
+  {
+    slug: 'framework',
+    naam: 'Framework',
+    uitleg:
+      'Een softwarebasis met kant-en-klare bouwstenen voor een bepaald soort toepassing, zodat je niet elke keer vanaf nul begint. In de AI-context: agent-frameworks als LangChain, LangGraph en LlamaIndex, die patronen voor prompts, geheugen, tool-aanroepen en orkestratie meebrengen. Je kiest een framework voor de structuur die het oplegt; je betaalt ervoor met inflexibiliteit op de plekken waar het framework iets anders wil dan jouw situatie.',
+    categorie: 'ai-basis',
+    zieOok: ['agent', 'sdk'],
+  },
+  {
+    slug: 'jitter',
+    naam: 'Jitter',
+    uitleg:
+      'Een kleine willekeurige variatie die wordt opgeteld bij een ander getal, vaak een wachttijd. Bij retry-patronen voorkomt jitter dat duizend agents na een storing precies tegelijk opnieuw proberen en de net herstelde dienst meteen weer plat leggen. Voorbeeld: in plaats van exact één seconde wachten, wacht je 0,8 tot 1,2 seconde. De variatie spreidt het werk uit over de tijd.',
+    categorie: 'ai-basis',
+    zieOok: ['circuit-breaker'],
+  },
+  {
+    slug: 'semantic-caching',
+    naam: 'Semantisch cachen',
+    engels: 'semantic caching',
+    uitleg:
+      'Een cache die niet op exacte tekstmatch werkt, maar op betekenis-overeenkomst. Eerdere vragen en antwoorden worden opgeslagen als vector-embeddings; bij een nieuwe vraag berekent het systeem de embedding en zoekt of er een eerder antwoord boven een gelijkenis-drempel ligt. Zo ja, dan wordt dat antwoord teruggegeven (eventueel licht aangepast) zonder het model nogmaals aan te roepen. Bespaart tokens en reactietijd op werklasten met veel terugkerende vragen, met als prijs dat de drempel goed afgesteld moet zijn — te laag = verkeerde antwoorden, te hoog = bijna geen cache-hits.',
+    categorie: 'kwaliteit',
+    zieOok: ['embedding', 'rag'],
+  },
+  {
+    slug: 'oauth',
+    naam: 'OAuth',
+    engels: 'Open Authorization',
+    uitleg:
+      'De industriestandaard voor het verlenen van toegang aan een toepassing zonder dat je je wachtwoord hoeft af te geven. In plaats daarvan ontvangt de toepassing een tijdelijk token met een afgebakende reikwijdte (bijvoorbeeld: alleen agenda-items lezen, geen e-mail). OAuth 2.1 is de huidige consolidatie van OAuth 2.0 met de geleerde best-practices erin verwerkt; MCP gebruikt OAuth 2.1 als standaard voor remote servers.',
+    categorie: 'privacy',
+    zieOok: ['mcp'],
   },
   {
     slug: 'mcp',

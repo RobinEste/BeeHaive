@@ -144,6 +144,22 @@ const detailsId = id || slugify(title);
     transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
 
+  .disclosure-content :global(ol) {
+    list-style: decimal;
+    padding-left: 1.6rem;
+    margin: 0.8rem 0 1.4rem;
+  }
+
+  .disclosure-content :global(ol li) {
+    margin-bottom: 0.5rem;
+    padding-left: 0.3rem;
+  }
+
+  .disclosure-content :global(ol li::marker) {
+    color: var(--accent, var(--teal));
+    font-weight: 600;
+  }
+
   .disclosure-content :global(a:hover) {
     color: var(--accent, var(--teal));
     text-decoration-color: currentColor;

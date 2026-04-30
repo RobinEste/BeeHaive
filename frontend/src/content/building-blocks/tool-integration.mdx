@@ -53,27 +53,45 @@ Tool Integration en [Dynamic Context](/framework/dynamic-context) (BB_03: de jui
 
 [Function calling](/begrippen#function-calling) is het fundamentele mechanisme onder elke tool-integratie. De kern is een duidelijke scheiding van verantwoordelijkheden: het model beslist *welke* tool aangeroepen moet worden en met welke parameters, de toepassing voert de tool uit, en het resultaat gaat terug naar het model dat verder redeneert.
 
-Het model voert nooit zelf code uit. Het retourneert een gestructureerd tool-call-blok; de toepassing is altijd in controle van de werkelijke uitvoering. Dat is een kritische veiligheidsgrens: een agent die niet zelf kan uitvoeren, kan ook niet buiten zijn grenzen treden.
+Het model voert nooit zelf code uit. Het retourneert een gestructureerd tool-call-blok; de toepassing is altijd in controle van de werkelijke uitvoering. Die scheiding tussen besluit (model) en uitvoering (host) maakt het mogelijk om grenzen af te dwingen, maar pas als de host die grenzen ook echt definieert en handhaaft via toolscope, argumentvalidatie, permissies en audit. Zonder dat is de scheiding alleen architectonisch, niet veiligheidskundig.
 
 ### De stroom in vijf stappen
 
-De aanroep van een tool door een [agent](/begrippen#agent) verloopt in vijf stappen die zich kunnen herhalen tot de taak klaar is:
+De aanroep van een tool door een [agent](/begrippen#agent) verloopt in vijf stappen die zich kunnen herhalen tot de taak klaar is. Met *toepassing* bedoelen we de software die het model aanroept en orkestreert: een chatbot-backend, een agent-framework zoals LangChain of het Anthropic Agent SDK, een eigen FastAPI-service, of een desktop-tool zoals Claude Code.
 
 1. De toepassing stuurt het model een bericht met een lijst beschikbare tools (per tool: naam, beschrijving, JSON-schema voor parameters).
 2. Het model retourneert een gestructureerd blok dat aangeeft welke tool het wil aanroepen en met welke parameters.
 3. De toepassing voert de tool uit op haar eigen infrastructuur.
 4. De toepassing stuurt het resultaat terug naar het model als tool-resultaat.
-5. Het model integreert het resultaat en vervolgt; meer tool-aanroepen, een vervolgvraag, of een eindantwoord.
+5. Het model integreert het resultaat en vervolgt: meer tool-aanroepen, een vervolgvraag, of een eindantwoord.
 
-De cyclus stopt wanneer het model klaar is, of wanneer de toepassing een stoplimiet bereikt. Die stoplimiet is geen detail; zonder explicit maximum kan een hapering in een tool resulteren in een agent die in een eindeloze lus blijft retryen.
+De cyclus stopt wanneer het model klaar is, of wanneer de toepassing een stoplimiet bereikt. Die stoplimiet is geen detail; zonder expliciet maximum kan een hapering in een tool resulteren in een agent die in een eindeloze lus blijft herhalen.
 
 ### Tools aan de modelkant en aan de toepassingskant
 
-Naast tools die binnen je eigen toepassing draaien, bestaan er tools die de model-aanbieder zelf host. Anthropic levert bijvoorbeeld web-zoekopdrachten, code-uitvoering en webfetch als kant-en-klare server-side tools. De toepassing hoeft die niet zelf te implementeren; het model roept ze aan en de resultaten komen direct terug. Dat scheelt veel werk, maar geeft de aanbieder ook controle over wat er in een afgeschermde omgeving (sandbox) wel en niet kan; voor gereguleerde organisaties wegen die afwegingen mee in de keuze tussen zelf hosten en uitbesteden.
+Naast tools die binnen je eigen toepassing draaien, bestaan er tools die de model-aanbieder zelf host. Anthropic levert bijvoorbeeld web-zoekopdrachten, code-uitvoering en webfetch als kant-en-klare server-side tools. De toepassing hoeft die niet zelf te implementeren; het model roept ze aan en de resultaten komen direct terug. Dat scheelt veel werk, maar geeft de aanbieder ook controle over wat er in een [afgeschermde omgeving](/begrippen#sandbox) wel en niet kan; voor gereguleerde organisaties wegen die afwegingen mee in de keuze tussen zelf hosten en uitbesteden.
 
 ### De beschrijving van een tool is een instructie
 
 Een onderschat detail dat een grote praktische impact heeft: een model selecteert tools op basis van de tool-beschrijving die je meegeeft. Die korte tekst is geen documentatie, het is de primaire instructie waarmee het model bepaalt of deze tool nu moet worden ingezet, of juist niet. Een vage beschrijving leidt direct tot verkeerde tool-keuze, op dezelfde manier waarop een slechte functienaam een codebase moeilijk leesbaar maakt.
+
+Een concreet contrast maakt het verschil zichtbaar:
+
+```json
+// Te vaag — model raadt wanneer hij dit moet inzetten
+{
+  "name": "search",
+  "description": "Zoekt naar dingen."
+}
+
+// Concreet — model weet wanneer wel én wanneer niet
+{
+  "name": "get_customer_orders",
+  "description": "Gebruik deze tool als de gebruiker vraagt naar bestellingen van een specifieke klant (status, geschiedenis, totalen). Vereist een geldig customer_id. Niet gebruiken voor het aanmaken of wijzigen van bestellingen — daarvoor zijn create_order en update_order_status."
+}
+```
+
+De goede beschrijving doet drie dingen tegelijk: hij vertelt wanneer de tool past, welke voorwaarden gelden, en wanneer een andere tool de juiste keuze is. Zonder die laatste twee elementen kiest het model vaak de eerste plausibele match in plaats van de juiste.
 
 Dit raakt aan [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie). De system prompt vertelt het model wie hij is en hoe hij moet werken; de tool-beschrijvingen vertellen hem wat zijn handen kunnen doen. Beide horen samen ontworpen te worden, niet door verschillende mensen op verschillende momenten.
 
@@ -81,18 +99,18 @@ Dit raakt aan [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de 
 
 <BBDisclosure title="Het schema is het contract tussen model en tool">
 
-Het JSON-schema is het enige interface waarmee een model weet wat een tool doet, wanneer hij die moet gebruiken, en met welke parameters. Een slecht schema produceert systematische fouten; een goed schema is de basis van betrouwbare tool-keuze. Schrijf het schema dus alsof je een API-contract met een externe partij sluit: expliciet, getest, met versiebeheer.
+Het [JSON-schema](/begrippen#json-schema) is de enige interface waarmee een model weet wat een tool doet, wanneer hij die moet gebruiken, en met welke parameters. Een slecht schema produceert systematische fouten; een goed schema is de basis van betrouwbare tool-keuze. Schrijf het schema daarom zoals je een werkinstructie zou opstellen voor een nieuwe collega die alleen mag handelen wat letterlijk beschreven staat: expliciet, getest, met versiebeheer.
 
 ### Wat in elk goed schema staat
 
-- **Naam**: in snake_case, actie-georiënteerd (`get_customer_orders`, niet `data` of `helper`). Beschrijf de actie, niet de implementatie. Maximaal 64 tekens.
+- **Naam**: in [snake_case](/begrippen#snake-case), actie-gericht (`get_customer_orders`, niet `data` of `helper`). Beschrijf de actie, niet de implementatie. Een goede vuistregel is maximaal 64 tekens; geen harde limiet, maar wel een grens waarboven leesbaarheid en logging eronder lijden.
 - **Beschrijving**: vertel wanneer de tool gebruikt moet worden én wanneer niet. Een formulering als *"Use this when the user asks to send an email. Do not use for reading or searching emails"* voorkomt dat het model de tool inzet bij vragen waar hij niet thuishoort.
-- **Parameters**: gebruik `enum` voor eindige waardelijsten (dat elimineert hallucinaties waar het model waardes verzint), gebruik `integer` waar gehele getallen vereist zijn (niet `number`), markeer `required` expliciet, voeg constraints toe in het schema zelf (`maxLength`, `minimum`, `maximum`, `format`), en gebruik `additionalProperties: false` om onverwachte velden te blokkeren.
-- **Strikte modus**: Anthropic biedt een vlag waarmee Claude garandeert dat zijn tool-aanroepen exact het schema matchen. Dat lost één klasse fouten op (verkeerd geformatteerde JSON), maar niet alle.
+- **Parameters**: een tool-parameter heeft niet alleen een naam maar ook regels. Gebruik `enum` voor een vaste lijst toegestane waardes (bijv. `status: ["open", "closed", "pending"]`), zodat het model geen nieuwe waardes verzint. Gebruik `integer` waar gehele getallen verwacht worden (niet `number`, dat staat ook kommagetallen toe). Markeer met `required` welke velden verplicht zijn. Geef bereik aan met `minimum`/`maximum`, lengte met `maxLength`, en formaat met `format` (`email`, `date`, `uuid`). Met `additionalProperties: false` blokkeer je dat het model extra, niet-gedefinieerde velden meestuurt.
+- **Strikte modus** (`strict mode`): Anthropic biedt een instelling — `strict: true` in de tool-definitie — waarmee Claude garandeert dat zijn tool-aanroepen exact het schema volgen. Dat lost één klasse fouten op (verkeerd geformatteerde JSON, missende velden), maar niet alle.
 
-### Wat strict mode niet oplost
+### Wat de strikte modus niet oplost
 
-Strict mode garandeert de *vorm* van de output: geldige JSON, correcte veldnamen, juiste types. Het garandeert niet de *inhoud*. Een model kan syntactisch perfecte JSON produceren met semantisch onjuiste of gehallucineerde waardes; bijvoorbeeld een correct-getypeerde `customer_id` die niet bestaat, of een prijs die plausibel oogt maar uit lucht is gegrepen.
+De strikte modus garandeert de *vorm* van de output: geldige JSON, correcte veldnamen, juiste types. Hij garandeert niet de *inhoud*. Een model kan syntactisch perfecte JSON produceren met semantisch onjuiste of gehallucineerde waardes; bijvoorbeeld een correct-getypeerde `customer_id` die niet bestaat, of een prijs die plausibel oogt maar uit de lucht is gegrepen.
 
 Onafhankelijke inhouds-validatie blijft daarom nodig: een bestaat-check tegen je database, range-validatie op getallen, business-regel-checks vóórdat de actie achterliggende systemen raakt. Behandel het model als een onbetrouwbare tussenpersoon: vorm-correct betekent niet inhoud-correct.
 
@@ -100,13 +118,13 @@ Onafhankelijke inhouds-validatie blijft daarom nodig: een bestaat-check tegen je
 
 In schema's die in productie problemen geven, zien we steeds dezelfde fouten terugkomen:
 
-- **Diep nesten**: meer dan vijf nesting-niveaus maakt het model meetbaar minder betrouwbaar. Houd schema's plat.
+- **Diep nesten**: schema's met meer dan vijf lagen geneste velden (een object in een object in een object) maken het model meetbaar minder betrouwbaar. Houd schema's plat.
 - **Te veel tools tegelijk**: een agent die met dertig tools tegelijk in de context wordt gestart, kiest aantoonbaar slechter dan een agent met de zes tools die voor deze taak relevant zijn. Cognitieve overbelasting werkt bij modellen niet anders dan bij mensen.
 - **Lijst-opties in de tekst**: *"De parameter status kan zijn: open, closed, pending"* in de beschrijving werkt veel slechter dan dezelfde lijst als `enum` op de parameter zelf. Het model leest de beschrijving als een suggestie, het schema als een regel.
 
 ### Schema's als code behandelen
 
-Naarmate een tool-catalogus groeit (bij meer dan tien tools is het vrijwel altijd zo) wordt versiebeheer kritisch. Behandel tool-schema's als code: in Git, met pull requests, semantic versioning. Een major-versie bij breaking changes (parameternaam wijzigt), een minor-versie bij nieuwe optionele parameters, een patch bij verbeteringen aan de beschrijving. Zonder deze discipline ontstaat scope-creep waarin niemand meer weet welk veld op welke versie verplicht was.
+Naarmate een tool-catalogus groeit (bij meer dan tien tools is het vrijwel altijd zo) wordt versiebeheer kritisch. Behandel tool-schema's als code: in [Git](/begrippen#git) (versiebeheer), met [pull requests](/begrippen#pull-request) (formele code-review voordat een wijziging in productie komt), en [semantic versioning](/begrippen#semantic-versioning). Een major-versie bij breekbare wijzigingen (een parameternaam verandert), een minor-versie bij nieuwe optionele parameters, een patch bij verbeteringen aan de beschrijving. Zonder die discipline raakt het overzicht zoek: niemand weet meer welk veld op welke versie verplicht was.
 
 </BBDisclosure>
 
@@ -128,41 +146,45 @@ Voor taken met meerdere stappen die kwetsbaar zijn voor manipulatie, is Plan-The
 
 ### Tools aanroepen via code in plaats van via een dialoog
 
-Anthropic's nieuwste patroon, programmatische tool-aanroepen, laat Claude binnen één turn zelf Python-code schrijven die meerdere tools aanroept, tussenresultaten verwerkt, en één eindresultaat oplevert. De code draait in een afgeschermde omgeving (sandbox). De winst is groot: drastisch minder reactietijd bij multi-tool workflows, lagere tokenkosten (tussenresultaten komen niet in de context van het model), en meetbaar betere prestaties op agent-benchmarks. Voor data-zware taken (twintig records ophalen, transformeren, samenvoegen) is dit het verschil tussen een trage carousel-agent en een agent die in één seconde klaar is.
+Anthropic's nieuwste patroon, programmatische tool-aanroepen, laat Claude binnen één [turn](/begrippen#turn) (één gespreksronde met het model) zelf Python-code schrijven die meerdere tools aanroept, tussenresultaten verwerkt, en één eindresultaat oplevert. De code draait in een [afgeschermde omgeving](/begrippen#sandbox). De winst is groot: drastisch minder reactietijd bij multi-tool workflows, lagere tokenkosten (tussenresultaten komen niet in de context van het model), en meetbaar betere prestaties op agent-benchmarks. Voor data-zware taken (twintig records ophalen, transformeren, samenvoegen) is dit het verschil tussen een trage carousel-agent en een agent die in één seconde klaar is.
 
 ### Tools groeperen per business-domein
 
 Bij meer dan tien tools loont het om ze te groeperen per business-domein: `hr.get_employee`, `finance.approve_invoice`, `support.create_ticket`. Drie voordelen die niets met esthetiek te maken hebben:
 
 - **Cognitieve last**: een agent die alleen `support.*`-tools krijgt voor een klantvraag is meetbaar accurater dan dezelfde agent met de hele catalogus.
-- **Governance**: rechten kunnen per namespace worden ingericht (deze agent mag wel `support.*`, geen `finance.*`), in plaats van per losse tool.
-- **Observability**: dashboards en alarmen werken op namespace-niveau, niet op honderden losse tools.
+- **Governance**: rechten kunnen per groep worden ingericht (deze agent mag wel `support.*`, niet `finance.*`), in plaats van tool voor tool.
+- **Operationeel zicht**: dashboards en alarmen werken per groep, niet per losse tool. Bij honderden tools is dat het verschil tussen werkbaar en onhanteerbaar.
 
 ### Vijf tool-categorieën, elk met eigen afwegingen
 
 In een typische productieomgeving zien we vijf categorieën tools, elk met een eigen profiel:
 
-- **Zoeken en RAG**: web-zoekopdrachten, vector-database-queries, hybride zoeken (keyword + vector + reranker). Voor zero-ops een managed vector-database (Pinecone); pgvector wanneer PostgreSQL al in de stack zit.
-- **Code uitvoeren**: hoog-risico, altijd in een afgeschermde omgeving. Anthropic's server-side code-uitvoering draait op Anthropic-infrastructuur; zelf-gehoste sandboxen (Docker) geven meer controle maar meer operationele last.
-- **Databases en interne systemen**: queries via een ORM of geparametriseerde queries, nooit ruwe SQL met gebruikers-input. Schrijf-operaties krijgen expliciete transacties; voor leeszware queries een aparte tool-gebruiker met alleen-lezen-rechten.
-- **Browser en computerbediening**: van gerichte browser-automatisering (Playwright) tot volledige bureaubladbediening via Anthropic's Computer Use. De catch-all voor systemen zonder API. Trage roundtrips (elke actie vraagt een schermafbeelding) en complex te beveiligen, dus alleen waar geen smallere tool bestaat.
-- **Externe APIs en RPA**: REST-aanroepen, webhooks, betalingen, communicatieplatformen. Let op autorisatie-scopes (alleen wat nodig is), idempotentie bij retries, en de snelheidslimieten van de externe dienst.
+- **Zoeken en [RAG](/begrippen#rag)**: tools die het model relevante informatie laten ophalen uit het web, een eigen kennisbank of een vector-database (een database die documenten op betekenis vindbaar maakt). Bij grotere kennisbanken loont [hybride zoeken](/begrippen#hybrid-search): een combinatie van zoekwoorden, betekenis en een rangschikker. Wie zelf geen infrastructuur wil onderhouden kiest een gehoste oplossing zoals Pinecone; wie al PostgreSQL in de stack heeft, breidt die uit met de gratis extensie pgvector.
+- **Code uitvoeren**: hoog risico, altijd in een [afgeschermde omgeving](/begrippen#sandbox). De code-uitvoering die Anthropic zelf aanbiedt, draait op hun infrastructuur en vraagt geen onderhoud van jouw kant; een eigen sandbox (bijvoorbeeld in een Docker-container) geeft meer controle maar kost ook meer beheer.
+- **Databases en interne systemen**: zoekopdrachten via een [ORM](/begrippen#orm) of via geparametriseerde queries (waarbij gebruikers-input apart wordt aangeleverd), nooit door gebruikers-input rechtstreeks in een SQL-zin te plakken; dat opent de deur voor SQL-injectie. Wijzigingen lopen via expliciete transacties. Voor lees-tools gebruik je een aparte database-account met alleen leesrechten: een schrijffout in een lees-tool levert dan hoogstens een melding op, geen data-overschrijving.
+- **Browser- en computerbediening**: van gerichte browser-automatisering (Playwright) tot volledige bureaubladbediening via Anthropic's [Computer Use](/begrippen#computer-use). Dit is de uitwijkmogelijkheid voor systemen zonder [API](/begrippen#api). Een nadeel: elke handeling vereist een nieuwe schermafbeelding heen en terug tussen model en sandbox, wat de cyclus traag maakt. Bovendien is de [aanvalsoppervlakte](/begrippen#aanvalsoppervlakte) groot: een tool die een hele computer mag bedienen, biedt veel meer manieren om misbruikt te worden dan een tool die alleen één API mag aanroepen. Alleen inzetten waar geen specifiekere tool bestaat.
+- **Externe [APIs](/begrippen#api) en [RPA](/begrippen#rpa)**: [REST-aanroepen](/begrippen#rest), [webhooks](/begrippen#webhook), betalingen, communicatieplatformen. Drie aandachtspunten: vraag alleen de rechten die strikt nodig zijn (een agenda-tool hoeft geen mailbox te kunnen lezen), zorg dat een herhaalde aanroep niet leidt tot een dubbele actie (idempotentie: een tweede betaal-aanroep mag niet alsnog dubbel boeken), en respecteer de snelheidslimieten van de externe dienst (de meeste APIs blokkeren tijdelijk wie te snel achter elkaar aanroepen doet).
 
 </BBDisclosure>
 
 <BBDisclosure title="Tools falen altijd op het verkeerde moment">
 
-Netwerken hebben hapering. APIs geven snelheidslimiet-fouten. Modellen verzinnen tool-parameters. Productiestabiliteit is niet een functie van "minder fouten verwachten", maar van bewuste foutafhandeling op elke laag. AI Workflow Lab vatte het bondig samen:
+Netwerken haperen af en toe. APIs geven snelheidslimiet-fouten. Modellen verzinnen tool-parameters. Productiestabiliteit is niet een kwestie van "minder fouten verwachten", maar van bewuste foutafhandeling op elke laag. AI Workflow Lab vatte het bondig samen:
 
 > *"These failures are not bugs to eliminate; they're operational realities to engineer around."*
 
 Vijf patronen vormen samen een gelaagde verdediging: nieuwe pogingen, [circuit breaker](/begrippen#circuit-breaker), expliciete timeout, terugvalketens, en het foutsignaal terug naar het model zelf.
 
-### Nieuwe poging met exponentieel oplopende wachttijd plus jitter
+### Nieuwe pogingen beperken (aantal en wachttijd)
 
-Drie nieuwe pogingen voor tijdelijke fouten (snelheidslimiet, timeout, server-fouten in de 500-reeks). Maximaal één tot twee pogingen bij kwaliteitsfouten; meer pogingen leveren dezelfde hallucinatie nog een paar keer. Geen retry bij permanente fouten (autorisatie-fouten, slechte input, context-window-overflow); die fouten lossen zich niet op door wachten.
+Twee variabelen bepalen het gedrag bij een mislukte tool-aanroep: hoeveel pogingen je doet, en hoe lang je tussen de pogingen wacht. Beide hangen af van het soort fout.
 
-De wachttijd loopt exponentieel op (kort bij de eerste poging, langer bij de tweede, nog langer bij de derde) en bevat jitter: een klein willekeurig getal dat voorkomt dat duizend agents tegelijk een halve seconde later opnieuw proberen en zo de net herstelde dienst opnieuw plat leggen. Een gangbaar productie-patroon in de Python Tenacity-bibliotheek (in de meeste LangChain- en LangGraph-stacks de standaard): een willekeurig-exponentiële wachttijd met start 0,25 seconde en bovengrens 6 seconden, en maximaal vier pogingen voordat naar terugval wordt overgeschakeld.
+**Aantal pogingen, afhankelijk van de fout-soort.** Voor *tijdelijke* fouten (snelheidslimiet bereikt, timeout, server-fouten in de 500-reeks) zijn drie pogingen een gangbaar maximum. Voor *kwaliteitsfouten* (het model produceert een onbruikbare output) één tot twee, want extra pogingen leveren vaak dezelfde hallucinatie. Voor *permanente* fouten (autorisatie geweigerd, foutieve input, context vol) géén nieuwe poging: die fouten lossen zich niet op door wachten. Dit zijn richtwaarden voor de drie hoofdcategorieën, geen uitputtende lijst.
+
+**Wachttijd, exponentieel oplopend met jitter.** Tussen elke poging wordt langer gewacht (bijvoorbeeld 0,25 → 0,5 → 1 → 2 seconden) zodat een overbelaste dienst tijd krijgt om bij te komen. Daar bovenop komt *jitter*: een kleine willekeurige variatie op die wachttijd, zodat duizend agents niet allemaal tegelijk een halve seconde na een storing opnieuw proberen en de net herstelde dienst meteen weer plat leggen.
+
+Een gangbaar productie-patroon in de Python Tenacity-bibliotheek (in de meeste LangChain- en LangGraph-stacks de standaard): wachttijd start op 0,25 seconde, loopt willekeurig-exponentieel op tot maximaal 6 seconden, en na vier pogingen schakelt het systeem over naar de terugvalketen.
 
 ### Circuit breaker per leverancier
 
@@ -190,7 +212,7 @@ Wanneer alles faalt, schakelt het systeem naar een eenvoudiger alternatief. Een 
 
 ### Vriendelijke fout-signalen terug naar het model
 
-Een falende tool stuurt geen onbegrijpelijke stack-trace terug, maar een leesbare foutboodschap met een vlag dat het om een fout gaat. Het model leest die foutboodschap en kan compenseren: een andere tool kiezen, een vraag aan de gebruiker stellen, of de actie netjes overslaan. Goede foutboodschappen zijn de instructie waarmee het model herstelt; slechte foutboodschappen leiden tot een agent die hetzelfde drie keer probeert.
+Een falende tool stuurt geen onbegrijpelijke [stack-trace](/begrippen#stack-trace) terug, maar een leesbare foutboodschap met een vlag dat het om een fout gaat. Het model leest die foutboodschap en kan compenseren: een andere tool kiezen, een vraag aan de gebruiker stellen, of de actie netjes overslaan. Goede foutboodschappen zijn de instructie waarmee het model herstelt. Slechte foutboodschappen leiden tot een agent die hetzelfde drie keer probeert.
 
 ### Reactietijd-budgetten als ontwerpdoel
 
@@ -206,7 +228,7 @@ Voor stem-gebaseerde agents ligt de drempel lager (P95 onder 1,5 seconde is gang
 
 ### Wat dit oplevert
 
-Een productie-casus uit een AI-agent-team rapporteerde dat consistent ingerichte foutafhandeling de betrouwbaarheid optilde van 87% naar 99,2%. Die specifieke cijfers zijn zelfrapportage en moeten niet als universele waarheid worden behandeld; de richting is consistent met algemene resilience-literatuur en past bij wat productie-systemen halen die deze patronen daadwerkelijk implementeren.
+Een productie-casus uit een AI-agent-team rapporteerde dat consistent ingerichte foutafhandeling de betrouwbaarheid optilde van 87% naar 99,2%. Die specifieke cijfers zijn zelfrapportage en moeten niet als universele waarheid worden behandeld; de richting is consistent met de bredere literatuur over robuuste systemen en past bij wat productie-systemen halen die deze patronen daadwerkelijk implementeren.
 
 Dit raakt direct aan de **Robustness**-guardrail (GR_02: betrouwbaarheid onder alle omstandigheden). Een agent die niet weet hoe hij moet falen, faalt op een manier die niemand kan repareren.
 
@@ -216,10 +238,10 @@ Dit raakt direct aan de **Robustness**-guardrail (GR_02: betrouwbaarheid onder a
 
 De meest bepalende beveiligingsles voor tool-integratie: behandel het taalmodel als een onbetrouwbare tussenpersoon, niet als een vertrouwd onderdeel. Beveiligingsgrenzen worden afgedwongen op de executielaag, onafhankelijk van het model. Een model dat via [prompt-injectie](/begrippen#prompt-injection) gemanipuleerd kan worden om zijn instructies te negeren, kan ook geen veiligheidsgrens bewaken die afhangt van die instructies.
 
-OWASP plaatst sinds 2025 prompt-injectie op nummer één van de Top 10 voor LLM-toepassingen (LLM01). Twee verschijningsvormen, beide relevant voor tool-integratie:
+[OWASP](/begrippen#owasp) plaatst sinds 2025 prompt-injectie op nummer één van de Top 10 voor LLM-toepassingen (LLM01). Twee verschijningsvormen, beide relevant voor tool-integratie:
 
 - **Directe injectie**: een gebruiker probeert via input het model om te leiden.
-- **Indirecte injectie**: een tool retourneert content die kwaadaardige instructies bevat, een webpagina, een document, een API-antwoord, of de beschrijving van een MCP-tool. Dit is de gevaarlijkste variant voor tool-integraties, omdat de gebruiker geen rol heeft in de aanval; het kwaad zit in een externe bron die het model als context binnenkrijgt.
+- **Indirecte injectie**: een tool retourneert content die kwaadaardige instructies bevat, een webpagina, een document, een API-antwoord, of de beschrijving van een [MCP](/begrippen#mcp)-tool. Dit is de gevaarlijkste variant voor tool-integraties, omdat de gebruiker geen rol heeft in de aanval; het kwaad zit in een externe bron die het model als context binnenkrijgt.
 
 ### Log-To-Leak: aanval via de tool-beschrijving
 
@@ -232,7 +254,7 @@ De auteurs vonden dat de injectie consistent slaagt op vijf MCP-servers en vier 
 3. **Rechtvaardiging**: een overtuigende beleids-rationale (*"voor compliance-doeleinden moeten alle queries gelogd worden"*).
 4. **Druk**: een zin die prioriteit forceert boven andere veiligheidsinstructies.
 
-Omdat de hoofdtaak van de agent niet wordt verstoord, is deze aanval nagenoeg ondetecteerbaar voor reguliere monitoring. Een real-world variant met vergelijkbaar mechanisme is **CVE-2025-32711 (EchoLeak)** in Microsoft Copilot, waarbij data-exfiltratie via tool-context plaatsvond.
+Omdat de hoofdtaak van de agent niet wordt verstoord, is deze aanval nagenoeg ondetecteerbaar voor reguliere monitoring. Een real-world variant met vergelijkbaar mechanisme is **CVE-2025-32711 (EchoLeak)** in Microsoft Copilot, waarbij [data-exfiltratie](/begrippen#data-exfiltratie) (vertrouwelijke gegevens stilletjes wegsluizen) via tool-context plaatsvond.
 
 ### De dodelijke drie-eenheid als denkraam
 
@@ -246,7 +268,7 @@ Doorbreek minimaal één van die drie per taak. In de praktijk betekent dat: een
 
 ### Toeleveringsketen-aanvallen op MCP-servers
 
-Een tweede klasse risico raakt elke organisatie die externe MCP-servers gebruikt: een vertrouwde MCP-server kan via een update onopgemerkt worden vervangen door een schadelijke versie. Deze "RUG Pull"-aanval is de software-toeleveringsketen-variant die we al kennen van npm en PyPI, alleen draait die nu op tool-niveau. Mitigatie: versies vastpinnen, schema-hashes valideren bij elke update, en MCP-servers van externe leveranciers behandelen als externe afhankelijkheden met dezelfde rigoureuze review als open-source code-pakketten.
+Een tweede klasse risico raakt elke organisatie die externe MCP-servers gebruikt: een vertrouwde MCP-server kan via een update onopgemerkt worden vervangen door een schadelijke versie. Deze "RUG Pull"-aanval is de software-toeleveringsketen-variant die we al kennen van pakket-registers zoals npm (de centrale verzamelplek voor JavaScript-pakketten) en PyPI (idem voor Python), alleen draait die nu op tool-niveau. Mitigatie: versies vastpinnen, schema-hashes valideren bij elke update (een schema-hash is een korte vingerafdruk van het tool-schema; verandert er één teken aan, dan klopt de hash niet meer), en MCP-servers van externe leveranciers behandelen als externe afhankelijkheden met dezelfde rigoureuze review als open-source code-pakketten.
 
 ### Algemene mitigaties
 
@@ -257,11 +279,11 @@ Een tweede klasse risico raakt elke organisatie die externe MCP-servers gebruikt
 
 ### Excessive agency: wat een agent niet mág, mag hij niet kúnnen
 
-Een tweede groot risico (LLM06 op de OWASP-lijst) is excessive agency: een agent met meer rechten dan zijn taak vereist. De oplossing is structureel, niet operationeel. Implementeer rolgebaseerde toegangscontrole (RBAC) per agent op de executielaag. Een claims-verwerkende agent mag een claim goedkeuren; een klantenservice-agent niet. Die regel wordt afgedwongen door de gate die de tool-aanroep onderschept, niet door een instructie in de prompt. Een instructie kan worden weggepraat, een gate niet.
+Een tweede groot risico (LLM06 op de [OWASP](/begrippen#owasp)-lijst) is excessive agency: een agent met meer rechten dan zijn taak vereist. De oplossing is structureel, niet operationeel. Implementeer rolgebaseerde toegangscontrole (RBAC) per agent op de executielaag. Een claims-verwerkende agent mag een claim goedkeuren; een klantenservice-agent niet. Die regel wordt afgedwongen door de gate die de tool-aanroep onderschept, niet door een instructie in de prompt. Een instructie kan worden weggepraat, een gate niet.
 
 ### Idempotentie en minimale rechten
 
-Tools die data schrijven moeten idempotent zijn of een idempotency-key gebruiken: nieuwe pogingen bij netwerkstoringen mogen geen dubbele transacties, dubbele e-mails of dubbele betalingen veroorzaken. Daarnaast geldt: elke agent krijgt alleen de tools die nodig zijn voor zijn specifieke taak. Eén superagent met toegang tot álle tools is een blast-radius die zich vroeg of laat manifesteert.
+Tools die data schrijven moeten [idempotent](/begrippen#idempotent) zijn of een idempotency-key gebruiken: nieuwe pogingen bij netwerkstoringen mogen geen dubbele transacties, dubbele e-mails of dubbele betalingen veroorzaken. Daarnaast geldt: elke agent krijgt alleen de tools die nodig zijn voor zijn specifieke taak. Eén superagent met toegang tot álle tools heeft een grote [blast radius](/begrippen#blast-radius): wanneer er iets misgaat, raakt het meteen veel systemen of klanten.
 
 Dit raakt aan twee guardrails:
 
@@ -272,21 +294,31 @@ Dit raakt aan twee guardrails:
 
 <BBDisclosure title="Audit-logging: wat de EU AI Act vanaf 2026 verplicht">
 
-Audit-logging voor AI met tools gaat verder dan klassieke toegangslogboeken. Per model-interactie horen zes velden minimaal vastgelegd te worden: geverifieerde gebruikersidentiteit en sessie-ID; een samenvatting van de interactie; elke tool-aanroep met volledige parameters; elk opgehaald document met ID en gevoeligheidsklassering; autorisatiebeslissingen inclusief weigeringen; en een classificatie van de output (voldoet die aan verwachte patronen, of wijkt hij af).
+Audit-logging voor AI met tools gaat verder dan klassieke toegangslogboeken. Hoeveel je vastlegt, hangt af van het risicoprofiel van het systeem: voor laagrisico-toepassingen (bijvoorbeeld een interne kennis-zoekfunctie zonder externe acties) volstaan klassieke access-logs; naarmate de impact toeneemt, neemt het detail-niveau evenredig toe. Voor hoogrisico-systemen onder de EU AI Act, en voor systemen die schrijf-acties op klant- of financiële data uitvoeren, is een goede invulling per model-interactie minimaal zes velden vast te leggen: 
+1. geverifieerde gebruikersidentiteit en sessie-ID; 
+2. een samenvatting van de interactie; 
+3. elke tool-aanroep met volledige parameters; 
+4. elk opgehaald document met ID en gevoeligheidsklassering; 
+5. autorisatiebeslissingen inclusief weigeringen en 
+6. een classificatie van de output (voldoet die aan verwachte patronen, of wijkt hij af).
 
-Voor hoogrisico AI-systemen in Europa is dit niet langer goede gewoonte, maar wettelijk vereist. De EU AI Act (Reg. 2024/1689) treedt op 2 augustus 2026 in werking voor hoogrisico-systemen, met boetes tot 35 miljoen euro of 7% wereldwijde jaaromzet. Twee artikelen raken Tool Integration direct.
+Belangrijk: deze zes velden zijn een verdedigbare ingenieurs-invulling, geen letterlijke wetstekst. Artikel 12 enumereert ze niet als zodanig; ze zijn afgeleid van wat in de praktijk nodig is om aan traceerbaarheid en [post-market monitoring](/begrippen#post-market-monitoring) (Artikel 72) te voldoen. Wat de wet wél vereist staat hieronder.
+
+Voor hoogrisico AI-systemen in Europa is *audit-logging* niet langer goede gewoonte, maar wettelijk vereist. De EU AI Act (Reg. 2024/1689) treedt op 2 augustus 2026 in werking voor hoogrisico-systemen, met boetes tot 35 miljoen euro of 7% wereldwijde jaaromzet. Twee artikelen raken Tool Integration direct.
 
 ### Artikel 12: automatische logging en traceerbaarheid
 
-De wet eist automatische logging die volledige traceerbaarheid mogelijk maakt. Logs moeten manipulatie-bestendig zijn (een hash-keten of write-once-opslag is gangbare invulling) en minimaal zes maanden bewaard blijven. Voor agent-systemen betekent dat: elke beslissing gelogd inclusief de tool-aanroepen die de beslissing onderbouwden en de redenering eromheen, op een manier die later reconstrueerbaar is. Niet "we hebben de eindstand", maar "we kunnen aantonen hoe het systeem tot deze eindstand kwam".
+Wat de wet *letterlijk* eist voor hoogrisico-systemen: automatische registratie van events over de hele levensduur van het systeem, op een niveau dat het mogelijk maakt om risicovolle situaties te identificeren en de werking achteraf te onderzoeken. Het artikel ondersteunt daarmee de [post-market monitoring](/begrippen#post-market-monitoring) uit Artikel 72. Welke specifieke velden je vastlegt is in Artikel 12 niet voorgeschreven; de zes velden hierboven zijn dus een verdedigbare invulling, niet een letterlijke checklist uit de wet. Eén uitzondering: voor biometrische identificatie staan in de bijlagen wél specifieke velden (periode van gebruik, referentiedatabase, input-data, identificerend personeel).
+
+Logs moeten manipulatie-bestendig zijn en minimaal zes maanden bewaard blijven. Twee gangbare invullingen daarvan: een *hash-keten*, waarbij elke nieuwe log-regel een vingerafdruk (hash) van de vorige regel meeneemt, zodat een tussentijdse wijziging de hele keten zichtbaar breekt; of *write-once-opslag*, waar regels alleen toegevoegd kunnen worden en bestaande regels technisch niet meer aangepast. Voor agent-systemen betekent dat: elke beslissing gelogd inclusief de tool-aanroepen die de beslissing onderbouwden en de redenering eromheen, op een manier die later reconstrueerbaar is. Niet "we hebben de eindstand", maar "we kunnen aantonen hoe het systeem tot deze eindstand kwam". Voor systemen die niet onder de hoogrisico-categorie vallen is deze diepte geen wettelijke plicht, maar wel een verstandige standaard zodra er met klant- of financiële data wordt geschreven.
 
 ### Artikel 14: menselijk toezicht en stop-mechanismen
 
-Hoogrisico-systemen moeten menselijk toezicht mogelijk maken, inclusief de capaciteit om in te grijpen. Voor een [agent](/begrippen#agent) is dat geen abstract beginsel: het systeem moet een stop-knop of override-mechanisme hebben, en stopcondities moeten expliciet zijn gedefinieerd. Een agent zonder kill-switch en zonder duidelijke stopcondities is in een hoogrisico-context vermoedelijk niet conform.
+Hoogrisico-systemen moeten menselijk toezicht mogelijk maken, inclusief de mogelijkheid om in te grijpen. Voor een [agent](/begrippen#agent) is dat geen abstract beginsel: het systeem moet een stop-knop of override-mechanisme hebben, en stopcondities moeten expliciet zijn gedefinieerd. Een agent zonder [kill-switch](/begrippen#kill-switch) (een directe noodstop die alle lopende tool-aanroepen onmiddellijk afbreekt en geen nieuwe meer toelaat) en zonder duidelijke stopcondities is in een hoogrisico-context vermoedelijk niet conform.
 
 ### Audit-logging als detectie, niet alleen forensiek
 
-De minst gebruikte toepassing van audit-logging is ook de waardevolste: een actief detectiesysteem in plaats van een forensisch instrument. Anomaliedetectie op afwijkende tool-parameters, plotselinge pieken in retrieval-volume, en triggerrates van output-filters laten zien wanneer een aanval gaande is, niet pas wanneer hij voorbij is. Een Log-To-Leak-aanval, bijvoorbeeld, blijft onder de radar van klassieke metingen (de hoofdtaak slaagt immers gewoon), maar is zichtbaar als anomalie in welke tools wanneer worden aangeroepen ten opzichte van het normale patroon van die agent.
+De minst gebruikte toepassing van audit-logging is ook de waardevolste: een actief detectiesysteem in plaats van een forensisch instrument. Anomalie-detectie op afwijkende tool-parameters, plotselinge pieken in retrieval-volume, en hoe vaak een output-filter aanslaat (de triggerrate, gemeten over een tijdvenster) laten zien wanneer een aanval gaande is, niet pas wanneer hij voorbij is. Een Log-To-Leak-aanval bijvoorbeeld — een gemanipuleerde tool die naast de hoofdtaak stilletjes ook gespreks-data naar een externe server stuurt, in detail beschreven in de sectie *"Beveiligen vraagt meer dan goede instructies"* — blijft onder de radar van klassieke metingen (de hoofdtaak slaagt immers gewoon), maar is zichtbaar als anomalie in welke tools wanneer worden aangeroepen ten opzichte van het normale patroon van die agent.
 
 ### Nederlandse implementatie: meerdere toezichthouders, geen één-loket
 
@@ -298,7 +330,7 @@ Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie veran
 
 <BBDisclosure title="Model Context Protocol: van maatwerk-koppeling naar standaard">
 
-Tot eind 2024 was elke tool-integratie maatwerk: per leverancier een eigen wrapper, per framework een eigen specificatie, per upgrade een eigen migratie. In november 2024 publiceerde Anthropic het [Model Context Protocol (MCP)](/begrippen#mcp): een open standaard om AI-systemen op een uniforme manier met externe tools en databronnen te verbinden. In 2025 sloten OpenAI, Google en Microsoft zich aan; per medio 2025 zijn er meer dan 5.000 publieke MCP-servers beschikbaar (kennisbanken, agenda's, CRM's, betaalsystemen, monitoring, en zo verder).
+Tot eind 2024 was elke tool-integratie maatwerk: per leverancier een eigen [wrapper](/begrippen#wrapper) (een tussenlaagje dat de externe API vertaalt naar de tool-vorm die jouw agent verwacht), per [framework](/begrippen#framework) (LangChain, LangGraph, LlamaIndex en andere agent-bouwbasissen) een eigen specificatie, per upgrade een eigen migratie. In november 2024 publiceerde Anthropic het [Model Context Protocol (MCP)](/begrippen#mcp): een open standaard om AI-systemen op een uniforme manier met externe tools en databronnen te verbinden. In 2025 sloten OpenAI, Google en Microsoft zich aan en in september 2025 ging de officiële MCP-registry live. Per stand april 2026 bevatten de gangbare community-registers tienduizenden publieke MCP-servers (Glama alleen al meer dan 20.000), variërend van kennisbanken en agenda's tot CRM's, betaalsystemen en monitoring. Het ecosysteem groeit snel; specifieke aantallen verouderen letterlijk per maand.
 
 ### Hoe MCP onder de motorkap werkt
 
@@ -316,13 +348,15 @@ Drie eigenschappen die in productie tellen:
 
 - **Eén definitie, overal**: dezelfde tool werkt over frameworks heen zonder aanpassing.
 - **Dynamische ontdekking**: tools kunnen aan een lopende agent worden toegevoegd of verwijderd zonder dat het systeem opnieuw opgestart hoeft te worden.
-- **Standaard authenticatie**: OAuth 2.1 voor remote MCP-servers (beschikbaar sinds maart 2025) maakt het mogelijk om MCP-tools veilig te koppelen aan zakelijke systemen zonder eigen autorisatie-wiel.
+- **Standaard authenticatie**: MCP gebruikt [OAuth 2.1](/begrippen#oauth) voor remote servers, zodat MCP-tools veilig aan zakelijke systemen gekoppeld kunnen worden zonder dat elk team een eigen autorisatie-wiel uitvindt.
 
-Gebruik standaard-invoer/uitvoer (stdio) voor ontwikkeling (eenvoudig, debugbaar) en streamable HTTP voor productie (toegang op afstand, meerdere clients tegelijk, OAuth 2.1).
+Gebruik standaard-invoer/uitvoer (*stdio*, de eenvoudige tekstkanalen waarmee processen op één machine met elkaar praten) voor ontwikkeling, en *streamable HTTP* voor productie. Streamable HTTP is een transport waarbij de server het antwoord stuk-voor-stuk terug kan sturen via een open HTTP-verbinding (in plaats van pas één keer aan het einde), zodat tussenresultaten al verwerkt kunnen worden terwijl de tool nog werkt. Voordelen voor productie: toegang op afstand, meerdere clients tegelijk, OAuth-koppeling.
 
 ### Agents als MCP-server
 
-Een geavanceerd patroon dat in 2026 traction krijgt: agents kunnen zichzelf als MCP-server aanbieden. Andere agents roepen ze aan over hetzelfde protocol. Dat creëert een vendor-neutraal multi-agent ecosysteem zonder dat elke agent-leverancier een eigen onderling protocol verzint.
+Een geavanceerd patroon dat in 2026 ingeburgerd raakt: agents kunnen zichzelf als MCP-server aanbieden. Concreet betekent dat: een agent (bijvoorbeeld de "claims-verwerker") publiceert zijn eigen capaciteiten als MCP-tools (`claim.evaluate`, `claim.approve`), met JSON-schema en autorisatie. Een andere agent (bijvoorbeeld een "klantenservice-agent") kan die capaciteiten dan over hetzelfde protocol aanroepen, zonder dat er een speciaal koppelvlak tussen de twee agents gebouwd hoeft te worden.
+
+Het effect is een vendor-neutraal multi-agent ecosysteem: agents van verschillende leveranciers, gebouwd in verschillende frameworks, kunnen samenwerken zolang ze MCP spreken. Dat is de tegenhanger van de scenario waarin elke agent-leverancier een eigen onderling protocol verzint en multi-agent setups vendor-lock-in worden. Voor organisaties met meerdere agent-teams is dit relevant: het houdt de keuze voor een framework lokaal in plaats van organisatie-breed.
 
 ### MCP versus directe API-integratie
 
@@ -333,7 +367,7 @@ MCP is geen automatische winst voor elke situatie. Voor stabiele integraties met
 
 ### MCP is nog geen veilige standaard
 
-Een eerlijk woord: in 2026 zijn er actieve beveiligingszorgen. Prompt-injectie via tool-beschrijvingen (de Log-To-Leak-aanval die in de vorige sectie aan bod kwam) is via MCP gemakkelijker te exploiteren dan via maatwerk-koppelingen, omdat de community-laag van MCP-servers groot is en het reviewproces per server bij de organisatie ligt die de server installeert. Daarnaast zijn er documenteerde gevallen van tools die via slimme combinatie van rechten data naar buiten sluizen, en van nep-tools die zich voordoen als bekende.
+Huidige praktijk: in 2026 zijn er actieve beveiligingszorgen. [Prompt-injectie](/begrippen#prompt-injection) via tool-beschrijvingen (de Log-To-Leak-aanval die in de vorige sectie aan bod kwam) is via MCP gemakkelijker te exploiteren dan via maatwerk-koppelingen, omdat de community-laag van MCP-servers groot is en het reviewproces per server bij de organisatie ligt die de server installeert. Daarnaast zijn er documenteerde gevallen van tools die via slimme combinatie van rechten data naar buiten sluizen, en van nep-tools die zich voordoen als bekende.
 
 Een Tool Integration-ontwerp moet daarom **per MCP-server expliciet vastleggen welke autorisatie geldt**: niet elke server mag elk soort context leveren aan elke agent. Behandel externe MCP-servers als toeleveringsketen-afhankelijkheden, met dezelfde discipline (versies vastpinnen, hashes valideren, review vóór productie) die je al toepast op open-source code-pakketten.
 
@@ -343,7 +377,7 @@ Een Tool Integration-ontwerp moet daarom **per MCP-server expliciet vastleggen w
 
 ### Begin bij één integratie, niet bij vijf
 
-De aantrekkelijkste valkuil bij tool-integratie is breedte voor diepte ruilen. Vijf integraties met basisfoutafhandeling produceren vijf bronnen van productie-incidenten; één integratie met volledige foutafhandeling produceert een blauwdruk waarmee de tweede en derde sneller en veiliger kunnen volgen. Implementeer voor de eerste tool nieuwe pogingen met exponentieel oplopende wachttijd plus jitter, [circuit breaker](/begrippen#circuit-breaker) per leverancier, expliciete timeout, idempotentie bij schrijfacties, audit-logging en een meetbaar reactietijd-budget. Dit kost één tot twee weken per tool, en bespaart maanden aan productie-pijn later.
+De aantrekkelijkste valkuil bij tool-integratie is breedte voor diepte ruilen. Vijf integraties tegelijkertijd met basisfoutafhandeling produceren vijf bronnen van productie-incidenten; één integratie met volledige foutafhandeling produceert een blauwdruk waarmee de tweede en derde sneller en veiliger kunnen volgen. Implementeer voor de eerste tool nieuwe pogingen met exponentieel oplopende wachttijd plus [jitter](/begrippen#jitter), [circuit breaker](/begrippen#circuit-breaker) per leverancier, expliciete timeout, [idempotentie](/begrippen#idempotent) bij schrijfacties, audit-logging en een meetbaar reactietijd-budget. Dit kost één tot twee weken per tool, en bespaart maanden aan productie-pijn later.
 
 ### Behandel MCP-servers als toeleveringsketen
 
@@ -358,10 +392,10 @@ De stille faalmodi van tool-integratie (verkeerd geselecteerde tools, verzonnen 
 Tools verbruiken tokens buiten het modelgebruik om. Elke tool-definitie kost ongeveer 313 tot 346 input-tokens (Anthropic). In organisaties met honderden MCP-servers kan dat oplopen tot 100.000+ tokens per aanvraag aan tool-definities alleen, wat *contextopzwelling* (context bloat) heet. Drie hefbomen werken in productie:
 
 - **Uitgestelde laden**: tools die niet vooraf in de context worden geladen, maar pas op aanvraag.
-- **Semantisch cachen**: bij voldoende overeenkomst van een nieuwe vraag met eerder werk, een gecached antwoord teruggeven. Gerapporteerde besparingen lopen tussen 30% en 70%, sterk afhankelijk van de werklast.
+- **[Semantisch cachen](/begrippen#semantic-caching)**: een cache die niet op exacte tekstmatch werkt maar op betekenis-overeenkomst (via vector-embeddings). Bij voldoende gelijkenis met eerder werk wordt het opgeslagen antwoord teruggegeven zonder het model nogmaals aan te roepen. Gerapporteerde besparingen lopen tussen 30% en 70%, sterk afhankelijk van de werklast.
 - **Slim model-routeren**: een classifier-laag stuurt eenvoudige extracties naar een goedkoop model en complex redeneren naar een duur model. Gerapporteerde reducties tot 80% op operationele kosten zijn gevonden in single-vendor-gevallen; de range loopt sterk uiteen.
 
-Deze cijfers zijn richtingen, geen beloftes. De richting is wel consistent: tool-overhead is een operationele variabele, geen vaste kost.
+Deze cijfers zijn richtingen, geen beloftes. De richting is wel consistent: tool-overhead is een operationele variabele, geen vaste kosten.
 
 ### Het koppelpunt met andere bouwstenen en guardrails
 
