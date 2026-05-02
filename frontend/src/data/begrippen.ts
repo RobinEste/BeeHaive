@@ -675,6 +675,159 @@ export const BEGRIPPEN: Term[] = [
     categorie: 'kwaliteit',
     zieOok: ['hallucinatie', 'rag'],
   },
+  {
+    slug: 'evaluation-loop',
+    naam: 'Evaluation loop',
+    engels: 'evaluation loop',
+    uitleg:
+      'Gesloten, terugkerende cyclus waarin AI-output wordt beoordeeld aan vooraf gedefinieerde criteria, bevindingen worden geanalyseerd, en concrete verbeteracties worden doorgevoerd in prompts, modellen, data of processen. Het loop-kenmerk is bepalend: een eenmalige test, dashboard zonder actie of benchmark zonder vervolg is geen evaluation loop. Verplicht onder EU AI Act Art. 9 voor hoogrisico-systemen.',
+    categorie: 'kwaliteit',
+    zieOok: ['eval', 'evaluation-harness', 'llm-as-judge', 'tevv'],
+  },
+  {
+    slug: 'eval',
+    naam: 'Eval',
+    engels: 'eval / evals',
+    uitleg:
+      'Informele aanduiding (Anthropic, OpenAI) voor een evaluatie-test op een AI-systeem: een input + een beoordelaar (grader) die de output scoort tegen succescriteria. Meervoud "evals" is in de industrie de gangbare term voor de hele verzameling testen die op een systeem draait. Academisch heet hetzelfde meestal "evaluation" of "benchmark".',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'evaluation-harness', 'grader'],
+  },
+  {
+    slug: 'evaluation-harness',
+    naam: 'Evaluatie-raamwerk',
+    engels: 'evaluation harness',
+    uitleg:
+      'Software-infrastructuur die evaluatietests automatisch draait, interacties vastlegt, uitkomsten beoordeelt en resultaten aggregeert. Bevat zes kernelementen: taak (input + succescriteria), trial (één uitvoering van een taak), grader (de scoringslogica), transcript (volledig logboek van redenering en acties), uitkomst (eindstaat in de externe wereld) en evaluatie-suite (verzameling gerelateerde taken). De tegenhanger van de "agent harness" of scaffold die het model zelf laat draaien.',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'eval', 'grader'],
+  },
+  {
+    slug: 'grader',
+    naam: 'Grader',
+    engels: 'grader',
+    uitleg:
+      'De logica die bepaalt of een AI-systeem succesvol is geweest op een eval. Drie hoofdvormen: code-gebaseerd (regex, JSON-validatie, unit-test) voor objectieve checks, model-gebaseerd (LLM-als-rechter) voor nuance en open-ended output, en menselijk voor goudstandaard en kalibratie. Productie-aanbeveling 2026: hybride aanpak met binaire pass/fail-asserties waar mogelijk, omdat een vage score van "7 uit 10" geen handelingsperspectief biedt.',
+    categorie: 'kwaliteit',
+    zieOok: ['llm-as-judge', 'rubric', 'evaluation-harness'],
+  },
+  {
+    slug: 'llm-as-judge',
+    naam: 'LLM-als-rechter',
+    engels: 'LLM-as-a-judge',
+    uitleg:
+      'Techniek waarbij een krachtig taalmodel (bijv. Claude Opus, GPT-5.5) fungeert als beoordelaar van de output van een ander AI-systeem. Schaalbaar alternatief voor menselijke evaluatie van open-ended antwoorden zoals samenvattingen, toon of redenering. Vereist kalibratie tegen menselijke expert-labels via Cohen\'s Kappa, en heeft bekende biases: positie- (eerste antwoord scoort hoger), lengte- (langer = beter beoordeeld), zelf-voorkeur (eigen output favoriet) en stijl-bias.',
+    categorie: 'kwaliteit',
+    zieOok: ['cohens-kappa', 'rubric', 'grader'],
+  },
+  {
+    slug: 'cohens-kappa',
+    naam: 'Cohen\'s Kappa',
+    engels: 'Cohen\'s Kappa (κ)',
+    uitleg:
+      'Statistische maat (1960) voor de overeenstemming tussen twee beoordelaars, gecorrigeerd voor toeval. Standaard om een LLM-als-rechter te kalibreren tegen menselijke experts. Gangbare drempels (Landis & Koch 1977): onder 0,40 slecht, 0,40–0,60 matig, 0,60–0,80 goed (productiegeschikt voor niet-kritische toepassingen), boven 0,80 uitstekend (vereist voor hoogrisico of compliance-gevoelige systemen). Een eval-pipeline zonder periodieke Kappa-meting kan stilletjes wegdrijven van menselijk oordeel.',
+    categorie: 'kwaliteit',
+    zieOok: ['llm-as-judge', 'evaluation-loop'],
+  },
+  {
+    slug: 'rubric',
+    naam: 'Rubric',
+    engels: 'rubric',
+    uitleg:
+      'Gestructureerde beoordelingsleidraad die een grader (mens of LLM-als-rechter) vertelt hoe een output op meerdere dimensies te scoren — bijvoorbeeld feitelijke juistheid, veiligheid, toon en beknoptheid afzonderlijk. Een analytische rubric (per dimensie een score) maakt root-cause-analyse mogelijk bij kwaliteitsdaling, in tegenstelling tot één enkel cijfer. Onderzoek 2025 wijst uit dat een zwak model met een goede rubric beter scoort dan een sterk model met een vage instructie — de rubric-structuur weegt zwaarder dan de rekenkracht van de beoordelaar.',
+    categorie: 'kwaliteit',
+    zieOok: ['llm-as-judge', 'grader'],
+  },
+  {
+    slug: 'tevv',
+    naam: 'TEVV',
+    engels: 'Test, Evaluate, Verify, Validate',
+    uitleg:
+      'Term uit het NIST AI Risk Management Framework 1.0 (januari 2023) voor het reguliere lifecycle-proces waarin AI-systemen continu worden getest, geëvalueerd, geverifieerd en gevalideerd tegen technische, maatschappelijke, juridische en ethische normen. NIST positioneert TEVV expliciet als doorlopend proces, niet eenmalig: het maakt zowel mid-course-correctie als post-hoc risk management mogelijk. Functioneel equivalent van wat de industrie "evaluation loop" noemt en wat de EU AI Act in Art. 9 verplicht stelt.',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'nist-ai-rmf'],
+  },
+  {
+    slug: 'helm',
+    naam: 'HELM',
+    engels: 'Holistic Evaluation of Language Models',
+    uitleg:
+      'Open-source evaluatie-raamwerk van Stanford CRFM (Center for Research on Foundation Models) dat taalmodellen beoordeelt op zeven dimensies tegelijk: nauwkeurigheid, kalibratie, robuustheid, eerlijkheid, bias, toxiciteit en efficiëntie. Het uitgangspunt is dat optimaliseren op één maat (vaak nauwkeurigheid) andere dimensies onbedoeld kan ondermijnen. Draait sinds 2022 over 60+ scenario\'s en 90+ modellen; de standaard voor multidimensionale, reproduceerbare modelvergelijking.',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'evaluation-harness'],
+  },
+  {
+    slug: 'nist-ai-rmf',
+    naam: 'NIST AI RMF',
+    engels: 'NIST AI Risk Management Framework',
+    uitleg:
+      'Het Risk Management Framework voor AI van het Amerikaanse National Institute of Standards and Technology, versie 1.0 uit januari 2023. Definieert vier kernfuncties — Govern, Map, Measure en Manage — voor het organiseren van AI-risicobeheer over de hele levenscyclus. Vrijwillig in de VS, maar wordt internationaal gebruikt als referentie voor "due diligence" en sluit aan op de EU AI Act-vereisten. De Measure-functie operationaliseert TEVV als doorlopend proces.',
+    categorie: 'kwaliteit',
+    zieOok: ['tevv', 'iso-42001', 'evaluation-loop'],
+  },
+  {
+    slug: 'iso-42001',
+    naam: 'ISO/IEC 42001',
+    engels: 'ISO/IEC 42001:2023',
+    uitleg:
+      'Internationale managementstandaard (gepubliceerd december 2023) voor een AI Management System (AIMS): de organisatorische structuur, beleid en processen rondom de inzet van AI. Clausule 9 vereist continue prestatie-evaluatie inclusief minimaal jaarlijkse interne audit; Clausule 10 vereist continue verbetering. Certificering is drie jaar geldig met jaarlijkse surveillance-audit. Wordt in 2026 gezien als krachtig bewijs van "due diligence" voor compliance met de EU AI Act.',
+    categorie: 'kwaliteit',
+    zieOok: ['nist-ai-rmf', 'evaluation-loop'],
+  },
+  {
+    slug: 'shadow-mode',
+    naam: 'Schaduw-modus',
+    engels: 'shadow mode',
+    uitleg:
+      'Deployment-fase waarin een nieuw AI-model parallel aan het productiemodel draait: de responses worden vastgelegd voor analyse maar niet getoond aan eindgebruikers. Maakt het mogelijk om kwaliteitsverschillen, latentie en kosten te meten zonder gebruikersimpact. Verplicht startpunt voor een significante modelwisseling of grote prompt-herziening, vóór doorstroom naar canary-release.',
+    categorie: 'kwaliteit',
+    zieOok: ['canary-release', 'evaluation-loop'],
+  },
+  {
+    slug: 'canary-release',
+    naam: 'Canary-release',
+    engels: 'canary release',
+    uitleg:
+      'Geleidelijke uitrol waarbij een nieuwe versie eerst aan een klein percentage echt verkeer wordt blootgesteld (typisch 1% → 5% → 20% → 50% → 100%). Metrieken worden continu vergeleken met de baseline; bij overschrijding van een vooraf gedefinieerde drempel triggert automatische rollback. Voor hoogrisico-AI start de uitrol op 0,1%. De naam komt van de "kanarie in de kolenmijn" — een vroege waarschuwing.',
+    categorie: 'kwaliteit',
+    zieOok: ['shadow-mode', 'evaluation-loop'],
+  },
+  {
+    slug: 'golden-dataset',
+    naam: 'Gouden testset',
+    engels: 'golden dataset',
+    uitleg:
+      'Gecureerde, versie-beheerde verzameling testgevallen met inputs, contexten en verwachte uitkomsten die de bron-van-waarheid vormt voor evaluatie. Elke wijziging in schema of labels wordt getraceerd als nieuw experiment, zodat resultaten van vandaag vergelijkbaar blijven met die van vorige maand. Kleine, hand-gecureerde golden datasets (50–200 cases) presteren in de praktijk beter dan grote synthetische sets met variabele kwaliteit.',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'eval-set-leakage'],
+  },
+  {
+    slug: 'eval-set-leakage',
+    naam: 'Eval-set-lekkage',
+    engels: 'eval-set leakage / data contamination',
+    uitleg:
+      'Stille faalmodus waarin testdata uit een evaluatie-set is terechtgekomen in de trainingsdata van het model. Het model "weet" de antwoorden in plaats van ze te genereren; benchmark-scores zien er hoog uit maar het model generaliseert niet. ICML-2025-onderzoek documenteert 5–15% absolute nauwkeurigheidsdaling wanneer gecontamineerde voorbeelden worden verwijderd. Mitigatie: periodieke overlap-checks met trainingsdata en gebruik van anti-leakage-methoden zoals AntiLeakBench (ACL 2025).',
+    categorie: 'kwaliteit',
+    zieOok: ['golden-dataset', 'evaluation-loop'],
+  },
+  {
+    slug: 'trajectory-evaluation',
+    naam: 'Traject-evaluatie',
+    engels: 'trajectory evaluation',
+    uitleg:
+      'Evaluatie van de volledige stappenreeks die een agent zet om een taak te volbrengen, niet alleen de eindoutput. Meet zaken als: trajectory-exact-match (het pad is identiek aan het verwachte), tool-selection-accuracy (juiste tool gekozen), tool-parameter-accuracy (correcte parameters), multi-turn-consistentie en tool-call-error-rate. Onmisbaar voor agentische systemen waar fouten in tussenstappen door het hele pad heen propageren.',
+    categorie: 'kwaliteit',
+    zieOok: ['evaluation-loop', 'evaluation-harness'],
+  },
+  {
+    slug: 'goodharts-law',
+    naam: 'Goodhart\'s law',
+    engels: 'Goodhart\'s law',
+    uitleg:
+      'Klassiek principe (econoom Charles Goodhart, 1975): "Wanneer een maat een doel wordt, houdt hij op een goede maat te zijn." In AI-evaluatie de theoretische onderbouwing van het anti-patroon "single-metric tunnel-vision": zodra een team optimaliseert op één score (bijv. Arena-rating), worden andere dimensies onbedoeld ondermijnd en gaat selectief publiceren een rol spelen. Mitigatie: meerdere onafhankelijke metrieken naast elkaar bewaken, zoals het HELM-raamwerk doet.',
+    categorie: 'kwaliteit',
+    zieOok: ['helm', 'evaluation-loop'],
+  },
 
   // ─── Privacy & governance ──────────────────────────────────────────
   {

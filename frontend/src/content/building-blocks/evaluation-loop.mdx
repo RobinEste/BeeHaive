@@ -1,37 +1,314 @@
 ---
 code: BB_07
 name: Evaluation Loop
-tagline: "Meten, leren en verbeteren — continu."
+tagline: "Meten, leren en verbeteren in een gesloten cyclus."
 icon: "🔁"
 order: 7
-quote: "Wat je niet meet, kun je niet verbeteren."
+quote: "This loop is the engine room where ideas are tested, prompts are refined, and quality is measured."
+quoteAuthor: "AWS Prescriptive Guidance (2025)"
 checklist:
-  - "Zijn evaluatiecriteria en metrics vooraf gedefinieerd?"
-  - "Zijn representatieve testcases beschikbaar?"
-  - "Worden outputs automatisch en/of handmatig beoordeeld?"
-  - "Worden fouten en afwijkingen vastgelegd en geanalyseerd?"
-  - "Leidt evaluatie tot concrete verbeteracties?"
-  - "Worden risico's en bias gemonitord?"
-  - "Vindt de loop periodiek plaats (niet eenmalig)?"
+  - "Zijn de evaluatiecriteria vooraf gedefinieerd, meetbaar en gekoppeld aan zakelijke doelen, niet alleen technische metrieken?"
+  - "Bestaat er een gouden testset van representatieve cases, met versie-beheer, en wordt deze minimaal per kwartaal vernieuwd?"
+  - "Combineert de loop deterministische checks met LLM-als-rechter en periodieke menselijke steekproef?"
+  - "Is een LLM-als-rechter gekalibreerd tegen menselijke labels met Cohen's Kappa boven 0,60 (en boven 0,80 voor hoogrisico)?"
+  - "Doorloopt elke significante wijziging eerst een schaduw-modus, daarna een canary-release vóór 100% verkeer?"
+  - "Worden drie vormen van drift gemonitord (data-, concept- en performance-drift), met expliciete drempels en alarmen?"
+  - "Leidt elke evaluatieronde aantoonbaar tot een verbeteractie, of is gedocumenteerd waarom geen actie nodig was?"
+  - "Voldoet de loop aan EU AI Act Art. 9 (risicobeheer als doorlopend proces) en Art. 72 (post-market monitoring)?"
+  - "Worden bekende biases van LLM-als-rechter actief gemitigeerd (positie-, lengte-, zelf- en stijl-bias)?"
+  - "Is er een formele eigenaar voor de loop, met mandaat én tijd om bevindingen om te zetten in aanpassingen?"
 quickStart:
-  - "Definieer 3-5 kwaliteitscriteria voor je AI-output (accuraat, volledig, relevant, veilig)."
-  - "Maak een testset van 20+ representatieve cases en beoordeel de output."
-  - "Plan een maandelijks evaluatiemoment en koppel verbeteracties aan je prompt- en contextontwerp."
+  - |
+    Strategisch: bepaal welke AI-systemen onder welk evaluatieregime vallen.
+    Niet elk systeem heeft een volledige evaluation loop nodig. Voor klantcontact, financiële beslissingen, medische ondersteuning of overheidstoepassingen is de keuze echter niet vrijblijvend: de EU AI Act verplicht het voor hoogrisico-systemen, en ISO 42001-certificering wordt in 2026 in toenemende mate een leveranciers-eis. Beslis per use case welk regime past, en leg dat schriftelijk vast voordat de eerste eval-test gebouwd wordt.
+  - |
+    Tactisch: wijs een eigenaar aan met inhoudelijk én operationeel mandaat.
+    Niet alleen het team dat de evals technisch draait, ook iemand die bepaalt wat goed is, edge cases reviewt, en beslist wanneer drift een ingreep verdient. Een evaluation loop zonder eigenaar produceert dashboards die niemand leest. De eigenaar moet bovendien tijd hebben om bevindingen daadwerkelijk om te zetten in aanpassingen aan prompts, modellen of processen.
+  - |
+    Operationeel: begin bij de kleinste werkende loop voor één use case.
+    Twintig tot vijftig representatieve testgevallen, één hybride grader (een deterministische check naast een LLM-als-rechter), en één wekelijkse review-vergadering. Pas wanneer dit patroon stabiel draait: opschalen naar een volledige gouden testset, analytische rubrics, geautomatiseerde regressie in de ontwikkelpijp en post-deploy drift-monitoring.
 auditExample:
   title: "AI-Readiness Audit"
-  description: "We draaien een volautomatische teststraat met 17 kwaliteitschecks (11 deterministisch, 6 LLM-as-Judge), een evals engine met Cohen's Kappa kalibratie (target 0.717), en data lineage op alle rapportages — elke conclusie is herleidbaar naar de geanonimiseerde interview-antwoorden."
+  description: "In het AI-Readiness Audit-platform draait een teststraat van 17 kwaliteitschecks (11 deterministisch op formaat en datavolledigheid, 6 via LLM-als-rechter op toon en argumentatie). De evals engine kalibreert wekelijks tegen menselijke audit-experts met Cohen's Kappa-doel boven 0,70. Elke gegenereerde rapportage heeft volledige data-herkomst terug naar de geanonimiseerde interview-antwoorden, en wijzigingen aan de scoring-prompt doorlopen schaduw-modus voordat ze 100% verkeer raken."
 evidence:
-  - "Testset met representatieve cases en verwachte uitkomsten"
-  - "Dashboard met kwaliteitsmetrics en trendlijnen over tijd"
-  - "Verbeterlogboek: welke evaluatie leidde tot welke aanpassing"
+  - "Gouden testset van representatieve cases met versie-beheer, gepubliceerde update-cadans en gedocumenteerde edge cases"
+  - "Dashboard met meerdere kwaliteitsmetrieken naast elkaar (geen single-metric optimalisatie), inclusief trendlijnen over tijd en drift-alarmen"
+  - "Cohen's Kappa-rapportage van LLM-als-rechter tegen menselijke labels, minimaal kwartaal-cadans, met drempelwaarde per use case"
+  - "Verbeterlogboek dat per evaluatieronde een concrete actie of expliciete no-action-met-onderbouwing vastlegt (EU AI Act Art. 9 audit-trail)"
+  - "Post-deploy drift-monitoring op data-, concept- en performance-drift met automatische rollback bij overschrijding van baseline-drempels"
+  - "Volledig auditeerbare trajecten van eval-runs met tijdstempel, input, prompt-versie, model-versie, grader-output en beslissing; verplicht onder Art. 12"
 ---
+
+import BBDisclosure from '../../components/bb-detail/BBDisclosure.astro';
 
 ## Wat is de Evaluation Loop?
 
-Een evaluation loop is de systematische, terugkerende cyclus waarin de kwaliteit, betrouwbaarheid en veiligheid van een AI-oplossing wordt gemeten aan de hand van expliciete criteria, de resultaten worden geanalyseerd en gerichte verbeteringen worden doorgevoerd in prompts, modellen, data, tools en processen.
+De [evaluation loop](/begrippen#evaluation-loop) is de gesloten, terugkerende cyclus waarin AI-output wordt beoordeeld aan vooraf gedefinieerde criteria, bevindingen worden geanalyseerd, en concrete verbeteracties worden doorgevoerd in prompts, modellen, data of processen. Het *loop*-kenmerk is bepalend: een eenmalige test, een dashboard zonder vervolgactie of een benchmark zonder hermeting is geen evaluation loop. Pas wanneer bevindingen aantoonbaar leiden tot wijzigingen, en die wijzigingen zichtbaar zijn in de volgende meetronde, sluit de cyclus.
 
-Deze loop combineert gestructureerde evaluaties (testcases, datasets, metrics, LLM-as-a-judge, menselijke beoordeling) met continue monitoring in gebruikssituaties, zodat de AI blijvend wordt bijgestuurd op basis van meetbare uitkomsten.
+Tegelijk is dit de meest overgeslagen stap in AI-projecten. Teams bouwen, leveren op, en hopen dat het werkt. Zonder systematische evaluatie degradeert elk AI-systeem over tijd, niet dramatisch maar stil: input-distributies verschuiven, externe bronnen veranderen, modelversies krijgen subtiele updates, en de werkelijkheid waaraan getoetst wordt evolueert. Het gebrek aan een evaluation loop wordt dus zelden gemerkt op het moment dat hij ontbreekt; het wordt gemerkt zes maanden later wanneer kwaliteit blijkt te zijn afgegleden zonder dat iemand een trigger had om in te grijpen.
 
-## In de praktijk
+In 2026 is evaluatie een rijp vakgebied geworden. [Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), [OpenAI](https://developers.openai.com/api/docs/guides/evals), [AWS](https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/), Stanford [HELM](/begrippen#helm) en het [NIST AI RMF](/begrippen#nist-ai-rmf) convergeren op hetzelfde concept; er is een toolinglandschap met meer dan een dozijn productieplatforms; en met de [EU AI Act](/begrippen#tevv), [ISO/IEC 42001](/begrippen#iso-42001) en het NIST-raamwerk is evaluatie voor hoogrisico-systemen wettelijk afdwingbaar geworden. Wat in de meeste praktijkimplementaties ontbreekt, is geen kennis maar discipline: de wil om de loop daadwerkelijk te sluiten in plaats van alleen te meten.
 
-De evaluation loop is waar veel AI-projecten falen: ze bouwen, deployen, en hopen dat het werkt. Zonder systematische evaluatie degradeert elk AI-systeem over tijd. De loop hoeft niet complex te zijn — begin met simpele metrics en bouw uit naarmate je systeem groeit.
+<BBDisclosure title="Hoe werkt een evaluation loop eigenlijk?">
+
+In de AI-wereld worden meerdere termen door elkaar gebruikt voor in essentie hetzelfde idee. Anthropic en OpenAI spreken van [evals](/begrippen#eval) (informeel meervoud), academische bronnen van *evaluation* of *benchmark*, het NIST-raamwerk hanteert [TEVV](/begrippen#tevv) (Test, Evaluate, Verify & Validate), en de EU AI Act spreekt over *risk management*, *accuracy testing* en *post-market monitoring*. De definitie van Anthropic uit 2025 is de helderste werkdefinitie: *"An evaluation (or 'eval') is a test for an AI system: give an AI an input, then apply grading logic to its output to measure success."*
+
+Het *loop*-kenmerk maakt het verschil. Eén meting is een eval. Een verzameling metingen is een eval-suite. Een eval die periodiek terugkeert, leidt tot bevindingen, leidt tot acties en wordt opnieuw gedraaid: dat is de evaluation loop. Zonder die terugkoppeling is er alleen registratie.
+
+### Waar de loop op rust: het evaluatie-raamwerk
+
+Onder de loop zit een [evaluatie-raamwerk](/begrippen#evaluation-harness) (in de Anthropic-taxonomie de *evaluation harness*): de software-infrastructuur die de testen automatisch draait. Het raamwerk bestaat uit zes onderdelen die op elke pagina van een productie-eval terugkomen:
+
+- **Taak**: een specifiek probleem met inputs en gedefinieerde succescriteria. De atomaire eenheid van de eval-suite.
+- **Trial**: één uitvoering van een taak. Omdat AI-modellen waarschijnlijkheidsmatig zijn (één input kan twee verschillende outputs opleveren), is één trial zelden representatief; meerdere trials geven een statistisch zinvol beeld.
+- **[Grader](/begrippen#grader)**: de logica die de prestatie scoort. Drie hoofdvormen, behandeld in de derde uitvouw.
+- **Transcript (spoor)**: het volledige logboek van redenering, tool-aanroepen en tussenstappen, niet alleen het eindantwoord. Onmisbaar voor het analyseren van stille fouten en wettelijk verplicht onder EU AI Act Art. 12 voor hoogrisico-systemen.
+- **Uitkomst**: de eindstaat in de externe wereld. Bij een agent die een afspraak inboekt: niet wat de agent zegt te hebben gedaan, maar of de agenda-vermelding daadwerkelijk staat.
+- **Evaluatie-suite**: een verzameling gerelateerde taken (bijvoorbeeld alle eval-cases voor klantenservice, of alle cases voor financiële rapportage). Meet specifieke capaciteiten of gedragspatronen.
+
+### De grens met aangrenzende begrippen
+
+Evaluation loop wordt vaak verward met begrippen die ernaast liggen maar niet hetzelfde zijn:
+
+- **Observability**: het zichtbaar maken van wat intern in een systeem gebeurt (traces, logs). Voedingsstof voor de loop, niet de loop zelf.
+- **Monitoring**: continu signaleren van afwijkingen in productie (latentie, foutpercentages). Ook input, maar geen beoordeling van outputkwaliteit.
+- **Benchmark**: eenmalige meting op een standaard-dataset. Bouwsteen voor de loop, maar zelf niet cyclisch.
+- **MLOps**: bredere discipline rond de hele levenscyclus van modellen. Evaluation loop is een deelproces.
+
+Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is en hoe daarop wordt toegezien). Zonder onderscheid tussen meten en handelen wordt verantwoording afleggen onmogelijk; je kunt niet aantonen dat een bevinding is opgevolgd als de loop nooit sluit.
+
+</BBDisclosure>
+
+<BBDisclosure title="Een productie-rijpe loop in zes fasen">
+
+Een volwassen evaluation loop bestaat uit zes fasen die elke significante wijziging doorloopt: prompt-update, modelwissel, nieuwe context-bron, uitgebreide toolset of aangepaste agent-architectuur. Voor één-op-één-veranderingen kunnen sommige fasen worden ingekort; voor een hoogrisico-toepassing zijn alle zes verplicht.
+
+**Fase 1, pre-deploy offline eval**: gecontroleerde testset met bekende verwachte uitkomsten, geen echte gebruikers betrokken. Elke significante wijziging triggert een run. Output: een go/no-go-beslissing voor doorstroom naar de volgende fase. Doel: regressies vroeg vangen, voordat ze gebruikers raken.
+
+**Fase 2, [schaduw-modus](/begrippen#shadow-mode)**: het nieuwe model draait parallel aan productie. Antwoorden worden vastgelegd voor analyse, maar niet getoond aan eindgebruikers. Maakt het mogelijk om kwaliteitsverschillen, latentie en kosten te meten zonder gebruikersimpact. Verplicht startpunt voor een grote prompt-herziening of modelwisseling.
+
+**Fase 3, [canary-release](/begrippen#canary-release)**: na succesvolle schaduw-modus stroomt een klein percentage echt verkeer door het nieuwe systeem. Typische staffeling: 1% van het verkeer in week één, 5% in week twee, 20% in week drie, 50% in week vier, 100% in week vijf. Metrieken worden continu vergeleken met de baseline. Bij overschrijding van een vooraf gedefinieerde drempel: automatische rollback. Voor hoogrisico-toepassingen (medisch, juridisch): start op 0,1% in plaats van 1%.
+
+**Fase 4, post-deploy online evaluation**: continue meting op echt verkeer. Drie typen feedback komen samen:
+
+- *Impliciete feedback*: klikgedrag, hoe vaak gebruikers vroegtijdig afhaken, en hoe vaak dezelfde vraag binnen één sessie wordt herhaald (een sterk signaal voor systemisch falen, want de gebruiker kreeg duidelijk niet wat hij zocht).
+- *Expliciete feedback*: duim omhoog of omlaag, sterrenrating, correctie-acties.
+- *Escalatie-rate*: hoe vaak de gebruiker terugvalt op een mens.
+
+**Fase 5, drift-monitoring**: er zijn drie vormen van [drift](/begrippen#drift) die afzonderlijk gemonitord moeten worden. *Data-drift* betekent dat de verdeling van input-vragen verschuift (gebruikers stellen andere soorten vragen dan een jaar geleden). *Concept-drift* betekent dat de relatie tussen input en juist antwoord verandert (de werkelijkheid evolueert: regelgeving verandert, prijzen wijzigen, definities herzien). *Performance-drift* is de gevaarlijkste variant: kwaliteitsmetrieken dalen zonder dat de applicatie veranderde; het model degradeert stilletjes, of de werkelijkheid is van het model af gegroeid.
+
+**Fase 6, verbeteractie**: bevindingen leiden tot aanpassingen. Een nieuwe prompt-versie, een andere modelversie, verbeterd ophalen van context, een uitgebreide of versmalde toolset. De cyclus herstart bij fase 1. Zonder deze stap is de loop open: er wordt gemeten, maar niet bijgestuurd.
+
+Dit raakt aan twee guardrails. **Robustness** (GR_02: betrouwbaarheid onder alle omstandigheden) wordt operationeel via fase 4 en 5: alleen door drift te detecteren voordat de schade ontstaat, blijft een systeem betrouwbaar. **Human Agency** (GR_01: mensen behouden controle) hangt aan fase 6: zonder mens die beslist over een verbeteractie is "automatische optimalisatie" een eufemisme voor verlies van regie.
+
+</BBDisclosure>
+
+<BBDisclosure title="Beoordelen onder onzekerheid: graders, rubrics en de rechter-paradox">
+
+Het hart van de evaluation loop is de [grader](/begrippen#grader): de logica die bepaalt of een output goed of slecht is. In 2026 is de consensus dat een hybride benadering de enige weg is naar schaalbare betrouwbaarheid. Drie typen graders met verschillende afwegingen tussen snelheid, kosten en geschiktheid.
+
+**Code-gebaseerde grader**: scripts, reguliere expressies, schema-validatie of unit-tests. Onmisbaar voor checks waar de juiste output een vast formaat heeft (geldige JSON, een numerieke waarde binnen een bereik, een verplicht veld aanwezig). Snel, gratis, deterministisch, maar kan geen subjectieve kwaliteit of nuance meten.
+
+**Model-gebaseerde grader ([LLM-als-rechter](/begrippen#llm-as-judge))**: een krachtig taalmodel beoordeelt de output van een ander systeem. Schaalbaar voor open-ended antwoorden zoals samenvattingen, toonbeoordeling en redenering. Vereist kalibratie en heeft bekende biases (zie hieronder).
+
+**Menselijke grader**: de goudstandaard voor het kalibreren van de andere twee. Onmisbaar bij hoogrisico-toepassingen, eerste opzet van een nieuwe rubric, en grensgevallen. Duur en traag, dus alleen inzetten waar machinale grading aantoonbaar onbetrouwbaar is. Productie-aanbeveling: combineer altijd deterministische checks (snel, gratis), met LLM-als-rechter (voor nuance) en periodieke menselijke steekproef (voor kalibratie).
+
+### De rechter-paradox: rubric-kwaliteit boven judge-kracht
+
+In 2025 is een opmerkelijk patroon gedocumenteerd: een relatief zwak model met een gedetailleerde, multidimensionale [rubric](/begrippen#rubric) presteert systematisch beter dan een superieur model met een vage instructie. De kwaliteit van het oordeel wordt gedomineerd door de structuur van de rubric, niet door de rekenkracht van de beoordelaar. Dit ondersteunt de praktijk van *analytische rubrics*: elke dimensie (feitelijke juistheid, veiligheid, merktoon, beknoptheid) krijgt een eigen score in plaats van één samengevat cijfer. Voordeel bij kwaliteitsdaling: root-cause-analyse kan direct aanwijzen of de degradatie zit in feitelijkheid of in toon, en niet alleen "een lager cijfer" op iets vaags.
+
+### Cohen's Kappa als kalibratiemaat
+
+Een LLM-als-rechter wordt gekalibreerd door zijn oordelen te vergelijken met die van menselijke experts op dezelfde set, gecorrigeerd voor toeval. Die correctie heet [Cohen's Kappa](/begrippen#cohens-kappa). De gangbare interpretatiedrempels (Landis & Koch, 1977):
+
+- Onder 0,40: slechte overeenstemming. Niet productiegeschikt; rubric of judge-prompt herzien.
+- 0,40 tot 0,60: matige overeenstemming. Bruikbaar voor exploratie, niet voor productie.
+- 0,60 tot 0,80: goede overeenstemming. Productiegeschikt voor niet-kritische toepassingen.
+- Boven 0,80: uitstekende overeenstemming. Vereist voor hoogrisico of compliance-gevoelige systemen.
+
+### Vier biases die de rechter vervuilen
+
+Een LLM-als-rechter is geen neutrale beoordelaar. Vier biases zijn empirisch vastgesteld en moeten actief worden gemitigeerd: *positie-bias* (het eerste antwoord in een vergelijking wordt vaak hoger gescoord), *lengte-bias* (langere antwoorden ogen "behulpzamer" en krijgen hogere scores, ook als ze redundant zijn), *zelf-voorkeur* (modellen scoren output die ze zelf hebben gegenereerd hoger dan output van andere modellen) en *stijl-bias* (voorkeur voor een formele of overtuigende toon, los van feitelijke juistheid). Mitigaties: gebruik nooit hetzelfde model als rechter en kandidaat; pas *order swapping* toe (twee runs met omgewisselde posities); en neem beknoptheid expliciet op in de rubric zodat lengte geen verkapt voordeel wordt.
+
+</BBDisclosure>
+
+<BBDisclosure title="Eval-sets bouwen die de werkelijkheid raken">
+
+Een eval-set is alleen zo goed als zijn samenstelling. Een set die alleen gemakkelijke cases bevat geeft hoge scores zonder voorspellende waarde voor productie. Een set die alleen randgevallen bevat trekt de score onnodig omlaag. Een set die nooit wordt vernieuwd verliest in zes tot twaalf maanden zijn relevantie omdat de werkelijkheid verschuift.
+
+### Grootte: van klein beginnen naar productie schalen
+
+- *Eerste testset*: 20 tot 50 cases. Snel te bouwen, geeft een eerste signaal, geschikt voor een eerste loop. Kan suboptimaal zijn omdat statistische significantie nog ver weg is.
+- *Productie-betrouwbaar*: 100 tot 500 cases. Voldoende voor statistisch zinvolle uitspraken bij de meeste toepassingen.
+- *Hoogrisico (medisch, juridisch, financieel)*: 1.000 of meer cases. Onder die grens geeft de set een misleidende zekerheid.
+
+### Samenstelling: drie zones, drie verhoudingen
+
+Voor een evenwichtige set:
+
+- **Doorsnee-vragen** (60 tot 70%): de gemakkelijke gevallen die het systeem in productie verreweg het vaakst tegenkomt. Bewaakt de hoofd-functionaliteit.
+- **Edge cases** (20 tot 30%): ongebruikelijke, meerduidige of complexe inputs. Test waar het systeem aan zijn grenzen komt.
+- **Adversariële inputs** (5 tot 10%): inputs die het systeem expliciet proberen te misleiden. Combinatie van prompt-injectie-pogingen, dubbelzinnige formuleringen en bekende valkuilen voor het type taak.
+
+### Gouden testset versus synthetische data
+
+Een [gouden testset](/begrippen#golden-dataset) is een gecureerde, versie-beheerde collectie inputs, contexten en verwachte uitkomsten, hand-gecontroleerd door domeinexperts. Versiebeheer is verplicht: elke wijziging in schema of labels wordt getraceerd als nieuw experiment, anders zijn metingen van vandaag niet vergelijkbaar met die van vorige maand.
+
+Synthetische data versnelt de opbouw maar heeft een specifieke valkuil: gebruik nooit hetzelfde model voor het genereren én het valideren van eval-cases. Promoveer "zilveren" synthetische data pas naar "goud" via menselijke review door domeinexperts. Een eval-set die met hetzelfde model is gegenereerd dat ook de evaluatie uitvoert, meet voornamelijk hoe consistent een model met zichzelf is.
+
+### Eval-set-lekkage als stille faalmodus
+
+[Eval-set-lekkage](/begrippen#eval-set-leakage) treedt op wanneer testdata is terechtgekomen in de trainingsdata van het model dat geëvalueerd wordt. Het model "weet" de antwoorden in plaats van ze te genereren; benchmark-scores zien er hoog uit, maar het model generaliseert niet naar nieuwe gevallen. ICML-2025-onderzoek documenteert nauwkeurigheidsdalingen van 5 tot 15% in absolute termen wanneer gecontamineerde voorbeelden worden verwijderd. Voor de bekende GSM8K-rekenbenchmark werd een gedocumenteerde daling van 13% gemeten.
+
+Mitigaties: voer periodieke overlap-checks uit tussen eval-set en trainingsdata, en hanteer methoden zoals AntiLeakBench (ACL 2025) die testgevallen construeren met expliciete kennis die aantoonbaar afwezig is in trainingsdata van bekende modellen.
+
+</BBDisclosure>
+
+<BBDisclosure title="Multi-turn en agentische systemen evalueren">
+
+Een single-turn-systeem heeft één input en één output. Een agentisch systeem zet een reeks stappen: het kiest een tool, geeft parameters mee, ontvangt een resultaat, kiest een volgende tool, en herhaalt dat tot de taak klaar is. Evaluatie van zo'n systeem vraagt een fundamenteel andere aanpak.
+
+| Aspect | Single-turn | Agentisch / multi-turn |
+|--------|-------------|------------------------|
+| Scope | Input → output | Input → traject → eindstaat |
+| Grading-laag | Op het eindantwoord | Op elke stap én op de uitkomst |
+| Foutpropagatie | Geïsoleerd per beurt | Fouten cascaderen door het pad |
+| Reproduceerbaarheid | Eenvoudig | Uitdagend, het pad zelf is variabel |
+
+### Traject-evaluatie
+
+Naast de eindoutput meten teams in 2026 het [traject](/begrippen#trajectory-evaluation) zelf. Concrete metrieken uit TRAJECT-Bench (arxiv 2025) en LangChain AgentEvals:
+
+- *Trajectory-exact-match*: het pad is identiek aan de verwachte route (strikte modus, voor compliance-gevoelige flows).
+- *Tool-selection-accuracy*: is de juiste tool gekozen voor de taak? Volgens recent onderzoek de grootste enkelvoudige bron van agentische fouten.
+- *Tool-parameter-accuracy*: zijn de juiste parameters meegegeven aan de tool?
+- *Multi-turn function calling accuracy*: blijft de agent over meerdere beurten consistent in zijn tool-keuzes?
+- *Tool-call-error-rate*: welk percentage van de tool-aanroepen mislukt?
+
+Onderzoek wijst uit dat tool-gebruik een van de meest voorkomende faalpunten is in agentische systemen: foutpercentages tot 36% in complexe conversaties bij sommige frontier-modellen. Een evaluation loop voor agenten moet daarom expliciet testen op tool-routing en de afhandeling van fouten van externe diensten.
+
+### Variabiliteit als signaal, niet als ruis
+
+In agentische systemen is de variantie in uitkomsten zelf een signaal. Een agent die in 80% van de gevallen slaagt maar af en toe catastrofaal faalt, is in productie minder betrouwbaar dan een agent met 75% slaagkans en stabiel gedrag. De evaluation loop moet die stabiliteit zichtbaar maken over tijd en over verschillende omgevingen (ontwikkel, staging, productie). Eén score per release zegt te weinig; de spreiding zegt veel.
+
+### Twee stille faalmodi specifiek voor agenten
+
+- **Hallucinaties uit trainingsdata**: het model vertrouwt op verouderde of onjuiste informatie uit de trainingsfase in plaats van op de meegeleverde context (RAG-resultaten, opgehaalde documenten). De gebruiker kan vaak niet verifiëren of een bewering uit de bron komt of "verzonnen" is. Eval-eis: faithfulness-checks moeten expliciet de bron-traceerbaarheid toetsen, niet alleen de plausibiliteit.
+- **Context-drift in lange conversaties**: naarmate een gesprek vordert, verliest de agent de oorspronkelijke instructie of het doel uit het oog. Eval-eis: lange-trajectory-tests met scope-controle per beurt.
+
+Praktijkles van een Amazon-evaluatie van een agentische winkelassistent: *slecht gedefinieerde tool-schema's zijn de grootste bron van agentische fouten*. Voordat een evaluation loop überhaupt zinvol resultaat oplevert, moet de [Tool Integration](/framework/tool-integration) (BB_05: AI verbinden met de buitenwereld) op orde zijn.
+
+</BBDisclosure>
+
+<BBDisclosure title="Wat de wet eist: evaluation als compliance-instrument">
+
+In 2026 is de evaluation loop niet langer een vrijwillige kwaliteitsmaatregel. Voor hoogrisico-AI-systemen is de loop wettelijk afdwingbaar geworden via de EU AI Act, ISO/IEC 42001 en het NIST AI RMF.
+
+### EU AI Act: zeven artikelen die de loop verplicht stellen
+
+**Artikel 9, risicobeheer**: verplicht een *"continuous iterative process throughout the entire lifecycle"*. Tests moeten worden uitgevoerd met *"prior defined metrics and probabilistic thresholds appropriate to the intended purpose"*. Vóór marktplaatsing én periodiek daarna. Data uit post-marktmonitoring moet worden geanalyseerd en teruggekoppeld.
+
+**Artikel 10, datagovernance en biasbestrijding**: bias-detectie en -mitigatie zijn verplicht; datasets moeten representatief zijn voor de specifieke inzetomgeving. Documentatie van datamanagement maakt deel uit van de verplichte technische dossiers.
+
+**Artikel 12, logging van gebeurtenissen**: automatische logging gedurende de levenscyclus. Voor de evaluation loop betekent dit: bewaren van volledige trajecten met tijdstempels, niet alleen eindscores. Capability-eis (wat het systeem moet kunnen vastleggen). De bewaartermijn zelf staat in Artikel 19 lid 1 (providers, minimaal zes maanden) en Artikel 26 lid 6 (deployers).
+
+**Artikel 13, transparantie voor afnemers**: afnemers moeten de instructies en eigenschappen van het systeem kunnen begrijpen. Voor de eval-loop betekent dit interpretatie-rubrics en uitlegbare redeneerstappen, niet alleen een score "7 uit 10". Sluit aan op de praktijk van analytische rubrics.
+
+**Artikel 14, menselijk toezicht**: hoogrisico-systemen moeten menselijk ingrijpen mogelijk maken. Voor de loop betekent dit: een noodknop (kill-switch) en menselijke review-wachtrijen voor escalatie zijn ontwerp-eisen, geen optionele toevoeging. Sluit aan op traject-evaluatie met escalatie-rate als reguliere metriek.
+
+**Artikel 15, nauwkeurigheid en robuustheid**: nauwkeurigheidsniveaus en de gebruikte metrieken moeten gedocumenteerd zijn in gebruikersinstructies. Continu-lerende systemen moeten feedback-loop-contaminatie voorkomen: de output uit productie mag niet ongecontroleerd terugvloeien in de volgende trainingscyclus.
+
+**Artikel 72, post-market monitoring**: actief en systematisch verzamelen van prestatie-data gedurende de gehele levensduur van het systeem. Verplicht op basis van een formeel monitoring-plan dat onderdeel is van de technische documentatie. **Inwerkingtredingsdatum: 2 augustus 2026.**
+
+### ISO/IEC 42001 als managementkader
+
+ISO/IEC 42001:2023 standaardiseert het AI Management System. Clausule 9 (Performance Evaluation) vereist doorlopende monitoring, interne audit minimaal jaarlijks (vaker bij hoogrisico) en formele managementbeoordeling. Clausule 10 (Continuous Improvement) eist dat bevindingen omgezet worden in concrete verbetering. Certificering is drie jaar geldig met jaarlijkse surveillance-audit. In 2026 wordt ISO 42001-certificering steeds vaker gezien als bewijs van *due diligence* voor de EU AI Act.
+
+### NIST AI RMF: TEVV als regulier proces
+
+Het NIST-raamwerk hanteert TEVV (Test, Evaluate, Verify & Validate) expliciet als doorlopend lifecycle-proces, niet als eenmalige check. De Measure-functie binnen het raamwerk gebruikt *"quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk."* Internationaal vrijwillig, maar in de praktijk de referentie voor cross-border compliance.
+
+### Nederlandse toezichtsstructuur
+
+Per ontwerpwet (april 2026) heeft Nederland gekozen voor decentraal toezicht. De vijf primaire AI Act-toezichthouders:
+
+- **Autoriteit Persoonsgegevens (AP)**: privacy en grondrechten.
+- **Rijksdienst voor Digitale Infrastructuur (RDI)**: digitale infrastructuur en marktcoördinatie.
+- **Autoriteit Consument en Markt (ACM)**: consumentenrecht en markttoezicht.
+- **Autoriteit Financiële Markten (AFM)**: financiële sector.
+- **De Nederlandsche Bank (DNB)**: bancaire sector.
+
+Aanvullend, per sector: Inspectie Gezondheidszorg en Jeugd (IGJ: kwaliteit en veiligheid in de zorg, AI als medisch hulpmiddel), Nederlandse Zorgautoriteit (NZa: markttoezicht en bekostiging in de zorg) en Inspectie van het Onderwijs. De definitieve aanwijzing per AI-toepassingsgebied ligt nog niet limitatief vast; voor agent-systemen in zorg, financiën of overheid betekent dit dat eval-keuzes ook moeten standhouden tegenover sectorale audits, niet alleen tegenover Europese.
+
+Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is en hoe daarop wordt toegezien). Een evaluation loop zonder volledige audit-trail per evaluatieronde is niet langer een kwaliteitsverhoging; voor hoogrisico-systemen is het een wettelijke noodzakelijkheid geworden.
+
+</BBDisclosure>
+
+<BBDisclosure title="Acht anti-patronen en de productie-naar-eval-trend">
+
+Een evaluation loop kan op acht herkenbare manieren falen, ook als hij technisch lijkt te draaien. Elk anti-patroon heeft een eigen tegengift.
+
+**1. Vibe-checking**: AI-output op gevoel beoordelen door een handvol voorbeelden te bekijken. Niet schaalbaar, geen statistische basis. Het werkt voor een prototype met tien gebruikers; het breekt zodra het systeem honderd of meer gebruikers bedient. Tegengift: zodra je een systeem in productie hebt, vervang vibe-checking door een gouden testset met expliciete grading-logica.
+
+**2. Demo-driven development**: de eval-set bestaat precies uit de cases die aan het management worden getoond. Het systeem scoort 95% op de eval, maar faalt in 30% van echte gebruiks-cases. Edge cases, adversariële inputs en minderheids-scenario's ontbreken. Tegengift: stel de eval-set samen op basis van productie-logs en gerapporteerde incidenten, niet op basis van wat goed laat zien.
+
+**3. Single-metric tunnel-vision**: optimaliseren op één metriek terwijl andere dimensies (veiligheid, faithfulness, bias, kosten) onbeheerd blijven. Het klassieke principe van [Goodhart's law](/begrippen#goodharts-law) vat dit precies samen: *"When a measure becomes a target, it ceases to be a good measure."* Concreet voorbeeld uit 2025: meerdere grote AI-laboratoria publiceerden selectief alleen hun beste Arena-scores. Tegengift: bewaak meerdere onafhankelijke metrieken naast elkaar, zoals het [HELM](/begrippen#helm)-raamwerk doet over zeven dimensies.
+
+**4. Eval-set-veroudering**: de eval-set wordt eenmalig aangemaakt en nooit bijgewerkt. Na zes tot twaalf maanden meet hij niet meer wat in productie relevant is omdat de werkelijkheid is verschoven. Tegengift: vernieuw de eval-set kwartaal-cadans met cases uit recente productie-logs en gerapporteerde fouten.
+
+**5. Judge-model-contaminatie**: hetzelfde model wordt ingezet als rechter én als kandidaat. Zelf-voorkeur leidt tot systematisch hoge scores die niet correleren met daadwerkelijke kwaliteit. Tegengift: gebruik altijd een ander model als rechter, of een ensemble van meerdere rechter-modellen.
+
+**6. Alleen happy-path**: de eval-set bevat alleen succesvolle gevallen waarin het systeem goed werkt. Het lijkt 98% nauwkeurig maar faalt volledig bij onverwachte inputs. Tegengift: eis structureel 20 tot 30% edge cases en 5 tot 10% adversariële inputs in elke productie-eval-set.
+
+**7. Eval-set-lekkage in trainingsdata**: zoals besproken in de eval-set-uitvouw, komt benchmarkdata terecht in trainingsdata van het model dat geëvalueerd wordt. Tegengift: periodieke overlap-checks plus methoden zoals AntiLeakBench die testgevallen genereren met expliciet nieuwe kennis.
+
+**8. Rapportage-theater**: de loop produceert dashboards maar geen beslissingen. Metrieken worden bijgehouden zonder dat bevindingen leiden tot aanpassingen in prompts, modellen of processen. De loop is open. Tegengift: koppel een verbeterlogboek aan de loop; per evaluatieronde wordt een concrete actie of een expliciete onderbouwde no-action vastgelegd. Dit is ook wat EU AI Act Art. 9 als audit-trail vereist.
+
+### De productie-naar-eval-loop als 2026-trend
+
+Tegenover het anti-patroon van eval-set-veroudering staat een opkomende praktijk: tools zoals Braintrust en LangSmith maken het mogelijk om productie-trajecten met één klik om te zetten in regressie-testgevallen voor de eval-set. Daardoor groeit de eval-set automatisch mee met de werkelijkheid in productie. Het effect is een vliegwiel: hoe meer het systeem in productie ziet, hoe meer relevante testgevallen de eval-set bevat, hoe sneller drift wordt opgemerkt. Voor teams die net starten met een evaluation loop is dit een pragmatische manier om uit het hand-cureren van testgevallen te groeien zonder de set te laten verstarren.
+
+</BBDisclosure>
+
+<BBDisclosure title="In de praktijk">
+
+Een evaluation loop ontwerpen op papier is één ding, hem in productie laten leveren is een ander. Drie publiek gedocumenteerde cases laten zien wat een goed-gesloten loop kan opleveren.
+
+- **Nippon India Mutual Fund**: een AI-assistent voor klantvragen ging van 75% nauwkeurigheid naar boven de 90% door over te stappen van een eenvoudige RAG-implementatie naar een continu geëvalueerd systeem met een gouden testset, drift-monitoring en wekelijkse rubric-review. De doorlooptijd voor het genereren van rapportages daalde van twee dagen naar ongeveer tien minuten.
+- **Huron Health**: 90% nauwkeurigheid op sentimentclassificatie van patiëntfeedback, bereikt door modellen continu te evalueren tegen 10.000 handmatig geannoteerde notities per week. De omvang van de menselijke kalibratie-set maakt de Cohen's Kappa-meting statistisch hard, niet anekdotisch.
+- **Klarna**: doorlooptijd van pull requests in software-ontwikkeling verdubbeld door geautomatiseerde codekwaliteit- en compliance-evaluaties direct in de ontwikkelomgeving. De evaluation loop is hier niet alleen een productie-instrument maar ook een ontwikkel-instrument.
+
+De gemene deler: in alle drie de cases sloot de loop pas wanneer de evaluatie expliciet werd gekoppeld aan een verbeteractie (een RAG-upgrade, een rechter-kalibratie, een ontwikkel-poort), niet wanneer alleen dashboards werden ingericht.
+
+### Tooling: twee duidelijke segmenten in 2026
+
+De markt is in 2026 volwassen geworden, met twee herkenbare segmenten.
+
+**Open source eval-as-code raamwerken** integreren in de ontwikkelpijp en draaien evals als reguliere tests:
+
+- **DeepEval** (MIT-licentie): brede LLM-evaluatie, vijftig-plus metrieken, integreert met Pytest en CI/CD-pijplijnen. Eerste keuze voor engineering-teams met sterke testcultuur.
+- **Ragas** (Apache 2.0): RAG-specifieke metrieken zoals faithfulness en context-relevantie. Eerste keuze voor wie een [Dynamic Context](/framework/dynamic-context) (BB_03: de juiste informatie op het juiste moment) in productie brengt.
+- **Inspect AI** (UK AISI, MIT): sandboxed agentische evaluaties via Docker, reproduceerbaar en auditeerbaar. Sterkste open-source-keuze voor compliance-teams die evaluatie als productie-infrastructuur behandelen en moeten kunnen aantonen aan toezichthouders.
+- **Langfuse** (MIT, self-hostbaar): observability gecombineerd met evaluatie, lichtgewicht.
+
+**Commerciële platforms** bieden samenwerking, dashboards en managed infrastructuur:
+
+- **LangSmith**: diepe integratie met LangChain en LangGraph, sterk in trajectory-scoring.
+- **Braintrust**: snelle CI/CD-poorten, prompt-optimalisatie, vlakke prijsstructuur.
+- **Humanloop**: focus op samenwerking met niet-technische product-eigenaren in de loop, prompt-management.
+- **Arize Phoenix**: gebouwd op OpenTelemetry, raamwerk-neutraal (werkt met OpenAI, Anthropic, LangChain, LlamaIndex), self-hostbaar.
+
+Beslis-vuistregels: voor een engineering-team met sterke testcultuur: DeepEval plus Braintrust. Voor een RAG-pijplijn: Ragas plus Langfuse of Phoenix. Voor agentische systemen onder compliance-regime: Inspect AI. Voor een team dat al diep in LangChain zit: LangSmith. Voor leveranciersneutraliteit met self-hosting: Phoenix.
+
+### Het koppelpunt met andere bouwstenen en guardrails
+
+De evaluation loop staat nooit op zichzelf. Hij raakt elk van de andere zes BeeHaive-bouwstenen: [Knowledge](/framework/knowledge) (BB_01: domein-expertise externaliseren tot reproduceerbare kwaliteitscriteria) levert eval-criteria en een bron-van-waarheid, [Client Blueprint](/framework/client-blueprint) (BB_02: van waarde-stroom naar AI-ontwerp) bepaalt welke succescriteria überhaupt waardevol zijn, [Dynamic Context](/framework/dynamic-context) wordt geëvalueerd op grounding en faithfulness, [Prompt Design](/framework/prompt-design) (BB_04: de kunst van de juiste instructie) doorloopt regression-tests bij elke wijziging, [Tool Integration](/framework/tool-integration) wordt getoetst op tool-correctness, en [Model Engines](/framework/model-engines) (BB_06: modelkeuze als ontwerpvraag) worden onderling vergeleken op de daadwerkelijke use case.
+
+Tegelijk raakt de loop direct aan vier guardrails:
+
+- **Human Agency**-guardrail (GR_01: mensen behouden controle): zonder mens die beslist op bevindingen is "automatische optimalisatie" een eufemisme; de loop sluit alleen via menselijk eigenaarschap.
+- **Robustness**-guardrail (GR_02: betrouwbaarheid onder alle omstandigheden): drift-detectie en regressie-tests zijn de operationele invulling van betrouwbaarheid.
+- **Fairness**-guardrail (GR_04: gelijke behandeling, geen systematische benadeling): bias-monitoring binnen de evaluation loop is de structurele bewaking, niet een eenmalige controle.
+- **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is): elke evaluatieronde gekoppeld aan een verbeteractie of een gemotiveerde no-action maakt verantwoording afdwingbaar; vanaf augustus 2026 is dat wettelijk verplicht voor hoogrisico-systemen.
+
+</BBDisclosure>

@@ -62,8 +62,9 @@ export const bbGuardrailLinks: Record<string, GuardrailLink[]> = {
     link('GR_05', 'Documenteer welk model wordt gebruikt, waarom, en wat de beperkingen zijn.'),
   ],
   'evaluation-loop': [
-    link('GR_07', 'Meten is verantwoorden — evaluatie maakt prestaties toetsbaar.'),
-    link('GR_04', 'Continue evaluatie detecteert bias die bij lancering niet zichtbaar was.'),
-    link('GR_06', 'Meet niet alleen technische metrics maar ook maatschappelijke impact.'),
+    link('GR_01', 'Zonder mens die beslist op bevindingen sluit de loop niet — eigenaarschap is constituerend.'),
+    link('GR_02', 'Drift-detectie en regressie-tests zijn de operationele invulling van betrouwbaarheid onder alle omstandigheden.'),
+    link('GR_04', 'Bias-monitoring binnen de loop is de structurele bewaking, niet een eenmalige controle.'),
+    link('GR_07', 'Elke evaluatieronde gekoppeld aan een actie of gemotiveerde no-action maakt verantwoording afdwingbaar.'),
   ],
 };
