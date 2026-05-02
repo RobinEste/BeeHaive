@@ -20,8 +20,8 @@
 
   /* Building Block accent colors */
   --bb-knowledge:       #E9CA62;   /* amber/gold — fundament */
-  --bb-client-blueprint:#6366F1;   /* indigo — strategie */
-  --bb-dynamic-context: #22D3EE;   /* cyan — informatiestroom */
+  --bb-client-blueprint:#22D3EE;   /* cyan — strategie */
+  --bb-dynamic-context: #A5B4FC;   /* indigo-300 — informatiestroom */
   --bb-prompt-design:   #A78BFA;   /* violet — creativiteit */
   --bb-tool-integration:#34D399;   /* emerald — verbinding */
   --bb-model-engines:   #FB923C;   /* orange — kracht */
@@ -532,5 +532,145 @@ code, pre, .mono {
   .scroll-reveal-stagger > * {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* ── BB Relation Explorer ──────────────────────────────────── */
+.bbre {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2.5rem;
+  align-items: stretch;
+  padding: 2rem 0;
+}
+
+.bbre-graph svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bbre-panel {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.bbre-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.9rem;
+}
+
+.bbre-eyebrow-sep,
+.bbre-title-sep {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.bbre-title {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--text);
+}
+
+.bbre-intro,
+.bbre-body {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-dim);
+  margin: 0 0 1.2rem;
+}
+
+.bbre-body p {
+  margin: 0;
+}
+
+.bbre-body p + p {
+  margin-top: 0.85rem;
+}
+
+.bbre-body a {
+  color: var(--teal-light);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--teal-light) 40%, transparent);
+  text-underline-offset: 0.2em;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.bbre-body a:hover {
+  color: var(--teal);
+  text-decoration-color: var(--teal);
+}
+
+.bbre-prompt {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--teal);
+  letter-spacing: 0.04em;
+  margin: 0 0 1.4rem;
+}
+
+.bbre-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+.bbre-btn-primary {
+  background: var(--teal);
+  color: var(--bg);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: box-shadow 0.3s, transform 0.2s;
+}
+
+.bbre-btn-primary:hover {
+  box-shadow: 0 0 18px rgba(68, 194, 186, 0.45);
+  transform: translateY(-2px);
+}
+
+.bbre-btn-ghost,
+.bbre-btn-ghost-sm {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.bbre-btn-ghost:hover,
+.bbre-btn-ghost-sm:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+@media (max-width: 960px) {
+  .bbre {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .bbre-panel {
+    min-height: auto;
   }
 }

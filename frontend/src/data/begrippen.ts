@@ -61,6 +61,24 @@ export const BEGRIPPEN: Term[] = [
     zieOok: ['token', 'context-window'],
   },
   {
+    slug: 'model',
+    naam: 'Model',
+    engels: 'AI model',
+    uitleg:
+      'De denk- en rekenkern van een AI-systeem: het stuk software dat een input (een vraag, een document, een afbeelding) verwerkt tot een uitvoer (een antwoord, een classificatie, een actie). Bekende voorbeelden in 2026 zijn grote taalmodellen (Claude Opus, GPT-5.5, Gemini), maar ook kleinere classifiers, redeneer-modellen, multimodale modellen en klassieke machine-learning-algoritmen tellen mee. De keuze welk model past bij welke taak is een eerste-orde ontwerpvraag, geen detail aan het einde.',
+    categorie: 'ai-basis',
+    zieOok: ['llm', 'agent', 'prompt'],
+  },
+  {
+    slug: 'waterval',
+    naam: 'Waterval-aanpak',
+    engels: 'waterfall',
+    uitleg:
+      'Klassieke project-aanpak waarbij elke fase eerst helemaal wordt afgerond voordat de volgende begint: eerst alle eisen op papier, dan ontwerp, dan bouwen, dan testen, dan opleveren. Werkt voor goed afgebakende, voorspelbare projecten, maar bij AI-projecten loopt het meestal vast omdat je vóór de bouw nog niet weet wat het systeem precies wel en niet kan. Daarom werken AI-teams iteratief: kort cyclus van ontwerpen, bouwen, meten en bijstellen.',
+    categorie: 'ai-basis',
+    zieOok: ['agent', 'prompt'],
+  },
+  {
     slug: 'system-prompt',
     naam: 'System prompt',
     uitleg:

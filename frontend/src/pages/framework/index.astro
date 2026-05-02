@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BuildingBlocksGrid from '../../components/BuildingBlocksGrid.astro';
 import GuardrailTimeline from '../../components/GuardrailTimeline.astro';
 import AuditWorkflow from '../../components/AuditWorkflow.tsx';
+import BBRelationExplorer from '../../components/BBRelationExplorer.astro';
+import GlossaryTooltip from '../../components/bb-detail/GlossaryTooltip.astro';
 ---
 
 <BaseLayout title="Framework — BeeHaive">
@@ -16,6 +18,13 @@ import AuditWorkflow from '../../components/AuditWorkflow.tsx';
     <p class="page-intro">Het BeeHaive-framework structureert AI-kennis in building blocks voor wat je bouwt en guardrails voor hoe je het verantwoord doet.</p>
   </section>
 
+  <section class="explorer-section">
+    <div class="eyebrow">Verkennen</div>
+    <h2 class="section-title">De bouwstenen onderling</h2>
+    <p class="section-intro">Klik op een bouwsteen voor een korte toelichting. Klik daarna op een tweede bouwsteen om te zien hoe ze samenwerken.</p>
+    <BBRelationExplorer />
+  </section>
+
   <BuildingBlocksGrid />
 
   <section class="workflow-section">
@@ -26,12 +35,17 @@ import AuditWorkflow from '../../components/AuditWorkflow.tsx';
   </section>
 
   <GuardrailTimeline />
+  <GlossaryTooltip />
 </BaseLayout>
 
 <style>
   .workflow-section {
     background: linear-gradient(rgba(12, 30, 29, 0.85), rgba(12, 30, 29, 0.92)), url('https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=1920&q=80') center/cover no-repeat;
     padding: 4rem 5%;
+    border-top: 1px solid var(--border);
+  }
+  .explorer-section {
+    padding: 3rem 5% 1rem;
     border-top: 1px solid var(--border);
   }
 </style>

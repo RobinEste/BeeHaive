@@ -1,0 +1,377 @@
+---
+const NODES = [
+  { slug: 'knowledge',         code: 'BB_01', name: 'Knowledge',         cx: 240, cy: 270, labelAnchor: 'bottom' as const },
+  { slug: 'client-blueprint',  code: 'BB_02', name: 'Client Blueprint',  cx: 240, cy: 152, labelAnchor: 'top'    as const },
+  { slug: 'dynamic-context',   code: 'BB_03', name: 'Dynamic Context',   cx: 342, cy: 211, labelAnchor: 'right'  as const },
+  { slug: 'prompt-design',     code: 'BB_04', name: 'Prompt Design',     cx: 138, cy: 211, labelAnchor: 'left'   as const },
+  { slug: 'tool-integration',  code: 'BB_05', name: 'Tool Integration',  cx: 138, cy: 329, labelAnchor: 'left'   as const },
+  { slug: 'model-engines',     code: 'BB_06', name: 'Model Engines',     cx: 240, cy: 388, labelAnchor: 'bottom' as const },
+  { slug: 'evaluation-loop',   code: 'BB_07', name: 'Evaluation Loop',   cx: 342, cy: 329, labelAnchor: 'right'  as const },
+];
+
+const EDGES: Array<[string, string]> = [
+  ['knowledge', 'client-blueprint'],
+  ['knowledge', 'dynamic-context'],
+  ['knowledge', 'prompt-design'],
+  ['knowledge', 'tool-integration'],
+  ['knowledge', 'model-engines'],
+  ['knowledge', 'evaluation-loop'],
+  ['client-blueprint', 'dynamic-context'],
+  ['dynamic-context', 'evaluation-loop'],
+  ['evaluation-loop', 'model-engines'],
+  ['model-engines', 'tool-integration'],
+  ['tool-integration', 'prompt-design'],
+  ['prompt-design', 'client-blueprint'],
+];
+
+const NODE_BY_SLUG = Object.fromEntries(NODES.map((n) => [n.slug, n]));
+
+// ── Content per BB en per BB-paar ──
+const OVERVIEWS: Record<string, string> = {
+  'knowledge':        'In elke organisatie zit waardevolle kennis in de hoofden van ervaren mensen: de senior accountmanager die feilloos aanvoelt welk klantsignaal escalatie verdient, de jurist die in één oogopslag een afwijkend contract herkent.\n\nKnowledge is het samenspel van ervaring, vaardigheden, inzichten en attitude waarmee mensen informatie, tools, AI-modellen en processen effectief inzetten om problemen op te lossen, beslissingen te ondersteunen en betrouwbare AI-outputs te realiseren.\n\nWanneer je die kennis expliciet maakt — wat is goed, wat is fout, en waarom — krijgt je AI-systeem een meetlat waaraan het zijn antwoorden kan toetsen. Organisaties die hier scherp op sturen bouwen op gedeelde kwaliteit in plaats van op individueel oordeel.',
+  'client-blueprint': 'Veel AI-projecten starten met een briljant idee en stranden in de implementatie. De vraag was niet helder genoeg, het paste niet in de bestaande systemen, of risico\'s werden pas ontdekt toen de eerste demo voor de directie stond.\n\nEen Client Blueprint is het ontwerp dat een klantvraag verbindt met een werkende AI-oplossing. Geen <a href="/begrippen#waterval">waterval</a>-document, maar een levend overzicht: welke processtap krijgt AI-ondersteuning, welke beslissing wordt verbeterd, hoe past de oplossing bij bestaande systemen, en welke risico\'s worden al in het ontwerp ondervangen.\n\nJe team werkt de Blueprint uit voordat de eerste <a href="/begrippen#prompt">prompt</a> wordt geschreven en werkt deze continu bij gedurende de realisatie. Zo blijft duidelijk waarvoor je bouwt en waarom, ook wanneer er onderweg keuzes moeten worden gemaakt.',
+  'dynamic-context':  'Iedereen heeft het wel eens meegemaakt: een chatbot die enthousiast antwoordt over een abonnement dat je nooit hebt gehad, of een functie die al twee jaar geleden is afgeschaft. Het model praat dan vanuit zijn algemene trainingskennis, niet vanuit jouw situatie.\n\nDynamic Context is de actuele, taak-specifieke informatie die een AI-systeem tijdens gebruik ophaalt uit databases, documenten of andere bronnen (typisch via <a href="/begrippen#rag">RAG</a> of een query-tool), en die direct wordt gebruikt om een passend antwoord te geven.\n\nWanneer Dynamic Context op orde is, baseert het model zijn antwoorden op de informatie die voor jouw klant of jouw situatie relevant is, op het moment dat hij gevraagd wordt. Organisaties die hier scherp op sturen herkennen zich aan AI die actuele beslissingen ondersteunt in plaats van plausibele aannames doet.',
+  'prompt-design':    'Iedereen die ooit met ChatGPT heeft gewerkt weet het: dezelfde vraag op vrijdagmiddag levert een ander antwoord dan op maandagochtend, en wat collega A invoert geeft een andere uitkomst dan wat collega B vraagt.\n\nEen <a href="/begrippen#prompt">prompt</a> is een instructie aan een AI-model: wat je wilt, in welke context, en aan welke criteria het antwoord moet voldoen. Prompt Design is de systematische praktijk van die instructies ontwerpen, testen en verfijnen voor consistente, betrouwbare output.\n\nWanneer Prompt Design serieus wordt opgepakt, produceert je AI herhaalbare resultaten waar je op kunt bouwen. Organisaties die hier scherp op sturen behandelen een productie-prompt als wat het is: geen losse zin in de code, maar een document met versies, eigenaarschap en review-trails.',
+  'tool-integration': 'Een AI die alleen kan praten is een interessante kennismaking. Een AI die ook werk uit handen neemt — een afspraak inplant, een dossier ophaalt, een betaling initieert — verandert hoe een organisatie werkt.\n\nTool Integration is de uitvoerende laag van een AI-oplossing: hoe het <a href="/begrippen#model">model</a> verbinding krijgt met databases, API\'s, betaalsystemen, planningssoftware en andere externe diensten. De toollaag bepaalt wat de AI daadwerkelijk in de wereld kan dóen, niet alleen wat het kan zeggen.\n\nWanneer Tool Integration zorgvuldig is ontworpen, opereert je AI binnen heldere grenzen: welke acties zijn toegestaan, met welke rechten, en met menselijk toezicht waar dat moet. Organisaties die hier scherp op sturen voorkomen pijnlijke verrassingen: dubbele betalingen, datalekken of een <a href="/begrippen#agent">agent</a> die in jouw naam iets doet wat niemand wil verdedigen.',
+  'model-engines':    'De meeste AI-projecten beginnen met de vraag "welk model gebruiken we?", en stoppen daar te snel mee. Een chatbot, een classifier voor binnenkomende e-mails en een agent die contracten beoordeelt vragen elk om een ander type model, niet om hetzelfde gereedschap dat "AI" doet.\n\nModel Engines zijn de denk- en rekenkernen van een AI-oplossing: het <a href="/begrippen#model">model</a> (bijvoorbeeld Claude Opus 4.7 of GPT-5.5) plus alles eromheen om het in productie te kunnen draaien, zoals API-aanroepen, runtime-infrastructuur, schaalbaarheid, monitoring en kostenbewaking. Het gaat niet alleen om grote taalmodellen; ook redeneer-modellen, multimodale modellen en klassieke machine-learning horen tot de keuze.\n\nWanneer je Model Engines bewust kiest per taak, krijg je AI die past bij wat je beoogt qua kwaliteit, kosten, snelheid en privacy. Organisaties die hier scherp op sturen voorkomen oplopende rekeningen en juridische verrassingen bij audits.',
+  'evaluation-loop':  'Veel AI-projecten lopen prachtig in de demo en strompelen vervolgens onmerkbaar achteruit in productie. De input verschuift, externe bronnen veranderen, modelversies krijgen subtiele updates, en niemand die het in de gaten houdt totdat een gebruiker zes maanden later met een vreemde uitkomst aanklopt.\n\nDe <a href="/begrippen#evaluation-loop">evaluation loop</a> is de gesloten, terugkerende cyclus waarin AI-output wordt beoordeeld aan vooraf gedefinieerde criteria, bevindingen worden geanalyseerd, en concrete verbeteracties worden doorgevoerd in prompts, modellen, data of processen. Het loop-kenmerk is bepalend: een eenmalige test of een dashboard zonder vervolgactie is geen loop.\n\nWanneer de Evaluation Loop daadwerkelijk sluit, krijg je een systeem dat aantoonbaar beter wordt over tijd in plaats van langzaam te degraderen. Organisaties die hier scherp op sturen onderscheiden zich aan iets simpels: ze kunnen vertellen welke verbetering de afgelopen maand is doorgevoerd op basis van welke meting.',
+};
+
+function pairKey(a: string, b: string) { return [a, b].sort().join('--'); }
+
+const RELATIONS: Record<string, string> = {
+  [pairKey('knowledge','client-blueprint')]: 'Knowledge bepaalt of je de juiste vraag stelt. Stel je maakt een Blueprint voor "AI in de klantenservice": een team zonder de senior agents in de kamer kiest waarschijnlijk de verkeerde processtap om te automatiseren (bijvoorbeeld het routeren van mails), terwijl de echte winst zit in vroegtijdig herkennen van klantsignalen die op vertrek wijzen.\n\nDe Blueprint vertaalt die kennis vervolgens naar concrete keuzes: welk proces wordt aangepakt, welk model wordt ingezet, hoe meet je of het werkt, en hoe kan een mens ingrijpen als het misgaat. Wanneer Knowledge en Blueprint samen op orde zijn, herken je het resultaat aan iets simpels: de mensen met de meeste vakkennis vinden de uitkomst plausibel én bruikbaar.',
+  [pairKey('knowledge','dynamic-context')]:  'Knowledge bepaalt wat een goede bron is: welk handboek nog actueel is, welke notitie van een collega gezaghebbend is, welke informatie privacy-gevoelig is. Dynamic Context haalt vervolgens precies die bronnen op tijdens een gesprek of taak en levert ze aan het model.\n\nWanneer Knowledge en Dynamic Context samen op orde zijn, baseert je AI haar antwoorden op de juiste informatie van het juiste moment, zonder dat een gebruiker dat moet bewaken. Een team kan dan vertrouwen dat het systeem niet stilletjes terugvalt op een verouderd document of een bron die nooit bedoeld was om te delen.',
+  [pairKey('knowledge','prompt-design')]:    'Knowledge levert de vakkennis: welke nuances ertoe doen, welke valkuilen vermeden moeten worden, welke uitzonderingen er bestaan op de algemene regel. Een <a href="/begrippen#prompt">prompt</a> geschreven zonder die kennis klinkt mogelijk slim, maar mist precies die details die in de praktijk het verschil maken.\n\nPrompt Design vertaalt die kennis in een instructie die het model elke keer consistent volgt. Wanneer Knowledge en Prompt Design samen op orde zijn, codeer je expertise in een tekst die opnieuw bruikbaar is, herzien kan worden en niet verloren gaat als de senior medewerker met pensioen gaat.',
+  [pairKey('knowledge','tool-integration')]: 'Knowledge bepaalt welke tools überhaupt veilig zijn om aan een <a href="/begrippen#agent">agent</a> te geven, met welke autorisatiegrenzen, en bij welke acties een mens moet meekijken. Een team dat dat niet doordenkt, geeft een agent al snel rechten waar niemand achter kan staan zodra er iets misgaat.\n\nTool Integration codeert die afspraken in technische rechten, scope-beperkingen en goedkeuringsstappen. Wanneer Knowledge en Tool Integration samen op orde zijn, herken je het aan een AI die binnen de grenzen blijft die jij zou stellen, en die ingrijpt of escaleert wanneer iets buiten die grenzen valt.',
+  [pairKey('knowledge','model-engines')]:    'Knowledge stelt de juiste vraag voor de juiste taak: heeft deze toepassing creativiteit nodig, redeneerkracht, of juist deterministische precisie? Een classifier die elke binnenkomende e-mail moet sorteren vraagt om iets anders dan een redeneer-systeem dat complexe contracten beoordeelt.\n\nModel Engines biedt de keuze: taalmodellen, redeneer-modellen, multimodale modellen, classifiers of klassieke regelsystemen. Wanneer Knowledge en Model Engines samen worden ingezet, krijg je een AI-oplossing waarin het gereedschap past bij de vakvraag, in plaats van een groot taalmodel dat alles probeert maar niets uitblinkt.',
+  [pairKey('knowledge','evaluation-loop')]:  'Knowledge levert de meetlat: wat is een goed antwoord, wat is fout, en waarom. Zonder die expliciete maatstaf meet je hooguit oppervlakkige zaken zoals lengte of formaat, niet of de inhoud klopt voor de mensen die er dagelijks mee werken.\n\nDe Evaluation Loop toetst de output systematisch tegen die meetlat en koppelt bevindingen terug naar concrete verbeteringen in prompts, modellen of bronnen. Wanneer Knowledge en Evaluation Loop samen op orde zijn, krijg je een systeem dat aantoonbaar leert van de eigen fouten, en een team dat aan elke directie kan laten zien op basis waarvan het is verbeterd.',
+  [pairKey('client-blueprint','dynamic-context')]: 'De Blueprint bepaalt welke kennisbronnen bij welke processtap horen: welk type contract, welke productcatalogus, welke procedures. Zonder die afbakening groeit een kennisbank al snel tot een ongeordende stapel documenten waar niemand meer weet wat erin hoort en wat er ontbreekt.\n\nDynamic Context realiseert die afspraken per vraag, met afwegingen over actualiteit, autorisatie en privacy. Wanneer Blueprint en Dynamic Context samen op orde zijn, weet je systeem niet alleen welke documenten bestaan, maar ook wanneer welk document erbij hoort en wanneer een gebruiker het niet mag zien.',
+  [pairKey('client-blueprint','prompt-design')]:   'De Blueprint stelt de eisen aan de output: welke toon past bij deze klant, welke structuur verwacht het ontvangende systeem, welke formuleringen zijn juridisch onacceptabel. Zonder die uitgangspunten schrijft elk teamlid prompts naar eigen smaak en krijgt je systeem net zo veel persoonlijkheden als er ontwikkelaars zijn.\n\nPrompt Design vertaalt die eisen in concrete instructies, voorbeelden en kwaliteitscriteria die het model elke keer volgt. Wanneer Blueprint en Prompt Design samen op orde zijn, krijgt elke gebruiker dezelfde toon, dezelfde structuur en dezelfde grenzen, ook wanneer het model er drie maanden later weer bij wordt gehaald.',
+  [pairKey('client-blueprint','tool-integration')]:'De Blueprint legt vast welke acties AI mag uitvoeren namens een gebruiker: alleen lezen, ook wijzigen, of zelfs betalen. Zonder die expliciete afbakening verzamelt zich al snel een willekeurige verzameling integraties die niemand achter de schermen meer kan rechtvaardigen.\n\nTool Integration codeert die afspraken in technische rechten, koppelingen en goedkeuringsstappen. Wanneer Blueprint en Tool Integration samen op orde zijn, opereert je AI binnen grenzen die door mensen zijn bepaald, niet door wat er toevallig technisch mogelijk is, en weet iedereen waar de noodknop zit als er onverwachts iets misgaat.',
+  [pairKey('client-blueprint','model-engines')]:   'De Blueprint definieert de taak: een chatbot voor consumenten, een classifier voor binnenkomende e-mails, een redeneer-systeem voor complexe dossiers. Elk type taak vraagt om een ander type model; wat goed werkt voor het ene scenario faalt of wordt onbetaalbaar in het andere.\n\nModel Engines kiest het juiste gereedschap voor die specifieke taak, met een bewuste afweging tussen kwaliteit, kosten, snelheid en privacy. Wanneer Blueprint en Model Engines samen worden ontworpen, voorkom je het patroon van "we gebruiken het nieuwste model van de markt" en stuur je op een combinatie die past bij wat de klant écht nodig heeft.',
+  [pairKey('client-blueprint','evaluation-loop')]: 'De Blueprint bepaalt wat succes is voor de klant: welke maat telt, welke drempel acceptabel is, welk gedrag absoluut niet mag. Zonder die uitgangspunten meet je in productie hooguit technische getallen, terwijl de directie wil weten of het de klantwaarde levert die in de business case staat.\n\nDe Evaluation Loop maakt die definitie meetbaar in productie en koppelt bevindingen terug naar de Blueprint zelf, zodat het ontwerp meegroeit met wat in de praktijk werkt. Wanneer Blueprint en Evaluation Loop samen op orde zijn, kan een team aan elke stakeholder laten zien dat het succes uit de oorspronkelijke afspraak ook daadwerkelijk wordt gehaald.',
+  [pairKey('dynamic-context','prompt-design')]:    'Dynamic Context vult de prompt met actuele, taakspecifieke informatie. Geef een model 50 pagina\'s contract met de vraag "wat zijn de risico\'s?" en het mist de meeste; geef het 5 pagina\'s met de juiste structuur en het wijst ze precies aan.\n\nPrompt Design bepaalt vervolgens hoe het model die context interpreteert: welke delen leidend zijn, welke ondersteunend, welke genegeerd mogen worden. Wanneer Dynamic Context en Prompt Design op elkaar zijn afgestemd, krijgt het model precies die informatie die het nodig heeft, in een vorm die het ook echt kan benutten.',
+  [pairKey('dynamic-context','tool-integration')]: '<a href="/begrippen#rag">RAG</a>-tools en <a href="/begrippen#mcp">MCP</a>-koppelingen leven in beide werelden. Dynamic Context bepaalt wélke documenten of records moeten worden opgehaald, met welke kwaliteitseisen. Tool Integration bepaalt hóe dat ophalen technisch gebeurt, met welke rechten en welke foutafhandeling.\n\nDe meeste productie-incidenten ontstaan precies waar deze twee elkaar raken: het model krijgt verkeerde data omdat de tool faalde of de query slecht was geformuleerd. Wanneer Dynamic Context en Tool Integration als één geheel worden ontworpen, weet je systeem niet alleen welke informatie het nodig heeft, maar ook hoe het die met behoud van rechten en kwaliteit op tafel krijgt.',
+  [pairKey('dynamic-context','model-engines')]:    'Het <a href="/begrippen#context-window">context-window</a> van het gekozen model bepaalt hoeveel opgehaalde informatie het zinvol kan verwerken. Daaronder werkt <a href="/begrippen#context-rot">context rot</a>: bij groeiende context daalt de kwaliteit, ook al klinkt "meer ophalen" op het eerste gezicht aantrekkelijk.\n\nDynamic Context moet daarom selectief ophalen, niet maximaal, en Model Engines moet die werkelijkheid kennen in zijn keuzes. Wanneer beide op elkaar zijn afgestemd, betaal je niet voor onnodig grote prompts en krijgt het model precies die context die het kan benutten zonder eronder te bezwijken.',
+  [pairKey('dynamic-context','evaluation-loop')]:  'Dynamic Context wordt geëvalueerd op grounding en <a href="/begrippen#faithfulness">faithfulness</a>: leveren de opgehaalde bronnen werkelijk het correcte antwoord, en blijft het model bij die bronnen of haalt het er ongemerkt trainingskennis bij? Zonder systematische meting merk je verouderde of foute bronnen pas wanneer een gebruiker klaagt.\n\nDe Evaluation Loop maakt dat zichtbaar via vaste testgevallen die de retrieval-kwaliteit periodiek toetsen. Wanneer Dynamic Context en Evaluation Loop samen op orde zijn, weet een team hoe vaak het systeem zijn antwoord daadwerkelijk uit de aangeleverde bronnen haalt, en grijpt het in voordat een klant of toezichthouder dat doet.',
+  [pairKey('prompt-design','tool-integration')]:   'Tool-beschrijvingen zijn de tweede helft van de prompt-laag. Het model kiest een tool op basis van de naam en beschrijving die je hem aanlevert, en slecht geformuleerde tool-beschrijvingen zijn de grootste enkelvoudige bron van agent-fouten.\n\nPrompt Design en Tool Integration horen daarom samen ontworpen te worden, niet door verschillende mensen op verschillende momenten. Wanneer beide in samenhang worden gemaakt, kiest het model de juiste tool met de juiste parameters voor de taak die hij krijgt, in plaats van de verkeerde tool aan te roepen omdat de beschrijving onduidelijk was.',
+  [pairKey('prompt-design','model-engines')]:      'Een prompt die werkt voor Claude Opus werkt niet automatisch voor Gemini Flash. Modellen verschillen in hoe ze instructies interpreteren, hoe diep ze redeneren en hoe stabiel hun output-formaat is, en die verschillen blijken vaak pas in productie.\n\nPrompt Design moet daarom worden afgestemd op het gekozen model, en bij elke modelwissel opnieuw worden gevalideerd. Wanneer Prompt Design en Model Engines bewust op elkaar zijn afgestemd, krijg je consistente output die niet verrast wanneer een leverancier zijn model upgrade of wanneer je naar een goedkoper alternatief overstapt.',
+  [pairKey('prompt-design','evaluation-loop')]:    'Elke prompt-wijziging is een potentiële regressie: een verbetering op één scenario kan kwaliteit kosten op een ander. Zonder systematische toets is prompt-engineering trial-and-error in productie, met gebruikers als onbedoelde testers.\n\nDe Evaluation Loop draait een vaste set testgevallen tegen elke nieuwe prompt-versie en signaleert regressies direct, voordat ze de gebruiker raken. Wanneer Prompt Design en Evaluation Loop in elkaar haken, krijg je een ontwikkelproces waarin elke prompt-wijziging een onderbouwde keuze is, en niet langer een gok waarvan je hoopt dat-ie goed valt.',
+  [pairKey('tool-integration','model-engines')]:   'Modellen verschillen meetbaar in hoe goed ze de juiste tool kiezen en hoe stabiel hun output is. Voor een chatbot die afspraken inplant kies je een snel goedkoop model; voor een agent die contracten beoordeelt en tools voor risico-checks aanroept een sterker model.\n\nMulti-vendor architecturen wegen dat mee in routing-beslissingen. Wanneer Tool Integration en Model Engines bewust op elkaar zijn afgestemd, betaal je geen premium voor taken die ook met een lichter model kunnen, en zet je een sterker model alleen in waar het écht het verschil maakt.',
+  [pairKey('tool-integration','evaluation-loop')]: 'Tool-call-correctness is een eigen eval-dimensie: kiest de <a href="/begrippen#agent">agent</a> de juiste tool, met de juiste parameters, in de juiste volgorde? Onderzoek in 2026 documenteert tot 36% faalpercentage bij complexe conversaties met frontier-modellen, vaak zonder dat het eindantwoord daar iets van laat zien.\n\nDe Evaluation Loop moet daarom expliciet op tool-routing toetsen, niet alleen op de tekst die de gebruiker ziet. Wanneer Tool Integration en Evaluation Loop op elkaar zijn afgestemd, weet een team welk percentage van de agent-acties klopt, en wordt een dubbele factuur of een gemiste afspraak vroegtijdig gesignaleerd in plaats van pas door de klant gemeld.',
+  [pairKey('model-engines','evaluation-loop')]:    'Modelvergelijking moet gebeuren op je daadwerkelijke use-case, niet op publieke benchmarks die snel verouderen of niet aansluiten op jouw taak. Een model dat hoog scoort op een algemene Wikipedia-test kan in jouw specifieke domein onbetrouwbaar zijn, en dat ontdek je alleen door zelf te testen.\n\nDe Evaluation Loop laat zien welk model voor jouw taak het beste presteert qua kwaliteit, kosten en latentie. Wanneer Model Engines en Evaluation Loop samen worden ingezet, wordt modelkeuze een onderbouwde beslissing per use-case in plaats van een marketing-gedreven aanname die zes maanden later pijnlijk wordt herzien.',
+};
+
+const dataPayload = {
+  overviews: OVERVIEWS,
+  relations: RELATIONS,
+  nodes: NODES.map(({ slug, code, name }) => ({ slug, code, name })),
+};
+---
+
+<div class="bbre">
+  <div class="bbre-graph">
+    <svg viewBox="35 110 410 325" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="bbre-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      {EDGES.map(([a, b]) => {
+        const na = NODE_BY_SLUG[a];
+        const nb = NODE_BY_SLUG[b];
+        return (
+          <line
+            class="bbre-edge"
+            data-edge={pairKey(a, b)}
+            x1={na.cx} y1={na.cy} x2={nb.cx} y2={nb.cy}
+            stroke="#44C2BA"
+            stroke-width="1.4"
+            stroke-opacity="0.3"
+          />
+        );
+      })}
+
+      {/* BB_01 Knowledge — center (image icon) */}
+      <g class="bbre-node" data-slug="knowledge">
+        <circle class="bbre-node-circle" cx="240" cy="270" r="20" fill="#0C1E1D" stroke="var(--bb-knowledge)" stroke-width="1.8"/>
+        <image href="/icons/bb-knowledge.png" x="228" y="258" width="24" height="24" style="mix-blend-mode:screen;pointer-events:none"/>
+        <text x="240" y="302" text-anchor="middle" font-family="Space Mono, monospace" font-size="8.5" fill="var(--bb-knowledge)" opacity="0.8" letter-spacing="0.06em" style="pointer-events:none">BB_01</text>
+        <text x="240" y="313" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="9" fill="var(--bb-knowledge)" opacity="0.55" style="pointer-events:none">Knowledge</text>
+      </g>
+
+      {/* BB_02 Client Blueprint — top (speech bubble + pen) */}
+      <g class="bbre-node" data-slug="client-blueprint">
+        <circle class="bbre-node-circle" cx="240" cy="152" r="20" fill="#0C1E1D" stroke="var(--bb-client-blueprint)" stroke-width="1.6"/>
+        <path d="M230 144h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4 3v-3h-4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z" stroke="var(--bb-client-blueprint)" stroke-width="1.3" stroke-linejoin="round" fill="none" style="pointer-events:none"/>
+        <path d="M247 151l2.5-2.5a.8.8 0 0 1 1.2 0 .8.8 0 0 1 0 1.2l-2.5 2.5-1.8.6.6-1.8z" stroke="var(--bb-client-blueprint)" stroke-width="1.1" stroke-linejoin="round" fill="none" style="pointer-events:none"/>
+        <text x="240" y="128" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-client-blueprint)" opacity="0.7" letter-spacing="0.05em" style="pointer-events:none">BB_02</text>
+        <text x="240" y="118" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-client-blueprint)" opacity="0.5" style="pointer-events:none">Client Blueprint</text>
+      </g>
+
+      {/* BB_03 Dynamic Context — top-right (magnifying glass) */}
+      <g class="bbre-node" data-slug="dynamic-context">
+        <circle class="bbre-node-circle" cx="342" cy="211" r="20" fill="#0C1E1D" stroke="var(--bb-dynamic-context)" stroke-width="1.6"/>
+        <circle cx="338" cy="207" r="7.5" stroke="var(--bb-dynamic-context)" stroke-width="1.5" fill="none" style="pointer-events:none"/>
+        <line x1="343.3" y1="212.3" x2="349" y2="218" stroke="var(--bb-dynamic-context)" stroke-width="1.8" stroke-linecap="round" style="pointer-events:none"/>
+        <path d="M337.5 203.5l-1.5 3.5h3l-1.5 3.5" stroke="var(--bb-dynamic-context)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none" style="pointer-events:none"/>
+        <text x="368" y="205" text-anchor="start" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-dynamic-context)" opacity="0.7" letter-spacing="0.05em" style="pointer-events:none">BB_03</text>
+        <text x="368" y="215" text-anchor="start" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-dynamic-context)" opacity="0.5" style="pointer-events:none">Dynamic Context</text>
+      </g>
+
+      {/* BB_04 Prompt Design — top-left (form/checkboxes) */}
+      <g class="bbre-node" data-slug="prompt-design">
+        <circle class="bbre-node-circle" cx="138" cy="211" r="20" fill="#0C1E1D" stroke="var(--bb-prompt-design)" stroke-width="1.6"/>
+        <rect x="128" y="202" width="20" height="18" rx="1.5" stroke="var(--bb-prompt-design)" stroke-width="1.3" fill="none" style="pointer-events:none"/>
+        <line x1="128" y1="207.5" x2="148" y2="207.5" stroke="var(--bb-prompt-design)" stroke-width="1.2" style="pointer-events:none"/>
+        <line x1="138" y1="207.5" x2="138" y2="220" stroke="var(--bb-prompt-design)" stroke-width="1.1" style="pointer-events:none"/>
+        <line x1="131" y1="211" x2="136" y2="211" stroke="var(--bb-prompt-design)" stroke-width="0.9" stroke-linecap="round" style="pointer-events:none"/>
+        <line x1="131" y1="214" x2="136" y2="214" stroke="var(--bb-prompt-design)" stroke-width="0.9" stroke-linecap="round" style="pointer-events:none"/>
+        <line x1="140" y1="211" x2="146" y2="211" stroke="var(--bb-prompt-design)" stroke-width="0.9" stroke-linecap="round" style="pointer-events:none"/>
+        <line x1="140" y1="214" x2="146" y2="214" stroke="var(--bb-prompt-design)" stroke-width="0.9" stroke-linecap="round" style="pointer-events:none"/>
+        <text x="112" y="205" text-anchor="end" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-prompt-design)" opacity="0.7" letter-spacing="0.05em" style="pointer-events:none">BB_04</text>
+        <text x="112" y="215" text-anchor="end" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-prompt-design)" opacity="0.5" style="pointer-events:none">Prompt Design</text>
+      </g>
+
+      {/* BB_05 Tool Integration — bottom-left (image icon) */}
+      <g class="bbre-node" data-slug="tool-integration">
+        <circle class="bbre-node-circle" cx="138" cy="329" r="20" fill="#0C1E1D" stroke="var(--bb-tool-integration)" stroke-width="1.6"/>
+        <image href="/icons/bb-tool-integration.png" x="126" y="317" width="24" height="24" style="mix-blend-mode:screen;pointer-events:none"/>
+        <text x="112" y="323" text-anchor="end" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-tool-integration)" opacity="0.7" letter-spacing="0.05em" style="pointer-events:none">BB_05</text>
+        <text x="112" y="333" text-anchor="end" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-tool-integration)" opacity="0.5" style="pointer-events:none">Tool Integration</text>
+      </g>
+
+      {/* BB_06 Model Engines — bottom (image icon) */}
+      <g class="bbre-node" data-slug="model-engines">
+        <circle class="bbre-node-circle" cx="240" cy="388" r="20" fill="#0C1E1D" stroke="var(--bb-model-engines)" stroke-width="1.6"/>
+        <image href="/icons/bb-model-engines.png" x="228" y="376" width="24" height="24" style="mix-blend-mode:screen;pointer-events:none"/>
+        <text x="240" y="416" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-model-engines)" opacity="0.7" letter-spacing="0.05em" style="pointer-events:none">BB_06</text>
+        <text x="240" y="426" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-model-engines)" opacity="0.5" style="pointer-events:none">Model Engines</text>
+      </g>
+
+      {/* BB_07 Evaluation Loop — bottom-right (target/dial) */}
+      <g class="bbre-node" data-slug="evaluation-loop">
+        <circle class="bbre-node-circle" cx="342" cy="329" r="20" fill="#0C1E1D" stroke="var(--bb-evaluation-loop)" stroke-width="1.8"/>
+        <circle cx="340" cy="329" r="8" stroke="var(--bb-evaluation-loop)" stroke-width="1.4" fill="none" style="pointer-events:none"/>
+        <circle cx="340" cy="329" r="4.5" stroke="var(--bb-evaluation-loop)" stroke-width="1.3" fill="none" style="pointer-events:none"/>
+        <circle cx="340" cy="329" r="1.5" fill="var(--bb-evaluation-loop)" style="pointer-events:none"/>
+        <line x1="346" y1="323" x2="349" y2="320" stroke="var(--bb-evaluation-loop)" stroke-width="1.3" stroke-linecap="round" style="pointer-events:none"/>
+        <line x1="346" y1="320" x2="350" y2="320" stroke="var(--bb-evaluation-loop)" stroke-width="1.3" stroke-linecap="round" style="pointer-events:none"/>
+        <line x1="350" y1="320" x2="350" y2="324" stroke="var(--bb-evaluation-loop)" stroke-width="1.3" stroke-linecap="round" style="pointer-events:none"/>
+        <text x="368" y="323" text-anchor="start" font-family="Space Mono, monospace" font-size="8" fill="var(--bb-evaluation-loop)" opacity="0.8" letter-spacing="0.05em" style="pointer-events:none">BB_07</text>
+        <text x="368" y="333" text-anchor="start" font-family="Space Grotesk, sans-serif" font-size="8.5" fill="var(--bb-evaluation-loop)" opacity="0.55" style="pointer-events:none">Evaluation Loop</text>
+      </g>
+    </svg>
+  </div>
+
+  <aside class="bbre-panel" data-state="empty">
+    <div class="bbre-panel-empty">
+      <div class="bbre-eyebrow">Verken het framework</div>
+      <h3 class="bbre-title">Klik op een bouwsteen om te beginnen.</h3>
+      <p class="bbre-intro">
+        Selecteer een bouwsteen om kort te lezen wat hij doet. Selecteer daarna een tweede om hun
+        onderlinge relatie te zien.
+      </p>
+    </div>
+
+    <div class="bbre-panel-one" hidden>
+      <div class="bbre-eyebrow" data-role="code"></div>
+      <h3 class="bbre-title" data-role="name"></h3>
+      <div class="bbre-body" data-role="overview"></div>
+      <p class="bbre-prompt">Klik op een tweede bouwsteen voor hun relatie.</p>
+      <div class="bbre-actions">
+        <a class="bbre-btn-primary" data-role="detail-link">Lees diepgaand →</a>
+        <button class="bbre-btn-ghost" data-role="reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="bbre-panel-two" hidden>
+      <div class="bbre-eyebrow" data-role="codes"></div>
+      <h3 class="bbre-title" data-role="names"></h3>
+      <div class="bbre-body" data-role="relation"></div>
+      <div class="bbre-actions">
+        <a class="bbre-btn-ghost-sm" data-role="link-1"></a>
+        <a class="bbre-btn-ghost-sm" data-role="link-2"></a>
+        <button class="bbre-btn-ghost" data-role="reset">Andere combinatie</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script is:inline type="application/json" id="bbre-data" set:html={JSON.stringify(dataPayload)} />
+
+<script>
+  (() => {
+    const root = document.querySelector('.bbre') as HTMLElement | null;
+    const dataScript = document.getElementById('bbre-data');
+    if (!root || !dataScript) return;
+
+    const data = JSON.parse(dataScript.textContent || '{}');
+    const nodeBySlug: Record<string, { slug: string; code: string; name: string }> = {};
+    for (const n of data.nodes) nodeBySlug[n.slug] = n;
+
+    const panel = root.querySelector('.bbre-panel') as HTMLElement;
+    const panelEmpty = root.querySelector('.bbre-panel-empty') as HTMLElement;
+    const panelOne = root.querySelector('.bbre-panel-one') as HTMLElement;
+    const panelTwo = root.querySelector('.bbre-panel-two') as HTMLElement;
+    const nodes = Array.from(root.querySelectorAll('.bbre-node')) as SVGGElement[];
+    const edges = Array.from(root.querySelectorAll('.bbre-edge')) as SVGLineElement[];
+
+    let first: string | null = null;
+    let second: string | null = null;
+
+    function pairKey(a: string, b: string) {
+      return [a, b].sort().join('--');
+    }
+
+    function bbColor(slug: string) {
+      return `var(--bb-${slug})`;
+    }
+
+    function renderParagraphs(container: HTMLElement, text: string) {
+      container.innerHTML = '';
+      text.split(/\n\n+/).forEach((para) => {
+        const trimmed = para.trim();
+        if (!trimmed) return;
+        const p = document.createElement('p');
+        // Tekst mag inline-HTML bevatten voor glossary-links (eigen content, geen user input)
+        p.innerHTML = trimmed;
+        container.appendChild(p);
+      });
+    }
+
+    function setPanel(state: 'empty' | 'one' | 'two') {
+      panel.dataset.state = state;
+      panelEmpty.hidden = state !== 'empty';
+      panelOne.hidden = state !== 'one';
+      panelTwo.hidden = state !== 'two';
+    }
+
+    function render() {
+      // Update nodes (radius blijft constant, alleen stroke-width en glow veranderen)
+      const SPECIAL = new Set(['knowledge', 'evaluation-loop']);
+      nodes.forEach((g) => {
+        const slug = g.dataset.slug!;
+        const isSelected = slug === first || slug === second;
+        const isDimmed = first !== null && !isSelected;
+        g.style.opacity = isDimmed ? '0.35' : '1';
+        const circle = g.querySelector('.bbre-node-circle') as SVGCircleElement;
+        const baseStroke = SPECIAL.has(slug) ? '1.8' : '1.6';
+        circle.setAttribute('stroke-width', isSelected ? '2.6' : baseStroke);
+        if (isSelected) circle.setAttribute('filter', 'url(#bbre-glow)');
+        else circle.removeAttribute('filter');
+      });
+
+      // Update edges
+      const activeEdgeKey = first && second ? pairKey(first, second) : null;
+      edges.forEach((line) => {
+        const k = line.dataset.edge!;
+        const isActive = k === activeEdgeKey;
+        const isDim = first !== null && !isActive;
+        line.setAttribute('stroke-opacity', isActive ? '0.9' : isDim ? '0.08' : '0.3');
+        line.setAttribute('stroke-width', isActive ? '2.4' : '1.4');
+        line.setAttribute('stroke', isActive && first ? bbColor(first) : '#44C2BA');
+      });
+
+      // Synthetic edge for non-adjacent pair (drawn on top)
+      let synthLine = root!.querySelector('.bbre-edge-synth') as SVGLineElement | null;
+      if (first && second) {
+        const directExists = edges.some((e) => e.dataset.edge === pairKey(first!, second!));
+        if (!directExists) {
+          if (!synthLine) {
+            const svgNS = 'http://www.w3.org/2000/svg';
+            synthLine = document.createElementNS(svgNS, 'line') as SVGLineElement;
+            synthLine.setAttribute('class', 'bbre-edge-synth');
+            const svg = root!.querySelector('svg')!;
+            svg.appendChild(synthLine);
+          }
+          const aCircle = root!.querySelector(`.bbre-node[data-slug="${first}"] .bbre-node-circle`) as SVGCircleElement;
+          const bCircle = root!.querySelector(`.bbre-node[data-slug="${second}"] .bbre-node-circle`) as SVGCircleElement;
+          synthLine.setAttribute('x1', aCircle.getAttribute('cx')!);
+          synthLine.setAttribute('y1', aCircle.getAttribute('cy')!);
+          synthLine.setAttribute('x2', bCircle.getAttribute('cx')!);
+          synthLine.setAttribute('y2', bCircle.getAttribute('cy')!);
+          synthLine.setAttribute('stroke', bbColor(first));
+          synthLine.setAttribute('stroke-width', '2.4');
+          synthLine.setAttribute('stroke-opacity', '0.85');
+          synthLine.setAttribute('stroke-dasharray', '4 4');
+        } else if (synthLine) {
+          synthLine.remove();
+        }
+      } else if (synthLine) {
+        synthLine.remove();
+      }
+
+      // Update side panel
+      if (first === null) {
+        setPanel('empty');
+      } else if (second === null) {
+        setPanel('one');
+        const node = nodeBySlug[first];
+        const eyebrow = panelOne.querySelector('[data-role="code"]') as HTMLElement;
+        const name = panelOne.querySelector('[data-role="name"]') as HTMLElement;
+        const body = panelOne.querySelector('[data-role="overview"]') as HTMLElement;
+        const link = panelOne.querySelector('[data-role="detail-link"]') as HTMLAnchorElement;
+        eyebrow.textContent = node.code;
+        eyebrow.style.color = bbColor(node.slug);
+        name.textContent = node.name;
+        name.style.color = bbColor(node.slug);
+        renderParagraphs(body, data.overviews[first] || '');
+        link.href = `/framework/${first}`;
+      } else {
+        setPanel('two');
+        const a = nodeBySlug[first];
+        const b = nodeBySlug[second];
+        const codes = panelTwo.querySelector('[data-role="codes"]') as HTMLElement;
+        const names = panelTwo.querySelector('[data-role="names"]') as HTMLElement;
+        const body = panelTwo.querySelector('[data-role="relation"]') as HTMLElement;
+        const link1 = panelTwo.querySelector('[data-role="link-1"]') as HTMLAnchorElement;
+        const link2 = panelTwo.querySelector('[data-role="link-2"]') as HTMLAnchorElement;
+        codes.innerHTML = `<span style="color:${bbColor(a.slug)}">${a.code}</span> <span style="color:var(--text-muted)">×</span> <span style="color:${bbColor(b.slug)}">${b.code}</span>`;
+        names.innerHTML = `<span style="color:${bbColor(a.slug)}">${a.name}</span> <span style="color:var(--text-muted)">↔</span> <span style="color:${bbColor(b.slug)}">${b.name}</span>`;
+        const key = pairKey(first, second);
+        renderParagraphs(body, data.relations[key] || '[Dummy] Geen relatie-tekst gevonden.');
+        link1.href = `/framework/${first}`;
+        link1.textContent = `${a.name} →`;
+        link2.href = `/framework/${second}`;
+        link2.textContent = `${b.name} →`;
+      }
+    }
+
+    function reset() {
+      first = null;
+      second = null;
+      render();
+    }
+
+    function handleNodeClick(slug: string) {
+      if (first === null) {
+        first = slug;
+      } else if (slug === first) {
+        first = null;
+        second = null;
+      } else if (second === null) {
+        second = slug;
+      } else {
+        first = slug;
+        second = null;
+      }
+      render();
+    }
+
+    nodes.forEach((g) => {
+      g.style.cursor = 'pointer';
+      g.addEventListener('click', () => handleNodeClick(g.dataset.slug!));
+    });
+
+    panel.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.dataset.role === 'reset') reset();
+    });
+
+    render();
+  })();
+</script>
