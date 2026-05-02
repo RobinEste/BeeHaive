@@ -51,6 +51,7 @@ export const bbGuardrailLinks: Record<string, GuardrailLink[]> = {
     link('GR_07', 'Een production prompt is geen losse tekststring in de code; het is een document waarvoor iemand verantwoordelijk is. Versioning, review-trails en expliciet eigenaarschap zijn voorwaarden voor verantwoording.'),
   ],
   'tool-integration': [
+    link('GR_01', 'Onomkeerbare tool-acties vereisen kill-switch en human-in-the-loop — controle by design.'),
     link('GR_02', 'Externe koppelingen zijn kwetsbaar — robuuste error handling is cruciaal.'),
     link('GR_03', 'Data die via tools stroomt moet beschermd worden in transit en opslag.'),
     link('GR_07', 'Elke tool-actie moet traceerbaar zijn voor auditdoeleinden.'),

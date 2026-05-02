@@ -13,7 +13,7 @@ checklist:
   - "Is rolgebaseerde toegangscontrole (RBAC) per agent afgedwongen op de executielaag, niet via de instructies in de prompt?"
   - "Worden tool-resultaten gescand op verdachte instructies vóórdat ze de model-context binnenkomen?"
   - "Worden externe MCP-servers behandeld als toeleveringsketen-afhankelijkheden met dezelfde rigoureuze review als open-source software-pakketten?"
-  - "Bevat de audit-logging per tool-aanroep gebruiker, parameters, autorisatiebeslissing en resultaat, en wordt die minimaal zes maanden bewaard?"
+  - "Bevat de audit-logging per tool-aanroep gebruiker, parameters, autorisatiebeslissing en resultaat, en wordt die minimaal zes maanden bewaard (EU AI Act Art. 19)?"
   - "Zijn er expliciete reactietijd-budgetten per agent-niveau (P50/P95) als ontwerpdoel, en alarmen bij overschrijding?"
   - "Is er voor onomkeerbare acties een human-in-the-loop-stap én een kill-switch beschikbaar (EU AI Act Art. 14)?"
   - "Sluit de toolset aan op de waarde-stroom uit de Client Blueprint, en niet op een verzameling losse integratie-wensen?"
@@ -33,7 +33,7 @@ auditExample:
 evidence:
   - "Inventaris van alle tools met JSON-schema-versie, eigenaar, rechten-niveau en datum van laatste review"
   - "Werkende foutafhandeling per tool, met meetbare retry-rate, terugval-rate en circuit-breaker-status zichtbaar in een dashboard"
-  - "Audit-log van elke tool-aanroep met gebruiker, parameters, autorisatiebeslissing en uitkomst, minimaal zes maanden bewaard (EU AI Act Art. 12)"
+  - "Audit-log van elke tool-aanroep met gebruiker, parameters, autorisatiebeslissing en uitkomst, minimaal zes maanden bewaard (EU AI Act Art. 19)"
   - "Rolgebaseerde toegangscontrole (RBAC) afgedwongen op de executielaag, niet via instructies in de system prompt"
   - "Goedkeuringsproces voor het toevoegen van externe MCP-servers, vergelijkbaar met code-review voor open-source-afhankelijkheden"
   - "Reactietijd-budgetten per agent-niveau (P50/P95) gedefinieerd, met alarmen bij overschrijding"
@@ -322,7 +322,7 @@ De minst gebruikte toepassing van audit-logging is ook de waardevolste: een acti
 
 ### Nederlandse implementatie: meerdere toezichthouders, geen één-loket
 
-Nederland heeft per ontwerpwet (april 2026) gekozen voor decentraal toezicht. Bestaande sectorale toezichthouders krijgen elk handhavingsbevoegdheid binnen hun domein: de Autoriteit Persoonsgegevens, de Autoriteit Financiële Markten, de Autoriteit Consument en Markt en sectorale waakhonden voor zorg en onderwijs. Voor agent-systemen in de zorg, financiën of overheid betekent dit dat tool-integratie-keuzes ook moeten standhouden tegenover sectorale audits, niet alleen tegenover Europese.
+Nederland heeft per ontwerpwet (april 2026) gekozen voor decentraal toezicht. Bestaande sectorale toezichthouders krijgen elk handhavingsbevoegdheid binnen hun domein: de Autoriteit Persoonsgegevens, de Autoriteit Financiële Markten en de Autoriteit Consument en Markt. Voor de zorg liggen de Inspectie Gezondheidszorg en Jeugd (kwaliteit en veiligheid, inclusief AI als medisch hulpmiddel) en de Nederlandse Zorgautoriteit (markttoezicht en bekostiging) voor de hand; voor onderwijs de Inspectie van het Onderwijs. De definitieve aanwijzing per AI-toepassingsgebied ligt nog niet limitatief vast. Voor agent-systemen in de zorg, financiën of overheid betekent dit dat tool-integratie-keuzes ook moeten standhouden tegenover sectorale audits, niet alleen tegenover Europese.
 
 Dit raakt direct aan de **Accountability**-guardrail (GR_07: duidelijk wie verantwoordelijk is en hoe daarop wordt toegezien). Zonder volledige audit-trail per tool-aanroep is verantwoording afleggen niet mogelijk; de wettelijke eis is geen optionele kwaliteitsverhoging meer.
 

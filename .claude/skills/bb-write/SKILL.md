@@ -87,6 +87,7 @@ In de BB-pagina's komen claims voor over benchmarks, prijzen, releasedata, markt
 2. Per claim: noteer de bron of "te verifiëren". Voor "te verifiëren": delegeer naar een research-agent vóór commit, niet ná publicatie.
 3. Bij elke "enige/eerste/grootste"-claim hardop afvragen: ken ik de uitzonderingen? Heb ik daadwerkelijk uitgesloten dat er meer zijn?
 4. Voor numerieke claims (factor X, percentage Y) een sanity-check uitvoeren: kloppen de getallen met de modellen die elders op dezelfde pagina staan?
+5. **Wettelijk-artikel-precisie**: bij elke citatie van een EU AI Act-artikel (of andere wetgeving): verifieer dat het genoemde artikel daadwerkelijk de operationele eis bevat, niet alleen de capaciteit. Veelgemaakte fout: Art. 12 (record-keeping *capability* — wat gelogd moet kunnen worden) wordt geciteerd voor de 6-maanden retentieplicht, terwijl die staat in Art. 19 lid 1 (providers) en Art. 26 lid 6 (deployers). *Capability-artikelen* (wat moet het systeem kunnen) zijn niet hetzelfde als *operationele artikelen* (hoe lang bewaren, door wie, in welke vorm). Bij twijfel: lees de exacte artikeltekst op `artificialintelligenceact.eu` of `eur-lex.europa.eu`, niet alleen een secundaire toelichting. (Aanleiding: BB_05 Tool Integration citeerde Art. 12 voor de 6-maanden retentie in zowel checklist als evidence; correctie naar Art. 19.)
 
 ## Stap 2: Hard rules die altijd gelden
 
@@ -233,6 +234,18 @@ Bij elke harde claim afvragen: **wat is de tegenkant?** Wie is de andere partij 
 
 Bij elke "enige/eerste/grootste"-formulering: heb je de uitzonderingen daadwerkelijk uitgesloten? Bij `model-engines.mdx`: "enige open-weight challenger" miste Kimi K2.6, GLM-5.1 en MiniMax M2.7 uit Q1-2026.
 
+### Toezichthouders en regulators bij naam noemen
+
+Generieke labels als "sectorale waakhonden voor zorg en onderwijs" of "de Nederlandse toezichthouders" zijn voor de lezer onbruikbaar — ze willen weten *welke* instantie ze moeten gaan bedienen. Concretiseer altijd bij naam:
+
+- **Privacy/persoonsgegevens**: Autoriteit Persoonsgegevens (AP)
+- **Financiën**: Autoriteit Financiële Markten (AFM), De Nederlandsche Bank (DNB)
+- **Markttoezicht/consument**: Autoriteit Consument en Markt (ACM)
+- **Zorg**: Inspectie Gezondheidszorg en Jeugd (IGJ — kwaliteit en veiligheid, AI als medisch hulpmiddel), Nederlandse Zorgautoriteit (NZa — markttoezicht en bekostiging)
+- **Onderwijs**: Inspectie van het Onderwijs
+
+Voor de Nederlandse uitvoering van de EU AI Act (ontwerpwet april 2026) is per AI-toepassingsgebied nog niet limitatief vastgelegd welke toezichthouder is aangewezen. Vermeld die status expliciet ("liggen voor de hand", "vermoedelijk", "nog niet limitatief vastgelegd") in plaats van te suggereren dat de aanwijzing definitief is. Aanleiding: BB_05 Tool Integration noemde "sectorale waakhonden voor zorg en onderwijs" generiek; reviewer (Robin) wilde de concrete namen plus statusnuance.
+
 ### Business-termen NL
 
 - Verkoop niet Sales; Productmanagement niet Product; Klantenservice niet Customer Success; Inkoop niet Procurement; Juridisch niet Legal
@@ -282,6 +295,7 @@ Na schrijven en vóór doorgeven aan de gebruiker:
 13. **Code-style-jargon-scan**: `grep -nE "\\\`[a-z_]+\\\`" <bestand>`. Hits inspecteren: backticks horen bij code, niet bij business-NL. Vervang `` `metric_name` `` door een NL-omschrijving.
 14. **KnowledgeItem-koppelingen reviewen**: open `backend/app/graph/seed.py` en grep op de huidige BB-naam. Klopt de lijst gekoppelde KnowledgeItems? Staan er bronnen tussen die thuishoren bij een andere BB? (Aanleiding: "Prompt Engineering for Generative AI" was foutief gekoppeld aan Model Engines i.p.v. alleen Prompt Design.)
 15. **Re-seed + cleanup-protocol bij gewijzigde koppelingen**: als je een KnowledgeItem-aan-BB-relatie hebt versmald in `seed.py`, draai dan: (a) `python backend/scripts/seed_graph.py` voor toevoegingen, (b) een Cypher `DELETE`-query voor de stale relatie (`seed.py` is idempotent voor toevoegen, niet voor verwijderen), en (c) **astro dev-server herstarten**: `getStaticPaths` voert de Neo4j-fetch alleen op startup uit, dus de pagina toont oude data tot je `pkill -f "astro dev"` plus `npm run dev` doet. Verifieer met `curl http://localhost:8000/api/building-blocks/<BB-naam>/items` (API) én via een browser-refresh op `http://localhost:4321/framework/<slug>` (gerenderde pagina).
+16. **Body↔guardrail-link-data-consistency**: open `frontend/src/lib/bb-guardrail-links.ts` en zoek de entry voor de huidige BB-slug. Klopt het aantal en de codes met wat de body in de "In de praktijk"-BBDisclosure claimt onder *"Het koppelpunt met andere bouwstenen en guardrails"* (telwoord + opsomming GR_0X)? De mapping wordt los van de body gerenderd in de "Gekoppelde guardrails"-sectie van de BB-detailpagina; een mismatch is voor de lezer een direct zichtbare inconsistentie. (Aanleiding: BB_05 Tool Integration body claimde "raakt vier guardrails direct" met GR_01/02/03/07, terwijl de mapping er drie had — GR_01 ontbrak.)
 
 Als één van deze checks faalt: terug naar Stap 3 (pre-write-scan) op het probleemgedeelte.
 
